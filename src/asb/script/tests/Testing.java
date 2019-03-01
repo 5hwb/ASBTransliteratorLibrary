@@ -1,6 +1,8 @@
 package asb.script.tests;
 
 import java.io.FileNotFoundException;
+
+import asb.io.FileIO;
 import asb.script.transcoder.ExternalFileReplacer;
 
 public class Testing {
@@ -42,10 +44,15 @@ public class Testing {
 		}
 	}
 	
+	static void fileIOTest() {
+		FileIO.aaa();
+	}
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		//testStack();
 		//hangulTest();
 		//jsonTest();
-		testExtFileRepl();		
+		//testExtFileRepl();
+		fileIOTest();
 	}
 }
