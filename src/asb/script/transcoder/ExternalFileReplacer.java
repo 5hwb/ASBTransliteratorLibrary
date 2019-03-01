@@ -21,7 +21,7 @@ import asb.schema.RuleSchema;
  * An ExternalFileReplacer replaces each Latin script character in EBEO with the
  * corresponding letter for an adapted script. EXPERIMENTAL REPLACEMENT FOR THE
  * ORIGINAL REPLACER DESIGN
- * 
+ *
  * @author perry
  *
  */
@@ -61,7 +61,7 @@ public class ExternalFileReplacer {
 
 	/** Reference hashmap for phoneme types */
 	protected Map<String, PhonemeType> typeReference;
-		
+
 	protected String ruleFile;
 
 	public ExternalFileReplacer(String filePath) {
@@ -85,7 +85,7 @@ public class ExternalFileReplacer {
 
 	/**
 	 * Translate a Latin EBEO text into the desired script
-	 * 
+	 *
 	 * @param input Self-descriptive
 	 * @return
 	 */
@@ -95,7 +95,7 @@ public class ExternalFileReplacer {
 
 	/**
 	 * Translate a text in the desired script into Latin EBEO script
-	 * 
+	 *
 	 * @param input Self-descriptive
 	 * @return
 	 */
@@ -105,7 +105,7 @@ public class ExternalFileReplacer {
 
 	/**
 	 * The base method for the translateFromScript and translateToScript methods.
-	 * 
+	 *
 	 * @param input    Self-descriptive
 	 * @param toScript Translate the input to script, or back?
 	 * @return The transliterated output
@@ -254,7 +254,7 @@ public class ExternalFileReplacer {
 
 	/**
 	 * Look for a rule that matches the current situation
-	 * 
+	 *
 	 * @param pRules   List of rules to check for matches
 	 * @param toScript Translate the input to script, or back?
 	 * @param pCounter
@@ -272,10 +272,10 @@ public class ExternalFileReplacer {
 
 			// If any 1 of them matches the current pattern, select its corresponding ngraph for insertion to output
 			for (int k = 0; k < pRules[j].numOfSubRules(); k++) {
-				
+
 				// Rule is a pattern rule
 				if (pRules[j].subRulecVal(k) == 0) {
-					
+
 					// COMPARISON!
 					boolean prevIsMatch = (pRules[j].subsubRuleType(k, 0).equals("anything"))
 							? true // always true if it matches 'anything'
@@ -298,7 +298,7 @@ public class ExternalFileReplacer {
 					/*DEBUG*/System.out.printf("\t\tCURRMATCH: [%b]\n", currIsMatch);
 					/*DEBUG*/System.out.printf("\t\tNEXTMATCH: [%b]\n", nextIsMatch);
 					/*DEBUG*/System.out.printf("\t\tRule num: %d\n", j);
-					
+
 					// Match if the pattern matches the scenario
 					if ((prevIsMatch && nextIsMatch) && currIsMatch) {
 						letterIndex = j;
@@ -311,7 +311,7 @@ public class ExternalFileReplacer {
 				else if (pRules[j].subRulecVal(k) >= 1 && pCounter != null) {
 					int cVal = pRules[j].subRulecVal(k);
 					/*DEBUG*/System.out.printf("\t\tRULEd counter? curr counter val = %d\n", pCounter.value());
-					
+
 					// Match if counter value for current phoneme's type equals cVal.
 					// Useful for consonant clusters
 					if (pCounter.value() >= cVal) {
@@ -330,7 +330,7 @@ public class ExternalFileReplacer {
 	/**
 	 * Compare 2 phoneme types to see if they match. Matches main types with their
 	 * sub-types as defined in the replacer rules file.
-	 * 
+	 *
 	 * @param a                 1st type
 	 * @param b                 2nd type
 	 * @param isStrictTypeMatch If true, only match if a == b . If false, allow
@@ -362,14 +362,14 @@ public class ExternalFileReplacer {
 				// Get the counters
 				for (int i = 0; i < tjfRuleSchema.counters().length; i++) {
 					PhonemeCounter phonemeCounter = tjfRuleSchema.counters()[i];
-					
+
 					// Parse phoneme counter rule strings into Rule objects
 					Rule[] rule = new Rule[phonemeCounter.incrRule().length];
 					for (int j = 0; j < phonemeCounter.incrRule().length; j++) {
 						rule[j] = Rule.parseStringToRule(phonemeCounter.incrRule()[j]);
 						phonemeCounter.setIncrRuleParsed(rule);
 					}
-					
+
 					counters.put(phonemeCounter.type(), phonemeCounter);
 				}
 
@@ -388,13 +388,13 @@ public class ExternalFileReplacer {
 						rule2[j] = Rule.parseStringToRule(phonemeRule.l2rule()[j]);
 						phonemeRule.setL2ruleParsed(rule2);
 					}
-					
+
 					// Read letter 1 ngraphs
 					for (int j = 0; j < phonemeRule.l1().length; j++) {
 						String letter1Ngraph = phonemeRule.l1()[j];
 						rulesToScript.put(letter1Ngraph, phonemeRule);
 						rulesReference.put(letter1Ngraph, phonemeRule);
-						
+
 						// Update nMax to match the longest ngraph found
 						nMax = Math.max(letter1Ngraph.length(), nMax);
 						/*DEBUG*/System.out.printf("1: Loading %s, nMax = %d\n", letter1Ngraph, nMax);
@@ -411,7 +411,7 @@ public class ExternalFileReplacer {
 						/*DEBUG*/System.out.printf("2: Loading %s, nMax = %d\n", letter2Ngraph, nMax);
 					}
 
-					System.out.println("Rules object parsed successfully " + phonemeRule.toString());
+					/*DEBUG*/System.out.println("Rules object parsed successfully " + phonemeRule.toString());
 				}
 
 				// Read each type
@@ -419,7 +419,7 @@ public class ExternalFileReplacer {
 					// Insert main type
 					PhonemeType phonemeType = tjfRuleSchema.types()[i];
 					typeReference.put(phonemeType.name(), phonemeType);
-					
+
 					// Insert subtypes
 					for (int j = 0; j < phonemeType.extraTypes().length; j++) {
 						typeReference.put(phonemeType.extraTypes()[j], phonemeType);

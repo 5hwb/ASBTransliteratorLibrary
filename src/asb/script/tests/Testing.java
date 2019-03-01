@@ -24,7 +24,7 @@ public class Testing {
 		}
 
 		// TEST HANGUL -> EBEO
-		if (false) {
+		if (true) {
 			String res2 = efr.translateFromScript(testoHan);
 			System.out.println("============RESULT:=============");
 			System.out.printf("[%s]\n", res2);
@@ -33,7 +33,7 @@ public class Testing {
 		}
 
 		// TEST KHMER -> EBEO
-		if (false) {
+		if (true) {
 			String res2 = efr.translateFromScript(testoKhm);
 			System.out.println("============RESULT:=============");
 			System.out.printf("[%s]\n", res2);
@@ -43,9 +43,6 @@ public class Testing {
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		//testStack();
-		//hangulTest();
-		//jsonTest();
-		//testExtFileRepl();
+		testExtFileRepl();
 	}
 }

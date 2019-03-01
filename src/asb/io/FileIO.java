@@ -65,6 +65,7 @@ public class FileIO {
 	public static void copyRulefilesFromAssets() {
 		String rulefileFolderDir = "rulefiles/";
 		URI uri = null;
+		String trimOff = "file:"; // WEIRD: Windows - 'file:/', LINUX - 'file:'
 		
 		ClassLoader classLoader = FileIO.class.getClassLoader();
 		try {
@@ -81,13 +82,14 @@ public class FileIO {
 
 		/** App is running from a JAR file: copy assets to external folder */
 		if (uri.getScheme().contains("jar")) {
+			System.out.println("Environment = JAR");
 			try {
 				// Get full filepath to JAR file
 				URL jar = FileIO.class.getProtectionDomain().getCodeSource().getLocation();
 		        System.out.println("DIR! " + jar.toString());
 		        
 		        // Trim out the 'file:/' part
-		        Path jarFile = Paths.get(jar.toString().substring("file:/".length()));
+		        Path jarFile = Paths.get(jar.toString().substring(trimOff.length()));
 		        FileSystem fs = FileSystems.newFileSystem(jarFile, null);
 		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(rulefileFolderDir));
 		        
@@ -95,7 +97,7 @@ public class FileIO {
 		            InputStream is = FileIO.class.getResourceAsStream(p.toString());
 		            
 		            // Need to move 'rulefileFolderDir' to the folder dir, to make initialisation of folder and files easier
-		            rulefileDir = jar.toString().substring("file:/".length()).replace("/ASBTranscriptorApp.jar", "")
+		            rulefileDir = jar.toString().substring(trimOff.length()).replace("/ASBTranscriptorApp.jar", "")
 		            		+ "/" + rulefileFolderDir;
 		            String fileDir = p.toString().replace("/" + rulefileFolderDir, "");
 		            System.out.println("FILE from JAR! " + rulefileDir + " - " + fileDir);
@@ -109,8 +111,9 @@ public class FileIO {
 		}
 		/** App is running from IDE */
 		else {
+			System.out.println("Environment = IDE");
 			URL rulefileDirUrl = FileIO.class.getClassLoader().getResource("rulefiles/");
-			FileIO.rulefileDir = rulefileDirUrl.toString().replace("file:/", "");
+			FileIO.rulefileDir = rulefileDirUrl.toString().replace(trimOff, "");
 			System.out.println("rulefileDir = " + FileIO.rulefileDir);
 		}
 	}
