@@ -56,13 +56,13 @@ public class FileIO {
 	/**
 	 * From here: https://stackoverflow.com/questions/11012819/how-can-i-get-a-resource-folder-from-inside-my-jar-file/20073154
 	 */
-	public static void aaa() {
-		String fooFolder = "rulefiles/";
+	public static void copyRulefilesFromAssets() {
+		String rulefileFolderDir = "rulefiles/";
 		URI uri = null;
 		
 		ClassLoader classLoader = FileIO.class.getClassLoader();
 		try {
-		    uri = classLoader.getResource(fooFolder).toURI();
+		    uri = classLoader.getResource(rulefileFolderDir).toURI();
 		} catch (URISyntaxException e) {
 		    e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -83,15 +83,17 @@ public class FileIO {
 		        System.out.println("DIR! " + jar.toString());
 		        Path jarFile = Paths.get(jar.toString().substring("file:/".length()));
 		        FileSystem fs = FileSystems.newFileSystem(jarFile, null);
-		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(fooFolder));
+		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(rulefileFolderDir));
 		        for (Path p: directoryStream) {
 		            InputStream is = FileIO.class.getResourceAsStream(p.toString());
+		            
+		            // Need to move 'rulefileFolderDir' to the folder dir, to make initialisation of folder and files easier
 		            String folderDir = jar.toString().substring("file:/".length()).replace("/ASBTranscriptorApp.jar", "")
-		            		+ "/" + fooFolder;
-		            String fileDir = p.toString().replace("/" + fooFolder, "");
+		            		+ "/" + rulefileFolderDir;
+		            String fileDir = p.toString().replace("/" + rulefileFolderDir, "");
 		            System.out.println("FILE from JAR! " + folderDir + " - " + fileDir);
-		            /** your logic here **/
-		            copyRulefile(is, folderDir, fileDir);
+		            
+		            copyFromInputStreamToFile(is, folderDir, fileDir);
 		            is.close();
 		        }
 		    } catch (IOException e) {
@@ -115,14 +117,16 @@ public class FileIO {
 	}
 	
 	
-	public static void copyRulefile(InputStream is, String folderPath, String filePath) throws IOException {		
+	private static void copyFromInputStreamToFile(InputStream is, String folderPath, String filePath) throws IOException {		
 		File folder = new File(folderPath);
 		File file = new File(folder, filePath);
-		// if the file doesn't exist, then create it
+		// if the folder doesn't exist, then create it
 		if (!folder.exists()) {
 			System.out.println("Creating folder at '" + folder.getPath() + "'");
 			folder.mkdir();
 		}
+		
+		// if the folder doesn't exist, then create it and write the InputStream contents
 		if (!file.exists()) {
 			System.out.println("Creating file at '" + file.getPath() + "'");
 			file.createNewFile();

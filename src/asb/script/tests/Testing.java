@@ -44,15 +44,10 @@ public class Testing {
 		}
 	}
 	
-	static void fileIOTest() {
-		FileIO.aaa();
-	}
-	
 	public static void main(String[] args) throws FileNotFoundException {
 		//testStack();
 		//hangulTest();
 		//jsonTest();
 		//testExtFileRepl();
-		fileIOTest();
 	}
 }
