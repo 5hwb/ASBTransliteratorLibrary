@@ -53,6 +53,9 @@ public class FileIO {
 	    fileOutputStream.close();
 	}
 	
+	/**
+	 * From here: https://stackoverflow.com/questions/11012819/how-can-i-get-a-resource-folder-from-inside-my-jar-file/20073154
+	 */
 	public static void aaa() {
 		String fooFolder = "rulefiles/";
 		URI uri = null;
@@ -62,67 +65,75 @@ public class FileIO {
 		    uri = classLoader.getResource(fooFolder).toURI();
 		} catch (URISyntaxException e) {
 		    e.printStackTrace();
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 		    e.printStackTrace();
 		}
 
-		if(uri == null){
+		if (uri == null) {
 		    System.err.println("something is wrong directory or files missing");
 		}
 
 		/** i want to know if i am inside the jar or working on the IDE*/
-		if(uri.getScheme().contains("jar")){
+		if (uri.getScheme().contains("jar")) {
 		    /** jar case */
 		    try {
 		        URL jar = FileIO.class.getProtectionDomain().getCodeSource().getLocation();
-		        //jar.toString() begins with file:
+		        //jar.toString() begins with file:/
 		        //i want to trim it out...
 		        System.out.println("DIR! " + jar.toString());
 		        Path jarFile = Paths.get(jar.toString().substring("file:/".length()));
 		        FileSystem fs = FileSystems.newFileSystem(jarFile, null);
 		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(fooFolder));
-		        for(Path p: directoryStream){
+		        for (Path p: directoryStream) {
 		            InputStream is = FileIO.class.getResourceAsStream(p.toString());
-		            System.out.println("FILE from JAR! " + p.toString());
+		            String folderDir = jar.toString().substring("file:/".length()).replace("/ASBTranscriptorApp.jar", "")
+		            		+ "/" + fooFolder;
+		            String fileDir = p.toString().replace("/" + fooFolder, "");
+		            System.out.println("FILE from JAR! " + folderDir + " - " + fileDir);
 		            /** your logic here **/
-		            copyRulefile(p.toString());
+		            copyRulefile(is, folderDir, fileDir);
+		            is.close();
 		        }
-		    } catch(IOException e) {
+		    } catch (IOException e) {
 		        e.printStackTrace();     
 		    }
 		}
-		else{
-		    /** IDE case */
+		else {
+		    /** IDE case 
 		    Path path = Paths.get(uri);
 		    try {
 		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
-		        for(Path p : directoryStream){
+		        for (Path p : directoryStream) {
 		            InputStream is = new FileInputStream(p.toFile());
 		            System.out.println("FILE! " + p.toString());
-		            /** your logic here **/
-		            copyRulefile(p.toString());
+		            copyRulefile(is, p.toString());
 		        }
 		    } catch (IOException _e) {
 		    	_e.printStackTrace();
-		    }
+		    }*/
 		}
 	}
 	
 	
-	public static void copyRulefile(String filePath) throws IOException {		
-        InputStream is = new FileInputStream(filePath);
-        //InputStream is = FileIO.class.getResourceAsStream("rulefiles/");
-		byte[] buffer = new byte[is.available()];
-		is.read(buffer);
-		
-		File file = new File(filePath);
+	public static void copyRulefile(InputStream is, String folderPath, String filePath) throws IOException {		
+		File folder = new File(folderPath);
+		File file = new File(folder, filePath);
 		// if the file doesn't exist, then create it
+		if (!folder.exists()) {
+			System.out.println("Creating folder at '" + folder.getPath() + "'");
+			folder.mkdir();
+		}
 		if (!file.exists()) {
+			System.out.println("Creating file at '" + file.getPath() + "'");
 			file.createNewFile();
+			
+			byte[] buffer = new byte[is.available()];
+			is.read(buffer);
+					
+		    OutputStream os = new FileOutputStream(file); 
+		    os.write(buffer);
+		    os.close();
 		}
 		
-	    OutputStream os = new FileOutputStream(filePath); 
-	    os.write(buffer);
-	    os.close();		
 	}
 }
