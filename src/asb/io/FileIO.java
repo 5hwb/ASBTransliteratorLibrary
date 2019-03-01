@@ -17,7 +17,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileIO {
-		
+	
+	// File directory to rule files
+	public static String rulefileDir;
+	
+	// File path to currently used replacer rules file
+	public static String rulefile = "hangul.json";
+	
 	/**
 	 * Reads a file and returns the content as a string.
 	 * From here: http://www.mkyong.com/java/how-to-convert-array-of-bytes-into-file/
@@ -70,49 +76,42 @@ public class FileIO {
 		}
 
 		if (uri == null) {
-		    System.err.println("something is wrong directory or files missing");
+		    System.err.println("Directory or files are missing");
 		}
 
-		/** i want to know if i am inside the jar or working on the IDE*/
+		/** App is running from a JAR file: copy assets to external folder */
 		if (uri.getScheme().contains("jar")) {
-		    /** jar case */
-		    try {
-		        URL jar = FileIO.class.getProtectionDomain().getCodeSource().getLocation();
-		        //jar.toString() begins with file:/
-		        //i want to trim it out...
+			try {
+				// Get full filepath to JAR file
+				URL jar = FileIO.class.getProtectionDomain().getCodeSource().getLocation();
 		        System.out.println("DIR! " + jar.toString());
+		        
+		        // Trim out the 'file:/' part
 		        Path jarFile = Paths.get(jar.toString().substring("file:/".length()));
 		        FileSystem fs = FileSystems.newFileSystem(jarFile, null);
 		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(rulefileFolderDir));
+		        
 		        for (Path p: directoryStream) {
 		            InputStream is = FileIO.class.getResourceAsStream(p.toString());
 		            
 		            // Need to move 'rulefileFolderDir' to the folder dir, to make initialisation of folder and files easier
-		            String folderDir = jar.toString().substring("file:/".length()).replace("/ASBTranscriptorApp.jar", "")
+		            rulefileDir = jar.toString().substring("file:/".length()).replace("/ASBTranscriptorApp.jar", "")
 		            		+ "/" + rulefileFolderDir;
 		            String fileDir = p.toString().replace("/" + rulefileFolderDir, "");
-		            System.out.println("FILE from JAR! " + folderDir + " - " + fileDir);
+		            System.out.println("FILE from JAR! " + rulefileDir + " - " + fileDir);
 		            
-		            copyFromInputStreamToFile(is, folderDir, fileDir);
+		            copyFromInputStreamToFile(is, rulefileDir, fileDir);
 		            is.close();
 		        }
 		    } catch (IOException e) {
 		        e.printStackTrace();     
 		    }
 		}
+		/** App is running from IDE */
 		else {
-		    /** IDE case 
-		    Path path = Paths.get(uri);
-		    try {
-		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
-		        for (Path p : directoryStream) {
-		            InputStream is = new FileInputStream(p.toFile());
-		            System.out.println("FILE! " + p.toString());
-		            copyRulefile(is, p.toString());
-		        }
-		    } catch (IOException _e) {
-		    	_e.printStackTrace();
-		    }*/
+			URL rulefileDirUrl = FileIO.class.getClassLoader().getResource("rulefiles/");
+			FileIO.rulefileDir = rulefileDirUrl.toString().replace("file:/", "");
+			System.out.println("rulefileDir = " + FileIO.rulefileDir);
 		}
 	}
 	
@@ -120,13 +119,13 @@ public class FileIO {
 	private static void copyFromInputStreamToFile(InputStream is, String folderPath, String filePath) throws IOException {		
 		File folder = new File(folderPath);
 		File file = new File(folder, filePath);
-		// if the folder doesn't exist, then create it
+		// If the folder doesn't exist, then create it
 		if (!folder.exists()) {
 			System.out.println("Creating folder at '" + folder.getPath() + "'");
 			folder.mkdir();
 		}
 		
-		// if the folder doesn't exist, then create it and write the InputStream contents
+		// If the folder doesn't exist, then create it and write the InputStream contents
 		if (!file.exists()) {
 			System.out.println("Creating file at '" + file.getPath() + "'");
 			file.createNewFile();

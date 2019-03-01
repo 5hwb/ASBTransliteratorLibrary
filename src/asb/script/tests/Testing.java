@@ -1,8 +1,6 @@
 package asb.script.tests;
 
 import java.io.FileNotFoundException;
-
-import asb.io.FileIO;
 import asb.script.transcoder.ExternalFileReplacer;
 
 public class Testing {
