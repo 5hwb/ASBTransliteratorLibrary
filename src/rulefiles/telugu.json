@@ -218,7 +218,11 @@
 			"l1": ["0"],	"l1type": "numeral",	"l1rule": [""],
 			"l2": ["౦"],	"l2type": "numeral",	"l2rule": [""]
 		},
-		
+
+        {
+            "l1": ["\n"],	"l1type": "sentenceEdge",	"l1rule": [""],
+            "l2": ["\n"],	"l2type": "sentenceEdge",	"l2rule": [""]
+        },
         {
 			"l1": [". "],	"l1type": "sentenceEdge",	"l1rule": [""],
 			"l2": [". "],	"l2type": "sentenceEdge",	"l2rule": [""]
