@@ -322,6 +322,21 @@ public class ExternalFileReplacer {
 						return letterIndex;
 					}
 				}
+				// Rule is a phoneme variant selection rule
+				else if (pRules[j].subRulePvVal(k) >= 0) {
+					int pvVal = pRules[j].subRulePvVal(k);
+					/*DEBUG*/System.out.printf("\t\tRULEd pho var? curr variant val = %d\n", pRules[j]);
+
+					// Match if counter value for current phoneme's type equals cVal.
+					// Useful for scripts that have uppercase and lowercase forms
+//					if (pCounter.value() >= cVal) {
+//						pCounter.reset(); // reset counter value to 0
+//						letterIndex = j;
+//						ruleNotFound = false;
+//						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", j);
+//						return letterIndex;
+//					}
+				}
 			}
 		}
 		return letterIndex;

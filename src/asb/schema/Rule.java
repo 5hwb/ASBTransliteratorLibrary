@@ -24,6 +24,14 @@ public class Rule {
 		subRules[srIndex].cVal = cVal;
 	}
 	
+	public int subRulePvVal(int srIndex) {
+		return subRules[srIndex].pvVal;
+	}
+	
+	public void setSubRulePvVal(int srIndex, int pvVal) {
+		subRules[srIndex].pvVal = pvVal;
+	}
+	
 	public String subsubRuleType(int srIndex, int ssrIndex) {
 		return subRules[srIndex].subsubRules[ssrIndex].type;
 	}
@@ -144,6 +152,11 @@ public class Rule {
 				int cVal = Integer.parseInt(pRulesSub[k].substring(2));
 				rule.setSubRulecVal(k, cVal);
 			}
+			// Rule is a phoneme variant selection rule
+			else if (pRulesSubSub.length == 1 && pRulesSub[k].contains("pv=")) {
+				int pvVal = Integer.parseInt(pRulesSub[k].substring(2));
+				rule.setSubRulePvVal(k, pvVal);
+			}
 		}
 		return rule;
 	}
@@ -161,7 +174,8 @@ class SubSubRule {
 class SubRule {
 	// SubRule attributes
 	SubSubRule[] subsubRules;
-	int cVal;
+	int cVal;  // counter value
+	int pvVal; // phoneme variant value. -1 = match any value, 0 = 1st value, 1 = 2nd value, etc.
 	
 	public SubRule() {
 		subsubRules = new SubSubRule[3];
