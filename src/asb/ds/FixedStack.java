@@ -25,8 +25,8 @@ public class FixedStack<T> {
 	 * @return True if successful, false otherwise
 	 */
 	public boolean push(T item) {
-		top = (top + 1) % this.size; 
-		this.stack[this.top] = item;		
+		top = (top + 1) % this.size;
+		this.stack[this.top] = item;
 		return false;
 	}
 	
