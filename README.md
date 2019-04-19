@@ -85,7 +85,7 @@ The replacement rules are located within the `RULES` object, implemented as a li
 * `!T` - match any type that is not the type T
 * ` | ` - OR, for indicating that more than 1 rule is to be checked ('rule1 OR rule2 OR rule3')
 * `c=2` - counter rule: match if the counter for this phoneme's type equals 2
-* `v=0` - phoneme variant selection rule: match if the letter phoneme's selected variant is the 1st one (0 in the index)
+* `pv=0` - phoneme variant selection rule: match if the letter phoneme's selected variant is the 1st one (0 in the index)
 
 #### Rule structure
 
@@ -96,7 +96,7 @@ The replacement rules are located within the `RULES` object, implemented as a li
 * `C_._V` - match if the previous letter is a _consonant_ and the next letter is a _vowel_
 * `V_._.` - match if the previous letter is a _vowel_ (the next letter can be any type)
 * `c=6` - match if the counter for this letter's type equals 6
-* `v=1` - match if the letter phoneme's selected variant is the 2nd one (1 in the index)
+* `pv=1` - match if the letter phoneme's selected variant is the 2nd one (1 in the index)
 * `!C_._V` - match if the previous letter is not a _consonant_ and the next letter is a _vowel_
 * `!C_._!V` - match if the previous letter is not a _consonant_ and the next letter is not a _vowel_
 

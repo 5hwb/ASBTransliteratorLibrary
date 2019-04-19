@@ -146,6 +146,7 @@ public class Rule {
 				}
 				//*DEBUG*/System.out.printf("\t\tRULEdd: %b [%s], %b [%s], %b [%s]\n",
 				//*DEBUG*/notToBeMatched[0], pRulesSubSub[0], notToBeMatched[1], pRulesSubSub[1], notToBeMatched[2], pRulesSubSub[2]);
+				rule.setSubRulePvVal(k, -1);
 			}
 			// Rule is a counter rule
 			else if (pRulesSubSub.length == 1 && pRulesSub[k].contains("c=")) {
@@ -154,7 +155,7 @@ public class Rule {
 			}
 			// Rule is a phoneme variant selection rule
 			else if (pRulesSubSub.length == 1 && pRulesSub[k].contains("pv=")) {
-				int pvVal = Integer.parseInt(pRulesSub[k].substring(2));
+				int pvVal = Integer.parseInt(pRulesSub[k].substring(3));
 				rule.setSubRulePvVal(k, pvVal);
 			}
 		}

@@ -33,6 +33,7 @@ public class ExternalFileReplacer {
 	 */
 	protected Map<String, PhonemeRule> rulesToScript; // Latin ngraph -> Script PhonemeRule
 	protected Map<String, PhonemeRule> rulesFromScript; // Script ngraph -> Latin PhonemeRule
+	protected Map<String, Integer> phonemeVarIndexMap; // Phoneme ngraph -> its index in the list of phoneme variants
 	protected Map<String, PhonemeRule> rulesReference; // Ngraph -> corresponding PhonemeRule
 
 	/** Stores the output string */
@@ -43,6 +44,9 @@ public class ExternalFileReplacer {
 
 	/** Stack of the last 3 phonemes */
 	protected FixedStack<PhonemeRule> phonemes;
+	
+	/** Stack of the phoneme variant indexes of the last 3 selected ngraphs */
+	protected FixedStack<Integer> phonemeVarIndexStack;
 
 	/** The PhonemeRule which will replace the currently selected ngraph */
 	protected PhonemeRule replPhoneme;
@@ -77,7 +81,9 @@ public class ExternalFileReplacer {
 		this.rulesFromScript = new HashMap<String, PhonemeRule>();
 		this.rulesReference = new HashMap<String, PhonemeRule>();
 		this.typeReference = new HashMap<String, PhonemeType>();
+		this.phonemeVarIndexMap = new HashMap<String, Integer>();
 		this.phonemes = new FixedStack<PhonemeRule>(3);
+		this.phonemeVarIndexStack = new FixedStack<Integer>(3);
 		this.counters = new HashMap<String, PhonemeCounter>();
 		this.nMax = 0;
 		this.hasCase = false;
@@ -164,6 +170,7 @@ public class ExternalFileReplacer {
 					if (curr != null) {
 						/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
 						phonemes.push(curr);
+						phonemeVarIndexStack.push(phonemeVarIndexMap.get(currNGraph));
 						ngraphSize = c;
 					}
 					// Insert the original (punctuation) character if it was not covered by a rule
@@ -173,6 +180,7 @@ public class ExternalFileReplacer {
 						defPhoneme = new PhonemeRule(new String[] { currNGraph }, "punctuation", new String[] {""},
 								new String[] { currNGraph }, "punctuation", new String[] {""});
 						phonemes.push(defPhoneme);
+						phonemeVarIndexStack.push(null); // no phoneme variant index if there's no corresponding phoneme
 						ngraphSize = 1;
 					}
 
@@ -191,14 +199,16 @@ public class ExternalFileReplacer {
 			else {
 				/*DEBUG*/System.out.println("\tDummy phonemerule inserted");
 				phonemes.push(initPhoneme);
+				phonemeVarIndexStack.push(null);
 			}
 
 			//////////////////////////////////////////
-			// INSERT REPLACEMENT IN OUTPUT //
+			// INSERT REPLACEMENT IN OUTPUT         //
 			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected ngraph
 			replPhoneme = currPhoneme();
+			Integer currNGraphIndex = phonemeVarIndexStack.nthTop(1);
 
 			// If no replacement phoneme could be found, the current phoneme is a
 			// non-defined punctuation mark
@@ -208,6 +218,7 @@ public class ExternalFileReplacer {
 				continue;
 			}
 			/*DEBUG*/System.out.println(phonemes);
+			/*DEBUG*/System.out.println(phonemeVarIndexStack);
 			/*DEBUG*/System.out.println("NGRAPH: repl found - " + replPhoneme.l2()[0]);
 
 			// Increment counter for the current phoneme's type
@@ -217,7 +228,7 @@ public class ExternalFileReplacer {
 			if (pCounter != null) {
 				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
 				Rule[] cRules = pCounter.incrRuleParsed();
-				int matchingRuleIndex = selectRule(cRules, toScript, null);
+				int matchingRuleIndex = selectRule(cRules, toScript, null, null);
 				if (matchingRuleIndex >= 0) {
 					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
 					pCounter.increment();
@@ -229,7 +240,7 @@ public class ExternalFileReplacer {
 			}
 
 			Rule[] pRules = (toScript) ? replPhoneme.l2ruleParsed() : replPhoneme.l1ruleParsed();
-			int letterIndex = selectRule(pRules, toScript, pCounter);
+			int letterIndex = selectRule(pRules, toScript, pCounter, currNGraphIndex);
 			if (letterIndex < 0) {
 				// default letter is the last one
 				letterIndex = (toScript) ? replPhoneme.l2().length - 1 : replPhoneme.l1().length - 1;
@@ -257,10 +268,11 @@ public class ExternalFileReplacer {
 	 *
 	 * @param pRules   List of rules to check for matches
 	 * @param toScript Translate the input to script, or back?
-	 * @param pCounter
+	 * @param pCounter Phoneme counter for this type
+	 * @param pVariantIndex The index of the selected ngraph in phoneme's variant list
 	 * @return Index of matching rule. -1 if no match was found
 	 */
-	private int selectRule(Rule[] pRules, boolean toScript, PhonemeCounter pCounter) {
+	private int selectRule(Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
 		String prevType = (toScript) ? prevPhoneme().l2type() : prevPhoneme().l1type();
 		String currType = (toScript) ? replPhoneme.l2type() : replPhoneme.l1type();
 		String nextType = (toScript) ? nextPhoneme().l2type() : nextPhoneme().l1type();
@@ -274,7 +286,7 @@ public class ExternalFileReplacer {
 			for (int k = 0; k < pRules[j].numOfSubRules(); k++) {
 
 				// Rule is a pattern rule
-				if (pRules[j].subRulecVal(k) == 0) {
+				if (pRules[j].subRulecVal(k) == 0 && pRules[j].subRulePvVal(k) < 0) {
 
 					// COMPARISON!
 					boolean prevIsMatch = (pRules[j].subsubRuleType(k, 0).equals("anything"))
@@ -323,19 +335,18 @@ public class ExternalFileReplacer {
 					}
 				}
 				// Rule is a phoneme variant selection rule
-				else if (pRules[j].subRulePvVal(k) >= 0) {
+				else if (pRules[j].subRulePvVal(k) >= 0 && pVariantIndex != null) {
 					int pvVal = pRules[j].subRulePvVal(k);
-					/*DEBUG*/System.out.printf("\t\tRULEd pho var? curr variant val = %d\n", pRules[j]);
+					/*DEBUG*/System.out.printf("\t\tRULEd phovarsel? curr variant val = %d\n", pVariantIndex);
 
 					// Match if counter value for current phoneme's type equals cVal.
 					// Useful for scripts that have uppercase and lowercase forms
-//					if (pCounter.value() >= cVal) {
-//						pCounter.reset(); // reset counter value to 0
-//						letterIndex = j;
-//						ruleNotFound = false;
-//						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", j);
-//						return letterIndex;
-//					}
+					if (pVariantIndex == pvVal) {
+						letterIndex = j;
+						ruleNotFound = false;
+						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", j);
+						return letterIndex;
+					}
 				}
 			}
 		}
@@ -409,6 +420,7 @@ public class ExternalFileReplacer {
 						String letter1Ngraph = phonemeRule.l1()[j];
 						rulesToScript.put(letter1Ngraph, phonemeRule);
 						rulesReference.put(letter1Ngraph, phonemeRule);
+						phonemeVarIndexMap.put(letter1Ngraph, j);
 
 						// Update nMax to match the longest ngraph found
 						nMax = Math.max(letter1Ngraph.length(), nMax);
@@ -420,6 +432,7 @@ public class ExternalFileReplacer {
 						String letter2Ngraph = phonemeRule.l2()[j];
 						rulesFromScript.put(letter2Ngraph, phonemeRule);
 						rulesReference.put(letter2Ngraph, phonemeRule);
+						phonemeVarIndexMap.put(letter2Ngraph, j);
 
 						// Update nMax to match the longest ngraph found
 						nMax = Math.max(letter2Ngraph.length(), nMax);

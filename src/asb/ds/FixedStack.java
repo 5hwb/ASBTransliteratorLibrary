@@ -53,7 +53,7 @@ public class FixedStack<T> {
 		return null;
 	}
 
-	/* FOR DEBUGGING */
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("STACK [\n");
