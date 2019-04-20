@@ -2,9 +2,9 @@
 
 ## About
 
-This is a GUI Java program that aims to transliterate traditional English orthography into more phonetic ways to write English, as well as transliterate between different phonetic orthographies and scripts.
+This is a GUI Java program that aims to transliterate between different phonetic orthographies and scripts.
 
-At this point in time, it can transliterate between phonetic English orthography (Even Better English Orthography, abbreviated as 'EBEO') and a collection of foreign scripts including Korean hangul, Thai script, and Tibetan script.
+At this point in time, it can transliterate between phonetic English orthography (Even Better English Orthography, abbreviated as 'EBEO') and a collection of foreign scripts including Korean hangul and Khmer script.
 
 ## How it works
 
@@ -33,32 +33,86 @@ function translateFromToScript():
 	return StringBuilder.toString()
 ```
 
-## EBEO DICTIONARY NOTES
-
-The regularisation of the dictionary is not complete yet!
-TODO: translate all affixes and suffixes to their correct pronunciation
-
-## Regex replacements
-
-To fix issues:
-`\n([^aeiouāàéèēúíòōáùūó]{1,3})STRING\n`
-to
-`\n\1STRIŊ\n`
-
-This is a better way to replace suffixes (ensures 1-syllable words don't get replaced by accident):
-`([aeiouāàéèēúíòōáùūó])([^aeiouāàéèēúíòōáùūó]{1,3})STRING\n`
-to
-`\1\2STRIŊ\n`
-
-https://regex101.com/r/vHBwU0/1
-
-## Note
-
-Use buildDict.sh to generate the traditional to phonetic dictionary for use by the Transliterator.
-
 # Replacer Rules File JSON syntax
 
-Because the current design has limitations (e.g. only 1 alt letter form, not flexible, hardcoded), I have decided to re-engineer the design of the Replacer class so that rules for each different script are read from an external file.
+Each writing system is represented with a 'replacer rules file', an external JSON file containing a list of rules that map the correct ngraphs from EBEO to the target script.
+
+## Rule syntax
+
+* ` | ` - OR, for indicating that more than 1 rule is to be checked ('rule1 OR rule2 OR rule3')
+
+There are 3 types of rules:
+
+1. **Pattern matching rule**: Match if and only if the types of this character and both surrounding characters match the given pattern. A pattern consists of 3 tokens separated by an underscore, with each token representing the type(s) to be matched. Rule syntax is as following: `(previous letter token)_(current letter token)_(next letter token)`
+2. **Counter rule**: Match if and only if the counter for this phoneme's type equals the given number. Comes in the following form: `c=n` where `n` is a positive integer.
+3. **Phoneme variant selection rule**: Match if and only if the particular variant of the selected phoneme ngraph equals the given number. Comes in the following form: `pv=n` where `n` is a positive integer.
+
+### Pattern matching rule token syntax
+
+* `V` - match any vowel types
+* `C` - match any consonant types
+* `N` - match any numeral types
+* `P` - match any punctuation types
+* `#` - match the start or end of a sentence
+* `<doubleConso>` - match the 'doubleConso' type only
+* `.` - match any letter
+* `!T` - match any type that is not the type T
+
+### Rule examples
+
+* `C_._V` - match if the previous letter is a _consonant_ and the next letter is a _vowel_
+* `V_._.` - match if the previous letter is a _vowel_ (the next letter can be any type)
+* `c=6` - match if the counter for this letter's type equals 6
+* `pv=1` - match if the letter phoneme's selected variant is the 2nd one (1 in the index)
+* `!C_._V` - match if the previous letter is not a _consonant_ and the next letter is a _vowel_
+* `!C_._!V` - match if the previous letter is not a _consonant_ and the next letter is not a _vowel_
+* `<narrowConso>_._.` - match if the previous letter is of the 'narrowConso' type
+* `V_._. | !C_._V` - match any one of the 2 given rules: the previous letter is a _vowel_, **or** the previous letter is not a _consonant_ and the next letter is a _vowel_
+
+### Pattern selection and counter rule example
+
+```
+{
+	"l1": ["M", "m"],	
+	"l1type": "consonant",
+	"l1rule": ["#_._."],
+	
+	"l2": ["ម", "្ម"],	
+	"l2type": "consonant",
+	"l2rule": ["<narrowConso>_._. | !C_._. | c=2"]
+},
+```
+
+What this does:
+
+* Map any L1 letters to 'ម' if it matches the first L2 rule: previous consonant was of type 'narrowConso', previous consonant is not a consonant type, or the counter for consonant types has reached 2; or '្ម' otherwise.
+	* This ensures that the subscript variant of ម is chosen in the right context
+* Map any L2 letters to 'M' if the previously selected ngraph was a sentence boundary (represented with #); or 'm' otherwise.
+	 * This ensures that sentences always start with a capital letter
+
+### Phoneme variant selection rule example
+
+```
+{
+	"l1": ["1a", "2a", "3a"],
+	"l1type": "vowel", 
+	"l1rule": ["pv=2", "pv=1", "pv=0"],
+	
+	"l2": ["oneA", "twoA", "triA"], 
+	"l2type": "vowel", 
+	"l2rule": ["pv=0", "pv=1", "pv=2"]
+}
+```
+
+To script:
+
+* Input: `1a 2a 3a`
+* Output: `oneA twoA triA`
+
+From script:
+
+* Input: `oneA twoA triA`
+* Output: `3a 2a 1a`
 
 ## 'rules' object
 
@@ -72,33 +126,6 @@ The replacement rules are located within the `RULES` object, implemented as a li
 * `l2` - list of Script 2 letters. As in `l1`, the last char is the default form
 * `l2type` - type of all Script 2 letters
 * `l2rule` - list of rules for converting Script 1 to Script 2
-
-### Rule syntax
-
-* `V` - match any vowel types
-* `C` - match any consonant types
-* `N` - match any numeral types
-* `P` - match any punctuation types
-* `#` - match the start or end of a sentence
-* `<doubleConso>` - match the 'doubleConso' type only
-* `.` - match any letter
-* `!T` - match any type that is not the type T
-* ` | ` - OR, for indicating that more than 1 rule is to be checked ('rule1 OR rule2 OR rule3')
-* `c=2` - counter rule: match if the counter for this phoneme's type equals 2
-* `pv=0` - phoneme variant selection rule: match if the letter phoneme's selected variant is the 1st one (0 in the index)
-
-#### Rule structure
-
-`(previous letter)_(current letter)_(next letter)`
-
-### Rule examples
-
-* `C_._V` - match if the previous letter is a _consonant_ and the next letter is a _vowel_
-* `V_._.` - match if the previous letter is a _vowel_ (the next letter can be any type)
-* `c=6` - match if the counter for this letter's type equals 6
-* `pv=1` - match if the letter phoneme's selected variant is the 2nd one (1 in the index)
-* `!C_._V` - match if the previous letter is not a _consonant_ and the next letter is a _vowel_
-* `!C_._!V` - match if the previous letter is not a _consonant_ and the next letter is not a _vowel_
 
 ## 'types' object
 
@@ -171,6 +198,5 @@ This site may come in handy: http://lisperator.net/pltut/parser/
 	* Thai
 	* Myanmar
 	* Kannada
-	* BEO
 	* Deseret
 * Create window for modifying the replacer rules, which will allow the user to import and export the rules as a JSON file

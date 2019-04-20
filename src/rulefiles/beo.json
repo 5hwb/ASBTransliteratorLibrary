@@ -1,6 +1,7 @@
 {
 	"rules": [
-		{"l1": ["A", "zaq", "a"],	"l1type": "vowel",	"l1rule": ["#_._.", "pv=1"],		"l2": ["Aa", "YANONG", "aa"],	"l2type": "vowel",	"l2rule": ["#_._.", "pv=1"]},
+		{"l1": ["1a", "2a", "3a"],	"l1type": "vowel",	"l1rule": ["pv=2", "pv=1", "pv=0"],		"l2": ["oneA", "twoA", "triA"],	"l2type": "vowel",	"l2rule": ["pv=0", "pv=1", "pv=2"]},
+		{"l1": ["A", "a"],	"l1type": "vowel",	"l1rule": ["#_._."],		"l2": ["Aa", "aa"],	"l2type": "vowel",	"l2rule": ["#_._."]},
 		{"l1": ["E", "e"],	"l1type": "vowel",	"l1rule": ["#_._."],		"l2": ["U",  "u"],	"l2type": "vowel",	"l2rule": ["#_._."]},
 		{"l1": ["I", "i"],	"l1type": "vowel",	"l1rule": ["#_._."],		"l2": ["I",  "i"],	"l2type": "vowel",	"l2rule": ["#_._."]},
 		{"l1": ["O", "o"],	"l1type": "vowel",	"l1rule": ["#_._."],		"l2": ["O",  "o"],	"l2type": "vowel",	"l2rule": ["#_._."]},
