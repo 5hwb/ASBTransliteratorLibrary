@@ -63,11 +63,11 @@ public class Testing {
 				{true, true, true},
 				};
 		for (int i = 0; i < isMatch.length; i++) {
-			boolean theyDoNotMatch = true;
+			boolean theyDoMatch = true;
 			for (int j = 0; j < 3; j++) {
-				theyDoNotMatch &= isMatch[i][j];
+				theyDoMatch &= isMatch[i][j];
 			}
-			System.out.printf("[%b]\n", theyDoNotMatch);
+			System.out.printf("[%b]\n", theyDoMatch);
 		}
 
 	}

@@ -277,12 +277,17 @@ public class ExternalFileReplacer {
 
 		// Go through each rule until one matching the current pattern is found
 		int letterIndex = -1;
-		boolean ruleNotFound = true;
-		for (int j = 0; j < pRules.length && ruleNotFound; j++) {
+		for (int j = 0; j < pRules.length; j++) {
+			
+			boolean isAndRuleMatch = pRules[j].isAndRuleMatch();
+			boolean subRulesDoMatch = true;
+			/*DEBUG*/System.out.printf("\t\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
+			/*DEBUG*/System.out.printf("\t\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
 
 			// Go through each subrule: should be either AND (all must match) or OR (at least 1 must match).
 			// If any 1 of them matches the current pattern, select its corresponding grapheme for insertion to output
 			for (int k = 0; k < pRules[j].numOfSubRules(); k++) {
+				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", k);
 
 				// Rule is a pattern rule
 				if (pRules[j].subRulecVal(k) == 0 && pRules[j].subRulePvVal(k) < 0) {
@@ -312,9 +317,10 @@ public class ExternalFileReplacer {
 
 					// Match if the pattern matches the scenario
 					boolean isMatch = ((prevIsMatch && nextIsMatch) && currIsMatch);
-					if (isMatch) {
+					subRulesDoMatch &= isMatch;
+					/*DEBUG*/System.out.printf("\t\tPatmat's ISMATCH: [%b]\n", isMatch);
+					if (isMatch && !isAndRuleMatch) {
 						letterIndex = j;
-						ruleNotFound = false;
 						/*DEBUG*/System.out.printf("\t\tChosen PATTERN rule num: %d\n", j);
 						return letterIndex;
 					}
@@ -327,10 +333,11 @@ public class ExternalFileReplacer {
 					// Match if counter value for current phoneme's type equals cVal.
 					// Useful for consonant clusters
 					boolean isMatch = (pCounter.value() >= cVal);
-					if (isMatch) {
+					subRulesDoMatch &= isMatch;
+					/*DEBUG*/System.out.printf("\t\tCountmat's ISMATCH: [%b]\n", isMatch);
+					if (isMatch && !isAndRuleMatch) {
 						pCounter.reset(); // reset counter value to 0
 						letterIndex = j;
-						ruleNotFound = false;
 						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", j);
 						return letterIndex;
 					}
@@ -342,15 +349,23 @@ public class ExternalFileReplacer {
 
 					// Match if counter value for current phoneme's type equals cVal.
 					// Useful for scripts that have uppercase and lowercase forms
-					
 					boolean isMatch = (pVariantIndex == pvVal);
-					if (isMatch) {
+					subRulesDoMatch &= isMatch;
+					/*DEBUG*/System.out.printf("\t\tPhovarsel's ISMATCH: [%b]\n", isMatch);
+					if (isMatch && !isAndRuleMatch) {
 						letterIndex = j;
-						ruleNotFound = false;
 						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", j);
 						return letterIndex;
 					}
 				}
+			}
+			
+			if (isAndRuleMatch && subRulesDoMatch) {
+				letterIndex = j;
+				/*DEBUG*/System.out.printf("\t\tAll subrules match! Rule num: %d\n", j);
+				return letterIndex;
+			} else {
+				/*DEBUG*/System.out.printf("\t\tAll subrules do not match.\n");
 			}
 		}
 		return letterIndex;

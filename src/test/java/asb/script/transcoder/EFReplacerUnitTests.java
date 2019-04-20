@@ -24,6 +24,10 @@ public class EFReplacerUnitTests {
 	String testoKhm = "យួរ ជាស្ត ឥន តៃម គួឃ! សែ ចីឌ។ ថ់ នឹ ការ ឆូស ឲផ ឥត្ស ឯក្សត្រ៉ភ់គ់ន្ស "
 			+ "វិឋ អ៉ឈ់រ កាល់រ្ស។ ទ៉ន្សិ ពីត្ស អ៉ន្ទ ហួបិង លួខ នេស ស្តៃល សាស្បេន្ឆ់ន៕ "
 			+ "លុក ឳត ហៀរ។ ថិស ឯះន្ត នូ តួះ! ក្យា ត់ឥ ស្យួ ១២៣៤៥៦៧៨៩០៕";
+
+	String testoQuik = "    !  ,        " 
+			+ "  ,        . "
+			+ "  ,    !    .";
 	
 	String testoConsoEbeo2 = "Léts hopz hopza pzi pz. Sdroŋ malds át đe hafs pozt níd ù.";
 	String testoConsoHan2 = "껻스 홊흐 홊하 븟히 븟흐. 슽롱 맊틋 얃 떠 하쁫 봇흗 닅 유.";
@@ -93,5 +97,17 @@ public class EFReplacerUnitTests {
 	public void test_consonants_khmer() {
 		efr.setFilePath("src/main/java/rulefiles/khmer.json");
 		assertEquals(testoConsoKhm1, efr.translateToScript(testoConsoEbeo1));
+	}
+
+	@Test
+	public void test_toScript_quikscript() {
+		efr.setFilePath("src/main/java/rulefiles/quikscript.json");
+		assertEquals(testoQuik, efr.translateToScript(testo));
+	}
+	
+	@Test
+	public void test_fromScript_quikscript() {
+		efr.setFilePath("src/main/java/rulefiles/quikscript.json");
+		assertEquals(testo, efr.translateFromScript(testoQuik));
 	}
 }
