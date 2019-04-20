@@ -1,4 +1,5 @@
 syntax: regexp
+^.gradle
 ^bin
 ^build
 ASBTranscriptorLibrary.jar

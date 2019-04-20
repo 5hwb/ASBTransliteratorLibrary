@@ -1,4 +1,4 @@
-package asb.script.tests;
+package asb.script.transcoder;
 
 import static org.junit.Assert.*;
 
@@ -33,7 +33,7 @@ public class EFReplacerUnitTests {
 	
 	@Before
 	public void init() {
-		efr = new ExternalFileReplacer("src/rulefiles/hangul.json");
+		efr = new ExternalFileReplacer("src/main/java/rulefiles/hangul.json");
 	}
 
 	@Test
@@ -61,37 +61,37 @@ public class EFReplacerUnitTests {
 	
 	@Test
 	public void test_toScript_hangul() {
-		efr.setFilePath("src/rulefiles/hangul.json");
+		efr.setFilePath("src/main/java/rulefiles/hangul.json");
 		assertEquals(testoHan, HangulUtils.convertToHangulBlocks(efr.translateToScript(testo)));
 	}
 	
 	@Test
 	public void test_fromScript_hangul() {
-		efr.setFilePath("src/rulefiles/hangul.json");
+		efr.setFilePath("src/main/java/rulefiles/hangul.json");
 		assertEquals(testo, efr.translateFromScript(HangulUtils.convertFromHangulBlocks(testoHan)));
 	}
 	
 	@Test
 	public void test_consonants_hangul() {
-		efr.setFilePath("src/rulefiles/hangul.json");
+		efr.setFilePath("src/main/java/rulefiles/hangul.json");
 		assertEquals(testoConsoHan2, HangulUtils.convertToHangulBlocks(efr.translateToScript(testoConsoEbeo2)));
 	}
 
 	@Test
 	public void test_toScript_khmer() {
-		efr.setFilePath("src/rulefiles/khmer.json");
+		efr.setFilePath("src/main/java/rulefiles/khmer.json");
 		assertEquals(testoKhm, efr.translateToScript(testo));
 	}
 	
 	@Test
 	public void test_fromScript_khmer() {
-		efr.setFilePath("src/rulefiles/khmer.json");
+		efr.setFilePath("src/main/java/rulefiles/khmer.json");
 		assertEquals(testo, efr.translateFromScript(testoKhm));
 	}
 	
 	@Test
 	public void test_consonants_khmer() {
-		efr.setFilePath("src/rulefiles/khmer.json");
+		efr.setFilePath("src/main/java/rulefiles/khmer.json");
 		assertEquals(testoConsoKhm1, efr.translateToScript(testoConsoEbeo1));
 	}
 }

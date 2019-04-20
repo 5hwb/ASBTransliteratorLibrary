@@ -1,4 +1,4 @@
-package asb.script.tests;
+package asb.hangul;
 
 import static org.junit.Assert.*;
 

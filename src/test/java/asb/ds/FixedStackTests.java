@@ -1,4 +1,4 @@
-package asb.script.tests;
+package asb.ds;
 
 import static org.junit.Assert.*;
 
@@ -19,6 +19,7 @@ public class FixedStackTests {
 	@Test
 	public void test() {
 		fixedStack.push(2);
+		assertEquals(2, fixedStack.top().intValue());
 	}
 
 }
