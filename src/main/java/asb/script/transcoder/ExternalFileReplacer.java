@@ -311,7 +311,8 @@ public class ExternalFileReplacer {
 					/*DEBUG*/System.out.printf("\t\tRule num: %d\n", j);
 
 					// Match if the pattern matches the scenario
-					if ((prevIsMatch && nextIsMatch) && currIsMatch) {
+					boolean isMatch = ((prevIsMatch && nextIsMatch) && currIsMatch);
+					if (isMatch) {
 						letterIndex = j;
 						ruleNotFound = false;
 						/*DEBUG*/System.out.printf("\t\tChosen PATTERN rule num: %d\n", j);
@@ -325,7 +326,8 @@ public class ExternalFileReplacer {
 
 					// Match if counter value for current phoneme's type equals cVal.
 					// Useful for consonant clusters
-					if (pCounter.value() >= cVal) {
+					boolean isMatch = (pCounter.value() >= cVal);
+					if (isMatch) {
 						pCounter.reset(); // reset counter value to 0
 						letterIndex = j;
 						ruleNotFound = false;
@@ -340,7 +342,9 @@ public class ExternalFileReplacer {
 
 					// Match if counter value for current phoneme's type equals cVal.
 					// Useful for scripts that have uppercase and lowercase forms
-					if (pVariantIndex == pvVal) {
+					
+					boolean isMatch = (pVariantIndex == pvVal);
+					if (isMatch) {
 						letterIndex = j;
 						ruleNotFound = false;
 						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", j);
