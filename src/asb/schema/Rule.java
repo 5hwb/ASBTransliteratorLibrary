@@ -98,7 +98,7 @@ public class Rule {
 		
 		// rule1 OR rule2 ... OR ruleN
 		// Split up each rule into 2 or more 'subrules'.
-		// If any 1 of them matches the current pattern, select its corresponding ngraph
+		// If any 1 of them matches the current pattern, select its corresponding grapheme
 		// for insertion to output
 		String[] pRulesSub = pRule.split(" \\| ");
 		Rule rule = new Rule(pRulesSub.length);

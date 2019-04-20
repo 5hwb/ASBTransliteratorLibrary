@@ -8,34 +8,32 @@ At this point in time, it can transliterate between phonetic English orthography
 
 ## How it works
 
-Transliteration between scripts is done in the Replacer class. Each foreign script is represented by a subclass of Replacer, defining exactly what symbols are to be replaced. Symbols are referred to as 'ngraphs' as they can be either 1, 2 or more characters in length.
+Transliteration between scripts is done in the ExternalFileReplacer class. Each writing system is represented with a 'replacer rules file', an external JSON file containing a list of rules that map the correct graphemes from EBEO to the target script.
 
 The Replacer algorithm works like this:
 
 ```
 function translateFromToScript():
-	create 3ElementStack to hold each ngraph
+	create 3ElementStack to hold each grapheme
 	create StringBuilder to store the output
 
 	for each character in the input string:
 		for integer in range(c, 0):
-			Read a sub-string ngraph starting with current char and ending in integer c
-			Look up Replacer's HashMap to see if the ngraph exists
-			if (ngraph is found):
-				3ElementStack.push(ngraph)
+			Read a sub-string grapheme starting with current char and ending in integer c
+			Look up Replacer's HashMap to see if the grapheme exists
+			if (grapheme is found):
+				3ElementStack.push(grapheme)
 				break
 			else:
 				c -= 1
 
-		get the corresponding ngraph in the target script, depending on the context of the surrounding ngraphs
-		StringBuilder.append(correspondingNgraph)
+		get the corresponding grapheme in the target script, depending on the context of the surrounding graphemes
+		StringBuilder.append(correspondingGrapheme)
 
 	return StringBuilder.toString()
 ```
 
 # Replacer Rules File JSON syntax
-
-Each writing system is represented with a 'replacer rules file', an external JSON file containing a list of rules that map the correct ngraphs from EBEO to the target script.
 
 ## Rule syntax
 
@@ -45,7 +43,7 @@ There are 3 types of rules:
 
 1. **Pattern matching rule**: Match if and only if the types of this character and both surrounding characters match the given pattern. A pattern consists of 3 tokens separated by an underscore, with each token representing the type(s) to be matched. Rule syntax is as following: `(previous letter token)_(current letter token)_(next letter token)`
 2. **Counter rule**: Match if and only if the counter for this phoneme's type equals the given number. Comes in the following form: `c=n` where `n` is a positive integer.
-3. **Phoneme variant selection rule**: Match if and only if the particular variant of the selected phoneme ngraph equals the given number. Comes in the following form: `pv=n` where `n` is a positive integer.
+3. **Phoneme variant selection rule**: Match if and only if the particular variant of the selected grapheme equals the given number. Comes in the following form: `pv=n` where `n` is a positive integer.
 
 ### Pattern matching rule token syntax
 
@@ -87,7 +85,7 @@ What this does:
 
 * Map any L1 letters to 'ម' if it matches the first L2 rule: previous consonant was of type 'narrowConso', previous consonant is not a consonant type, or the counter for consonant types has reached 2; or '្ម' otherwise.
 	* This ensures that the subscript variant of ម is chosen in the right context
-* Map any L2 letters to 'M' if the previously selected ngraph was a sentence boundary (represented with #); or 'm' otherwise.
+* Map any L2 letters to 'M' if the previously selected grapheme was a sentence boundary (represented with #); or 'm' otherwise.
 	 * This ensures that sentences always start with a capital letter
 
 ### Phoneme variant selection rule example

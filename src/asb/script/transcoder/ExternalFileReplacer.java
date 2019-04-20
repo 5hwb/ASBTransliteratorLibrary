@@ -19,8 +19,7 @@ import asb.schema.RuleSchema;
 
 /**
  * An ExternalFileReplacer replaces each Latin script character in EBEO with the
- * corresponding letter for an adapted script. EXPERIMENTAL REPLACEMENT FOR THE
- * ORIGINAL REPLACER DESIGN
+ * corresponding letter for an adapted script.
  *
  * @author perry
  *
@@ -31,24 +30,24 @@ public class ExternalFileReplacer {
 	 * These HashMaps map String keys representing the original char with
 	 * PhonemeRule class values representing what they will be replaced with
 	 */
-	protected Map<String, PhonemeRule> rulesToScript; // Latin ngraph -> Script PhonemeRule
-	protected Map<String, PhonemeRule> rulesFromScript; // Script ngraph -> Latin PhonemeRule
-	protected Map<String, Integer> phonemeVarIndexMap; // Phoneme ngraph -> its index in the list of phoneme variants
-	protected Map<String, PhonemeRule> rulesReference; // Ngraph -> corresponding PhonemeRule
+	protected Map<String, PhonemeRule> rulesToScript; // Latin grapheme -> Script PhonemeRule
+	protected Map<String, PhonemeRule> rulesFromScript; // Script grapheme -> Latin PhonemeRule
+	protected Map<String, PhonemeRule> rulesReference; // Grapheme -> corresponding PhonemeRule
+	protected Map<String, Integer> phonemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
 
 	/** Stores the output string */
 	protected StringBuilder sb;
 
-	/** The current ngraph to analyse */
-	// protected String currNGraph;
+	/** The current grapheme to analyse */
+	// protected String currGrapheme;
 
 	/** Stack of the last 3 phonemes */
 	protected FixedStack<PhonemeRule> phonemes;
 	
-	/** Stack of the phoneme variant indexes of the last 3 selected ngraphs */
+	/** Stack of the phoneme variant indexes of the last 3 selected graphemes */
 	protected FixedStack<Integer> phonemeVarIndexStack;
 
-	/** The PhonemeRule which will replace the currently selected ngraph */
+	/** The PhonemeRule which will replace the currently selected grapheme */
 	protected PhonemeRule replPhoneme;
 
 	/** A placeholder PhonemeRule for non-replaced characters */
@@ -118,13 +117,13 @@ public class ExternalFileReplacer {
 	 */
 	protected String translateFromToScript(String input, boolean toScript) {
 		/**
-		 * NOTE: An 'ngraph' is a string of up to n characters representing a single
-		 * phoneme. Digraphs are ngraphs with 2 characters
+		 * NOTE: An 'grapheme' is a string of up to n characters representing a single
+		 * phoneme. Digraphs are graphemes with 2 characters
 		 */
 		sb = new StringBuilder();
 
-		/* The current ngraph to analyse */
-		String currNGraph = "";
+		/* The current grapheme to analyse */
+		String currGrapheme = "";
 
 		// Insert the 1st phoneme with the type SENTENCEEND, since
 		// the beginning marks the start of a new sentence
@@ -143,7 +142,7 @@ public class ExternalFileReplacer {
 			counters.get(key).reset();
 		}
 
-		// Need to accomodate the maximum possible ngraph length in the for loop
+		// Need to accomodate the maximum possible grapheme length in the for loop
 		for (int i = 0; i < input.length() + nMax; i++) {
 			/*DEBUG*/System.out.printf("----------i=%d----------\n", i);
 
@@ -151,51 +150,50 @@ public class ExternalFileReplacer {
 			// LOOK UP NGRAPH AND INSERT INTO STACK //
 			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("LOOK UP NGRAPH AND INSERT INTO STACK...");
-			// Looks ahead at the next chars, detecting ngraphs of decreasing size so that
+			// Looks ahead at the next chars, detecting graphemes of decreasing size so that
 			// they get detected first
 			if (i < input.length()) {
 				for (int c = this.nMax; c >= 1; c--) {
 					/*DEBUG*/System.out.printf("c=%d\n", c);
 					// Limit the lookup so it does not go beyond the end of the input
 					int limit = (i + c >= input.length()) ? input.length() : i + c;
-					currNGraph = input.substring(i, limit);
+					currGrapheme = input.substring(i, limit);
 
-					int ngraphSize = 0;
+					int graphemeSize = 0;
 
-					// Look up the reference HashMap with the current ngraph
+					// Look up the reference HashMap with the current grapheme
 					// to see if there is an entry.
 					// If there is a match, add it to the phoneme stack
-					PhonemeRule curr = (toScript) ? this.rulesToScript.get(currNGraph)
-							: this.rulesFromScript.get(currNGraph);
+					PhonemeRule curr = (toScript) ? this.rulesToScript.get(currGrapheme)
+							: this.rulesFromScript.get(currGrapheme);
 					if (curr != null) {
 						/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
 						phonemes.push(curr);
-						phonemeVarIndexStack.push(phonemeVarIndexMap.get(currNGraph));
-						ngraphSize = c;
+						phonemeVarIndexStack.push(phonemeVarIndexMap.get(currGrapheme));
+						graphemeSize = c;
 					}
 					// Insert the original (punctuation) character if it was not covered by a rule
 					else if (c == 1) {
-						// BUT only if the ngraph's 1 char long!
+						// BUT only if the grapheme's 1 char long!
 						/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
-						defPhoneme = new PhonemeRule(new String[] { currNGraph }, "punctuation", new String[] {""},
-								new String[] { currNGraph }, "punctuation", new String[] {""});
+						defPhoneme = new PhonemeRule(new String[] { currGrapheme }, "punctuation", new String[] {""},
+								new String[] { currGrapheme }, "punctuation", new String[] {""});
 						phonemes.push(defPhoneme);
 						phonemeVarIndexStack.push(null); // no phoneme variant index if there's no corresponding phoneme
-						ngraphSize = 1;
+						graphemeSize = 1;
 					}
 
 					// Skip to the next iteration of the loop
-					if (ngraphSize == 0)
+					if (graphemeSize == 0)
 						continue;
 
-					// Adjust current index to avoid parsing the components of the ngraph
-					i += (ngraphSize - 1); // subtract 1 since the next iteration of the for loop will add 1 again
+					// Adjust current index to avoid parsing the components of the grapheme
+					i += (graphemeSize - 1); // subtract 1 since the next iteration of the for loop will add 1 again
 					break;
 				}
 			}
-			// The last 3 ngraphs are in the stack, but the last ngraph hasn't
-			// been processed yet.
-			// Insert a dummy PhonemeRule to push the last ngraph into position
+			// The last 3 graphemes are in the stack, but the last grapheme hasn't been processed yet.
+			// Insert a dummy PhonemeRule to push the last grapheme into position
 			else {
 				/*DEBUG*/System.out.println("\tDummy phonemerule inserted");
 				phonemes.push(initPhoneme);
@@ -206,15 +204,15 @@ public class ExternalFileReplacer {
 			// INSERT REPLACEMENT IN OUTPUT         //
 			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
-			// Get the PhonemeRule for the currently selected ngraph
+			// Get the PhonemeRule for the currently selected grapheme
 			replPhoneme = currPhoneme();
-			Integer currNGraphIndex = phonemeVarIndexStack.nthTop(1);
+			Integer currGraphemeIndex = phonemeVarIndexStack.nthTop(1);
 
 			// If no replacement phoneme could be found, the current phoneme is a
 			// non-defined punctuation mark
 			if (replPhoneme == null) {
 				/*DEBUG*/System.out.println("NGRAPH: no repl found");
-				sb.append(currNGraph);
+				sb.append(currGrapheme);
 				continue;
 			}
 			/*DEBUG*/System.out.println(phonemes);
@@ -240,7 +238,7 @@ public class ExternalFileReplacer {
 			}
 
 			Rule[] pRules = (toScript) ? replPhoneme.l2ruleParsed() : replPhoneme.l1ruleParsed();
-			int letterIndex = selectRule(pRules, toScript, pCounter, currNGraphIndex);
+			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
 			if (letterIndex < 0) {
 				// default letter is the last one
 				letterIndex = (toScript) ? replPhoneme.l2().length - 1 : replPhoneme.l1().length - 1;
@@ -254,7 +252,7 @@ public class ExternalFileReplacer {
 				}
 			}
 
-			// Append the replacement ngraph
+			// Append the replacement grapheme
 			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", sb.toString());
 			String repl = (toScript) ? replPhoneme.l2()[letterIndex] : replPhoneme.l1()[letterIndex];
 			sb.append(repl);
@@ -269,7 +267,7 @@ public class ExternalFileReplacer {
 	 * @param pRules   List of rules to check for matches
 	 * @param toScript Translate the input to script, or back?
 	 * @param pCounter Phoneme counter for this type
-	 * @param pVariantIndex The index of the selected ngraph in phoneme's variant list
+	 * @param pVariantIndex The index of the selected grapheme in phoneme's variant list
 	 * @return Index of matching rule. -1 if no match was found
 	 */
 	private int selectRule(Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
@@ -282,7 +280,7 @@ public class ExternalFileReplacer {
 		boolean ruleNotFound = true;
 		for (int j = 0; j < pRules.length && ruleNotFound; j++) {
 
-			// If any 1 of them matches the current pattern, select its corresponding ngraph for insertion to output
+			// If any 1 of them matches the current pattern, select its corresponding grapheme for insertion to output
 			for (int k = 0; k < pRules[j].numOfSubRules(); k++) {
 
 				// Rule is a pattern rule
@@ -415,28 +413,28 @@ public class ExternalFileReplacer {
 						phonemeRule.setL2ruleParsed(rule2);
 					}
 
-					// Read letter 1 ngraphs
+					// Read letter 1 graphemes
 					for (int j = 0; j < phonemeRule.l1().length; j++) {
-						String letter1Ngraph = phonemeRule.l1()[j];
-						rulesToScript.put(letter1Ngraph, phonemeRule);
-						rulesReference.put(letter1Ngraph, phonemeRule);
-						phonemeVarIndexMap.put(letter1Ngraph, j);
+						String letter1Grapheme = phonemeRule.l1()[j];
+						rulesToScript.put(letter1Grapheme, phonemeRule);
+						rulesReference.put(letter1Grapheme, phonemeRule);
+						phonemeVarIndexMap.put(letter1Grapheme, j);
 
-						// Update nMax to match the longest ngraph found
-						nMax = Math.max(letter1Ngraph.length(), nMax);
-						/*DEBUG*/System.out.printf("1: Loading %s, nMax = %d\n", letter1Ngraph, nMax);
+						// Update nMax to match the longest grapheme found
+						nMax = Math.max(letter1Grapheme.length(), nMax);
+						/*DEBUG*/System.out.printf("1: Loading %s, nMax = %d\n", letter1Grapheme, nMax);
 					}
 
-					// Read letter 2 ngraphs
+					// Read letter 2 graphemes
 					for (int j = 0; j < phonemeRule.l2().length; j++) {
-						String letter2Ngraph = phonemeRule.l2()[j];
-						rulesFromScript.put(letter2Ngraph, phonemeRule);
-						rulesReference.put(letter2Ngraph, phonemeRule);
-						phonemeVarIndexMap.put(letter2Ngraph, j);
+						String letter2Grapheme = phonemeRule.l2()[j];
+						rulesFromScript.put(letter2Grapheme, phonemeRule);
+						rulesReference.put(letter2Grapheme, phonemeRule);
+						phonemeVarIndexMap.put(letter2Grapheme, j);
 
-						// Update nMax to match the longest ngraph found
-						nMax = Math.max(letter2Ngraph.length(), nMax);
-						/*DEBUG*/System.out.printf("2: Loading %s, nMax = %d\n", letter2Ngraph, nMax);
+						// Update nMax to match the longest grapheme found
+						nMax = Math.max(letter2Grapheme.length(), nMax);
+						/*DEBUG*/System.out.printf("2: Loading %s, nMax = %d\n", letter2Grapheme, nMax);
 					}
 
 					/*DEBUG*/System.out.println("Rules object parsed successfully " + phonemeRule.toString());
