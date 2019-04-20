@@ -5,7 +5,7 @@ import asb.script.transcoder.ExternalFileReplacer;
 
 public class Testing {
 	static void testExtFileRepl() {
-		ExternalFileReplacer efr = new ExternalFileReplacer("src/rulefiles/hangul.json");
+		ExternalFileReplacer efr = new ExternalFileReplacer("src/main/java/rulefiles/hangul.json");
 		
 		//String testoEbeo = "Léts du đis strakt rāt nà. Yor đe véri bést Kév!";
 		String testoEbeo = "Léts blē blkē ablkē inklud. Sdroŋ malds át đe hafs pibtkhśa níd ù tu éksklēm tu đe ūrld.";
@@ -42,7 +42,39 @@ public class Testing {
 		}
 	}
 	
+	static void testQuikscript() {
+		ExternalFileReplacer efr = new ExternalFileReplacer("src/main/java/rulefiles/quikscript.json");
+		String testoEbeo = "Input is glorès. Kán ù du it? Yés? Grēt trā, Korel!";
+		String testoQuik = "  .    ? ?  , !";
+		
+		String res2 = efr.translateToScript(testoEbeo);
+		System.out.println("============RESULT:=============");
+		System.out.printf("[%s]\n", res2);
+		System.out.println("===========INTENDED:============");
+		System.out.printf("[%s]\n", testoQuik);		
+	}
+	
+	static void andMatchTest() {
+		boolean[][] isMatch = {
+				{false, false, false},
+				{false, false, true},
+				{false, true, true},
+				{true, false, true},
+				{true, true, true},
+				};
+		for (int i = 0; i < isMatch.length; i++) {
+			boolean theyDoNotMatch = true;
+			for (int j = 0; j < 3; j++) {
+				theyDoNotMatch &= isMatch[i][j];
+			}
+			System.out.printf("[%b]\n", theyDoNotMatch);
+		}
+
+	}
+	
 	public static void main(String[] args) throws FileNotFoundException {
-		testExtFileRepl();
+		//testExtFileRepl();
+		testQuikscript();
+		//andMatchTest();
 	}
 }

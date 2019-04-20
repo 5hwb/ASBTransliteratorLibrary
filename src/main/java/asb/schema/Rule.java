@@ -4,6 +4,7 @@ public class Rule {
 
 	// Rule attributes
 	private SubRule[] subRules;
+	private boolean isAndRuleMatch;
 
 	public Rule(int subruleLength) {
 		subRules = new SubRule[subruleLength];
@@ -11,55 +12,63 @@ public class Rule {
 			subRules[i] = new SubRule();
 		}
 	}
-	
+
 	public int numOfSubRules() {
 		return subRules.length;
 	}
-	
+
 	public int subRulecVal(int srIndex) {
 		return subRules[srIndex].cVal;
 	}
-	
+
 	public void setSubRulecVal(int srIndex, int cVal) {
 		subRules[srIndex].cVal = cVal;
 	}
-	
+
 	public int subRulePvVal(int srIndex) {
 		return subRules[srIndex].pvVal;
 	}
-	
+
 	public void setSubRulePvVal(int srIndex, int pvVal) {
 		subRules[srIndex].pvVal = pvVal;
 	}
-	
+
 	public String subsubRuleType(int srIndex, int ssrIndex) {
 		return subRules[srIndex].subsubRules[ssrIndex].type;
 	}
-	
+
 	public boolean subsubRuleIsNot(int srIndex, int ssrIndex) {
 		return subRules[srIndex].subsubRules[ssrIndex].isNot;
 	}
-	
+
 	public boolean subsubRuleIsStrictTypeMatch(int srIndex, int ssrIndex) {
 		return subRules[srIndex].subsubRules[ssrIndex].isStrictTypeMatch;
 	}
-	
+
 	public void setSubsubRuleType(int srIndex, int ssrIndex, String type) {
 		subRules[srIndex].subsubRules[ssrIndex].type = type;
 	}
-	
+
 	public void setSubsubRuleIsNot(int srIndex, int ssrIndex, boolean isNot) {
 		subRules[srIndex].subsubRules[ssrIndex].isNot = isNot;
 	}
-	
+
 	public void setSubsubRuleIsStrictTypeMatch(int srIndex, int ssrIndex, boolean isStrictTypeMatch) {
 		subRules[srIndex].subsubRules[ssrIndex].isStrictTypeMatch = isStrictTypeMatch;
 	}
-	
+
+	public boolean isAndRuleMatch() {
+		return isAndRuleMatch;
+	}
+
+	public void setIsAndRuleMatch(boolean isAndRuleMatch) {
+		this.isAndRuleMatch = isAndRuleMatch;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		for (SubRule sr: subRules) {
 			sb.append('[');
 			for (SubSubRule ssr: sr.subsubRules) {
@@ -74,7 +83,7 @@ public class Rule {
 		}
 		return sb.toString();
 	}
-	
+
 	public static Rule emptyRule() {
 		Rule rule = new Rule(1);
 		rule.setSubsubRuleType(0, 0, "anything");
@@ -82,10 +91,10 @@ public class Rule {
 		rule.setSubsubRuleType(0, 2, "anything");
 		return rule;
 	}
-	
+
 	/**
 	 * Convert a rule string into a Rule object
-	 * 
+	 *
 	 * @param pRule
 	 * @return a Rule object
 	 */
@@ -95,13 +104,17 @@ public class Rule {
 		if (pRule.length() == 0) {
 			return emptyRule();
 		}
-		
+
 		// rule1 OR rule2 ... OR ruleN
 		// Split up each rule into 2 or more 'subrules'.
 		// If any 1 of them matches the current pattern, select its corresponding grapheme
 		// for insertion to output
-		String[] pRulesSub = pRule.split(" \\| ");
+		String[] pRulesSubOr = pRule.split(" \\| ");
+		String[] pRulesSubAnd = pRule.split(" & ");
+		boolean isAndRuleMatch = (pRulesSubAnd.length > pRulesSubOr.length);
+		String[] pRulesSub = (isAndRuleMatch) ? pRulesSubAnd : pRulesSubOr;
 		Rule rule = new Rule(pRulesSub.length);
+		rule.setIsAndRuleMatch(isAndRuleMatch);
 		for (int k = 0; k < pRulesSub.length; k++) {
 			//*DEBUG*/System.out.printf("\tRULEd: [%s]\n", pRulesSub[k]);
 			String[] pRulesSubSub = pRulesSub[k].split("_");
@@ -163,7 +176,7 @@ public class Rule {
 	}
 }
 
-// SubSubRule 
+// SubSubRule
 class SubSubRule {
 	// SubSubRule attributes
 	String type;
@@ -177,7 +190,7 @@ class SubRule {
 	SubSubRule[] subsubRules;
 	int cVal;  // counter value
 	int pvVal; // phoneme variant value. -1 = match any value, 0 = 1st value, 1 = 2nd value, etc.
-	
+
 	public SubRule() {
 		subsubRules = new SubSubRule[3];
 		for (int i = 0; i < subsubRules.length; i++) {

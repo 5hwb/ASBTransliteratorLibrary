@@ -37,7 +37,8 @@ function translateFromToScript():
 
 ## Rule syntax
 
-* ` | ` - OR, for indicating that more than 1 rule is to be checked ('rule1 OR rule2 OR rule3')
+* ` | ` - OR, for indicating that any one of the sub-rules can be a match for the whole rule to match ('rule1 OR rule2 OR rule3...')
+* ` & ` - AND, for indicating that all of the sub-rules must be a match for the whole rule to match ('rule1 AND rule2 AND rule3...')
 
 There are 3 types of rules:
 

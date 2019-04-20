@@ -275,11 +275,12 @@ public class ExternalFileReplacer {
 		String currType = (toScript) ? replPhoneme.l2type() : replPhoneme.l1type();
 		String nextType = (toScript) ? nextPhoneme().l2type() : nextPhoneme().l1type();
 
-		// Get the rules, go through each one until one matching the current pattern is found
+		// Go through each rule until one matching the current pattern is found
 		int letterIndex = -1;
 		boolean ruleNotFound = true;
 		for (int j = 0; j < pRules.length && ruleNotFound; j++) {
 
+			// Go through each subrule: should be either AND (all must match) or OR (at least 1 must match).
 			// If any 1 of them matches the current pattern, select its corresponding grapheme for insertion to output
 			for (int k = 0; k < pRules[j].numOfSubRules(); k++) {
 
