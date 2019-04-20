@@ -246,7 +246,7 @@ public class ExternalFileReplacer {
 				letterIndex = (toScript) ? replPhoneme.l2().length - 1 : replPhoneme.l1().length - 1;
 			}
 
-			// Reset counter values
+			// Reset counter values if they have reached the maximum value
 			for (String key : counterKeySet) {
 				if (key.equals(currType) && !counters.get(key).valueIsMax()) {
 				} else {
