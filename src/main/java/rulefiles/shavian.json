@@ -45,7 +45,7 @@
 		"l2": ["·𐑽", "𐑽"],	"l2type": "vowel",	"l2rule": ["!#_._. & pv=0"]},
 		{"l1": ["Ar", "ar"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],
 		"l2": ["·𐑸", "𐑸"],	"l2type": "vowel",	"l2rule": ["!#_._. & pv=0"]},
-		{"l1": ["Òr", "òr"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],
+		{"l1": ["Ór", "ór"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],
 		"l2": ["·𐑹", "𐑹"],	"l2type": "vowel",	"l2rule": ["!#_._. & pv=0"]},
 		{"l1": ["Ér", "ér"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],
 		"l2": ["·𐑺", "𐑺"],	"l2type": "vowel",	"l2rule": ["!#_._. & pv=0"]},
