@@ -1,0 +1,270 @@
+{
+    "rules": [
+		{
+			"l1": ["A", "a"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ा", "आ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["E", "e"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ॆ", "ऎ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["I", "i"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ि", "इ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["O", "o"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ॊ", "ऒ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["U", "u"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ु", "उ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+        {
+			"l1": ["Á", "á"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ॆा", "अ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["É", "é"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["े", "ए"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+        {
+			"l1": ["Í", "í"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ी", "ई"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["Ó", "ó"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ॉ", "ऑ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["Ú", "ú"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ू", "ऊ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["Ā", "ā"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ै", "ऐ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+        {
+			"l1": ["Ē", "ē"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ेः", "एः"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["Ō", "ō"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ॊः", "ऒः"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+        {
+			"l1": ["Ū", "ū"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["्वॆ", "वॆ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+        {
+			"l1": ["À", "à"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ौ", "औ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+        {
+			"l1": ["È", "è"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["िऎ", "इऎ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["Ò", "ò"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["ो", "ओ"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+		{
+			"l1": ["Ù", "ù"],	"l1type": "vowel",	"l1rule": ["#_._."],
+			"l2": ["्यु", "यु"],	"l2type": "vowel",	"l2rule": ["C_._."]
+		},
+
+		{
+			"l1": ["M", "m"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["म", "्म"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["P", "p"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["प", "्प"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["B", "b"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ब", "्ब"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+        {
+			"l1": ["F", "f"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["फ", "्फ"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+        {
+            "l1": ["V", "v"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["भ", "्भ"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+		{
+			"l1": ["N", "n"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["न", "्न"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["T", "t"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["त", "्त"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["D", "d"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["द", "्द"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["Ŧ", "ŧ"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ट", "्ट"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["Đ", "đ"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ड", "्ड"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["Ŋ", "ŋ"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ङ", "्ङ"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["K", "k"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["क", "्क"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["G", "g"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ग", "्ग"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+        {
+            "l1": ["Ĥ", "ĥ"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["ख", "्ख"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+        {
+            "l1": ["Ĝ", "ĝ"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["घ", "्घ"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+        {
+			"l1": ["S", "s"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["स", "्स"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+        {
+            "l1": ["Z", "z"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["ध", "्ध"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+        {
+            "l1": ["Ś", "ś"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["श", "्श"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+        {
+            "l1": ["Ź", "ź"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["ढ", "्ढ"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+        {
+			"l1": ["C", "c"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["च", "्च"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["J", "j"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ज", "्ज"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["R", "r"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["र", "्र"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+        {
+            "l1": ["L", "l"],	"l1type": "consonant",	"l1rule": ["#_._."],
+            "l2": ["ल", "्ल"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+        },
+		{
+			"l1": ["H", "h"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["ह", "्ह"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["W", "w"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["व", "्व"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+		{
+			"l1": ["Y", "y"],	"l1type": "consonant",	"l1rule": ["#_._."],
+			"l2": ["य", "्य"],	"l2type": "consonant",	"l2rule": ["!C_._. | c=4"]
+		},
+
+        {
+			"l1": ["1"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["१"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["2"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["२"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["3"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["३"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["4"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["४"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["5"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["५"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["6"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["६"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["7"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["७"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["8"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["८"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["9"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["९"],	"l2type": "numeral",	"l2rule": [""]
+		},
+        {
+			"l1": ["0"],	"l1type": "numeral",	"l1rule": [""],
+			"l2": ["०"],	"l2type": "numeral",	"l2rule": [""]
+		},
+
+        {
+            "l1": ["\n"],	"l1type": "sentenceEdge",	"l1rule": [""],
+            "l2": ["\n"],	"l2type": "sentenceEdge",	"l2rule": [""]
+        },
+        {
+			"l1": [". "],	"l1type": "sentenceEdge",	"l1rule": [""],
+			"l2": [". "],	"l2type": "sentenceEdge",	"l2rule": [""]
+		},
+		{
+			"l1": ["? "],	"l1type": "sentenceEdge",	"l1rule": [""],
+			"l2": ["? "],	"l2type": "sentenceEdge",	"l2rule": [""]
+		},
+		{
+			"l1": ["! "],	"l1type": "sentenceEdge",	"l1rule": [""],
+			"l2": ["! "],	"l2type": "sentenceEdge",	"l2rule": [""]
+		}
+	],
+
+    "types": [
+        {
+            "name": "vowel",
+            "extraTypes": []
+        },
+        {
+            "name": "consonant",
+            "extraTypes": []
+        },
+        {
+            "name": "numeral",
+            "extraTypes": []
+        },
+        {
+            "name": "punctuation",
+            "extraTypes": []
+        },
+        {
+            "name": "sentenceEdge",
+            "extraTypes": []
+        }
+    ],
+
+    "counters": [
+    	{
+    		"type": "consonant",
+    		"maxNum": 4,
+    		"incrRule": ["C_._."]
+    	}
+    ]
+}
