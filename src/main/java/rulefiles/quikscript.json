@@ -60,7 +60,16 @@
 		{"l1": ["\n"],	"l1type": "sentenceEdge",	"l1rule": [""],	"l2": ["\n"],	"l2type": "sentenceEdge",	"l2rule": [""]},
 		{"l1": [". "],	"l1type": "sentenceEdge",	"l1rule": [""],	"l2": [". "],	"l2type": "sentenceEdge",	"l2rule": [""]},
 		{"l1": ["? "],	"l1type": "sentenceEdge",	"l1rule": [""],	"l2": ["? "],	"l2type": "sentenceEdge",	"l2rule": [""]},
-		{"l1": ["! "],	"l1type": "sentenceEdge",	"l1rule": [""],	"l2": ["! "],	"l2type": "sentenceEdge",	"l2rule": [""]}
+		{"l1": ["! "],	"l1type": "sentenceEdge",	"l1rule": [""],	"l2": ["! "],	"l2type": "sentenceEdge",	"l2rule": [""]},
+
+		{
+			"l1": ["("],	"l1type": "punctuation",	"l1rule": [""],
+			"l2": [""],	"l2type": "punctuation",	"l2rule": [""]
+		},
+        {
+			"l1": [")"],	"l1type": "punctuation",	"l1rule": [""],
+			"l2": [""],	"l2type": "punctuation",	"l2rule": [""]
+		}
 	],
 
 	"types": [
