@@ -69,7 +69,7 @@ public class ExternalFileReplacer {
 
 	public ExternalFileReplacer(String filePath) {
 		initialiseValues();
-		loadJsonReplFile(filePath);
+		loadJsonRulefile(readExternalJsonFile(filePath));
 	}
 
 	/**
@@ -391,96 +391,107 @@ public class ExternalFileReplacer {
 	}
 
 	/**
-	 * Load the JSON replacer file and load the phoneme rules into the rules
-	 * reference hashmaps
+	 *  Read the contents of an external JSON rulefile.
+	 * @param filePath The filepath to the JSON rulefile
+	 * @return The rulefile contents
 	 */
-	public void loadJsonReplFile(String filePath) {
+	public String readExternalJsonFile(String filePath) {
+		String jsonRulefile = null;
+		
 		try {
-			String jsonRulefile = FileIO.readFile(filePath);
-
-			Gson jrf = new Gson();
-
-			try {
-				RuleSchema tjfRuleSchema = jrf.fromJson(jsonRulefile, RuleSchema.class);
-
-				// Get the counters
-				for (int i = 0; i < tjfRuleSchema.counters().length; i++) {
-					PhonemeCounter phonemeCounter = tjfRuleSchema.counters()[i];
-
-					// Parse phoneme counter rule strings into Rule objects
-					Rule[] rule = new Rule[phonemeCounter.incrRule().length];
-					for (int j = 0; j < phonemeCounter.incrRule().length; j++) {
-						rule[j] = Rule.parseStringToRule(phonemeCounter.incrRule()[j]);
-						phonemeCounter.setIncrRuleParsed(rule);
-					}
-
-					counters.put(phonemeCounter.type(), phonemeCounter);
-				}
-
-				// Read each phoneme
-				for (int i = 0; i < tjfRuleSchema.rules().length; i++) {
-					PhonemeRule phonemeRule = tjfRuleSchema.rules()[i];
-
-					// Parse phoneme rule strings into Rule objects
-					Rule[] rule1 = new Rule[phonemeRule.l1rule().length];
-					Rule[] rule2 = new Rule[phonemeRule.l2rule().length];
-					for (int j = 0; j < phonemeRule.l1rule().length; j++) {
-						rule1[j] = Rule.parseStringToRule(phonemeRule.l1rule()[j]);
-						phonemeRule.setL1ruleParsed(rule1);
-					}
-					for (int j = 0; j < phonemeRule.l2rule().length; j++) {
-						rule2[j] = Rule.parseStringToRule(phonemeRule.l2rule()[j]);
-						phonemeRule.setL2ruleParsed(rule2);
-					}
-
-					// Read letter 1 graphemes
-					for (int j = 0; j < phonemeRule.l1().length; j++) {
-						String letter1Grapheme = phonemeRule.l1()[j];
-						rulesToScript.put(letter1Grapheme, phonemeRule);
-						rulesReference.put(letter1Grapheme, phonemeRule);
-						phonemeVarIndexMap.put(letter1Grapheme, j);
-
-						// Update nMax to match the longest grapheme found
-						nMax = Math.max(letter1Grapheme.length(), nMax);
-						/*DEBUG*/System.out.printf("1: Loading %s, nMax = %d\n", letter1Grapheme, nMax);
-					}
-
-					// Read letter 2 graphemes
-					for (int j = 0; j < phonemeRule.l2().length; j++) {
-						String letter2Grapheme = phonemeRule.l2()[j];
-						rulesFromScript.put(letter2Grapheme, phonemeRule);
-						rulesReference.put(letter2Grapheme, phonemeRule);
-						phonemeVarIndexMap.put(letter2Grapheme, j);
-
-						// Update nMax to match the longest grapheme found
-						nMax = Math.max(letter2Grapheme.length(), nMax);
-						/*DEBUG*/System.out.printf("2: Loading %s, nMax = %d\n", letter2Grapheme, nMax);
-					}
-
-					/*DEBUG*/System.out.println("Rules object parsed successfully " + phonemeRule.toString());
-				}
-
-				// Read each type
-				for (int i = 0; i < tjfRuleSchema.types().length; i++) {
-					// Insert main type
-					PhonemeType phonemeType = tjfRuleSchema.types()[i];
-					typeReference.put(phonemeType.name(), phonemeType);
-
-					// Insert subtypes
-					for (int j = 0; j < phonemeType.extraTypes().length; j++) {
-						typeReference.put(phonemeType.extraTypes()[j], phonemeType);
-					}
-				}
-
-				System.out.println("Rules file parsed successfully");
-			} catch (JsonSyntaxException e) {
-				e.printStackTrace();
-				System.err.println("There is an issue with the JSON rules file syntax");
-			}
-
+			jsonRulefile = FileIO.readFile(filePath);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("There is an issue with loading the JSON rules file");
+		}
+		
+		return jsonRulefile;
+	}
+	
+	/**
+	 * Load the phoneme rules into the replacer.
+	 * @param jsonRulefile The JSON rulefile string to process
+	 */
+	public void loadJsonRulefile(String jsonRulefile) {
+		Gson jrf = new Gson();
+
+		try {
+			RuleSchema tjfRuleSchema = jrf.fromJson(jsonRulefile, RuleSchema.class);
+
+			// Get the counters
+			for (int i = 0; i < tjfRuleSchema.counters().length; i++) {
+				PhonemeCounter phonemeCounter = tjfRuleSchema.counters()[i];
+
+				// Parse phoneme counter rule strings into Rule objects
+				Rule[] rule = new Rule[phonemeCounter.incrRule().length];
+				for (int j = 0; j < phonemeCounter.incrRule().length; j++) {
+					rule[j] = Rule.parseStringToRule(phonemeCounter.incrRule()[j]);
+					phonemeCounter.setIncrRuleParsed(rule);
+				}
+
+				counters.put(phonemeCounter.type(), phonemeCounter);
+			}
+
+			// Read each phoneme
+			for (int i = 0; i < tjfRuleSchema.rules().length; i++) {
+				PhonemeRule phonemeRule = tjfRuleSchema.rules()[i];
+
+				// Parse phoneme rule strings into Rule objects
+				Rule[] rule1 = new Rule[phonemeRule.l1rule().length];
+				Rule[] rule2 = new Rule[phonemeRule.l2rule().length];
+				for (int j = 0; j < phonemeRule.l1rule().length; j++) {
+					rule1[j] = Rule.parseStringToRule(phonemeRule.l1rule()[j]);
+					phonemeRule.setL1ruleParsed(rule1);
+				}
+				for (int j = 0; j < phonemeRule.l2rule().length; j++) {
+					rule2[j] = Rule.parseStringToRule(phonemeRule.l2rule()[j]);
+					phonemeRule.setL2ruleParsed(rule2);
+				}
+
+				// Read letter 1 graphemes
+				for (int j = 0; j < phonemeRule.l1().length; j++) {
+					String letter1Grapheme = phonemeRule.l1()[j];
+					rulesToScript.put(letter1Grapheme, phonemeRule);
+					rulesReference.put(letter1Grapheme, phonemeRule);
+					phonemeVarIndexMap.put(letter1Grapheme, j);
+
+					// Update nMax to match the longest grapheme found
+					nMax = Math.max(letter1Grapheme.length(), nMax);
+					/*DEBUG*/System.out.printf("1: Loading %s, nMax = %d\n", letter1Grapheme, nMax);
+				}
+
+				// Read letter 2 graphemes
+				for (int j = 0; j < phonemeRule.l2().length; j++) {
+					String letter2Grapheme = phonemeRule.l2()[j];
+					rulesFromScript.put(letter2Grapheme, phonemeRule);
+					rulesReference.put(letter2Grapheme, phonemeRule);
+					phonemeVarIndexMap.put(letter2Grapheme, j);
+
+					// Update nMax to match the longest grapheme found
+					nMax = Math.max(letter2Grapheme.length(), nMax);
+					/*DEBUG*/System.out.printf("2: Loading %s, nMax = %d\n", letter2Grapheme, nMax);
+				}
+
+				/*DEBUG*/System.out.println("Rules object parsed successfully " + phonemeRule.toString());
+			}
+
+			// Read each type
+			for (int i = 0; i < tjfRuleSchema.types().length; i++) {
+				// Insert main type
+				PhonemeType phonemeType = tjfRuleSchema.types()[i];
+				typeReference.put(phonemeType.name(), phonemeType);
+
+				// Insert subtypes
+				for (int j = 0; j < phonemeType.extraTypes().length; j++) {
+					typeReference.put(phonemeType.extraTypes()[j], phonemeType);
+				}
+			}
+
+			System.out.println("Rules file parsed successfully");
+		} catch (JsonSyntaxException e) {
+			e.printStackTrace();
+			System.err.println("There is an issue with the JSON rules file syntax");
 		}
 	}
 
@@ -519,6 +530,6 @@ public class ExternalFileReplacer {
 	public void setFilePath(String filePath) {
 		this.ruleFile = filePath;
 		initialiseValues();
-		loadJsonReplFile(filePath);
+		loadJsonRulefile(readExternalJsonFile(filePath));
 	}
 }
