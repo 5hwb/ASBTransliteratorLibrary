@@ -478,7 +478,7 @@
 		},
         {
 			"l1": ["2"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮨ'", "«Ꮨ'", "Ꮨ»", "«Ꮨ»"],	"l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮪ'", "«Ꮪ'", "Ꮪ»", "«Ꮪ»"],	"l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
 		},
         {
 			"l1": ["3"],	"l1type": "numeral",	"l1rule": [""],
@@ -486,11 +486,11 @@
 		},
         {
 			"l1": ["4"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮀ'", "«Ꮀ'", "Ꮀ»", "«Ꮀ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮙ'", "«Ꮙ'", "Ꮙ»", "«Ꮙ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
 		},
         {
 			"l1": ["5"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꭽ'", "«Ꭽ'", "Ꭽ»", "«Ꭽ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮖ'", "«Ꮖ'", "Ꮖ»", "«Ꮖ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
 		},
         {
 			"l1": ["6"],	"l1type": "numeral",	"l1rule": [""],
@@ -510,7 +510,7 @@
 		},
         {
 			"l1": ["0"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮬ'", "«Ꮬ'", "Ꮬ»", "«Ꮬ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮆ'", "«Ꮆ'", "Ꮆ»", "«Ꮆ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
 		},
 		
 		{
