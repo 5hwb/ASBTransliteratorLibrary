@@ -474,43 +474,43 @@
 
         {
 			"l1": ["1"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮹ'", "«Ꮹ'", "Ꮹ»", "«Ꮹ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮹ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["2"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮪ'", "«Ꮪ'", "Ꮪ»", "«Ꮪ»"],	"l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮪ̱"],	"l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["3"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮅ'", "«Ꮅ'", "Ꮅ»", "«Ꮅ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮅ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["4"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮙ'", "«Ꮙ'", "Ꮙ»", "«Ꮙ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮙ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["5"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮖ'", "«Ꮖ'", "Ꮖ»", "«Ꮖ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮖ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["6"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮟ'", "«Ꮟ'", "Ꮟ»", "«Ꮟ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮟ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["7"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮜ'", "«Ꮜ'", "Ꮜ»", "«Ꮜ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮜ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["8"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꭱ'", "«Ꭱ'", "Ꭱ»", "«Ꭱ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꭱ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["9"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮎ'", "«Ꮎ'", "Ꮎ»", "«Ꮎ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮎ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
         {
 			"l1": ["0"],	"l1type": "numeral",	"l1rule": [""],
-			"l2": ["Ꮆ'", "«Ꮆ'", "Ꮆ»", "«Ꮆ»"], "l2type": "numeral",	"l2rule": ["N_._N | <numSeparator>_._N | N_._<numSeparator>", "._._N | ._._<numSeparator>", "N_._. | <numSeparator>_._."]
+			"l2": ["Ꮆ̱"], "l2type": "numeral",	"l2rule": [""]
 		},
 		
 		{
