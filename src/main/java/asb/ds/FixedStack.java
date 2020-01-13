@@ -52,7 +52,18 @@ public class FixedStack<T> {
 		}
 		return null;
 	}
-
+	
+	
+	/**
+	 * Fill the entire FixedStack with the given element.
+	 * @param element The element to fill this FixedStack
+	 */
+	public void fill(T element) {
+		for (int i = 0; i < this.size; i++) {
+			this.push(element);
+		}
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

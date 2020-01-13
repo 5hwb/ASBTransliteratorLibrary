@@ -130,9 +130,7 @@ public class ExternalFileReplacer {
 		PhonemeRule initPhoneme = new PhonemeRule(
 				new String[] { "" }, "sentenceEdge", new String[] {""},
 				new String[] { "" }, "sentenceEdge", new String[] {""});
-		phonemes.push(initPhoneme);
-		phonemes.push(initPhoneme);
-		phonemes.push(initPhoneme); // enter it 3 times so the phoneme stack is never empty
+		phonemes.fill(initPhoneme); // enter it 3 times so the phoneme stack is never empty
 
 		Set<String> counterKeySet = counters.keySet();
 
