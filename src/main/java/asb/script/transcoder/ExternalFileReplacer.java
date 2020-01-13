@@ -30,28 +30,28 @@ public class ExternalFileReplacer {
 	 * These HashMaps map String keys representing the original char with
 	 * PhonemeRule class values representing what they will be replaced with
 	 */
-	protected Map<String, PhonemeRule> rulesToScript; // Latin grapheme -> Script PhonemeRule
-	protected Map<String, PhonemeRule> rulesFromScript; // Script grapheme -> Latin PhonemeRule
-	protected Map<String, PhonemeRule> rulesReference; // Grapheme -> corresponding PhonemeRule
-	protected Map<String, Integer> phonemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
+	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Latin grapheme -> Script PhonemeRule
+	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script grapheme -> Latin PhonemeRule
+	protected Map<String, PhonemeRule> graphemeToPhonemeMap; // Grapheme -> corresponding PhonemeRule
+	protected Map<String, Integer> graphemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
 
 	/** Stores the output string */
-	protected StringBuilder sb;
+	protected StringBuilder output;
 
 	/** The current grapheme to analyse */
 	// protected String currGrapheme;
 
 	/** Stack of the last 3 phonemes */
-	protected FixedStack<PhonemeRule> phonemes;
+	protected FixedStack<PhonemeRule> phonemeStack;
 	
 	/** Stack of the phoneme variant indexes of the last 3 selected graphemes */
-	protected FixedStack<Integer> phonemeVarIndexStack;
+	protected FixedStack<Integer> graphemeVarIndexStack;
 
 	/** The PhonemeRule which will replace the currently selected grapheme */
-	protected PhonemeRule replPhoneme;
+	protected PhonemeRule replacementPhoneme;
 
 	/** A placeholder PhonemeRule for non-replaced characters */
-	protected PhonemeRule defPhoneme;
+	protected PhonemeRule defaultPhoneme;
 
 	/** The maximum grapheme size, which determines the number of chars to scan ahead */
 	protected int maxGraphemeSize;
@@ -60,10 +60,10 @@ public class ExternalFileReplacer {
 	protected boolean hasCase;
 
 	/** Consonant counters */
-	protected Map<String, PhonemeCounter> counters;
+	protected Map<String, PhonemeCounter> consoTypeToCounterMap;
 
 	/** Reference hashmap for phoneme types */
-	protected Map<String, PhonemeType> typeReference;
+	protected Map<String, PhonemeType> PhonemeTypeReferenceMap;
 
 	protected String ruleFile;
 
@@ -76,14 +76,14 @@ public class ExternalFileReplacer {
 	 * Initialise the ExternalFileReplacer values
 	 */
 	private void initialiseValues() {
-		this.rulesToScript = new HashMap<String, PhonemeRule>();
-		this.rulesFromScript = new HashMap<String, PhonemeRule>();
-		this.rulesReference = new HashMap<String, PhonemeRule>();
-		this.typeReference = new HashMap<String, PhonemeType>();
-		this.phonemeVarIndexMap = new HashMap<String, Integer>();
-		this.phonemes = new FixedStack<PhonemeRule>(3);
-		this.phonemeVarIndexStack = new FixedStack<Integer>(3);
-		this.counters = new HashMap<String, PhonemeCounter>();
+		this.l1GraphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
+		this.l2GraphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
+		this.graphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
+		this.PhonemeTypeReferenceMap = new HashMap<String, PhonemeType>();
+		this.graphemeVarIndexMap = new HashMap<String, Integer>();
+		this.phonemeStack = new FixedStack<PhonemeRule>(3);
+		this.graphemeVarIndexStack = new FixedStack<Integer>(3);
+		this.consoTypeToCounterMap = new HashMap<String, PhonemeCounter>();
 		this.maxGraphemeSize = 0;
 		this.hasCase = false;
 	}
@@ -120,7 +120,7 @@ public class ExternalFileReplacer {
 		 * NOTE: An 'grapheme' is a string of up to n characters representing a single
 		 * phoneme. Digraphs are graphemes with 2 characters
 		 */
-		sb = new StringBuilder();
+		output = new StringBuilder();
 
 		/* The current grapheme to analyse */
 		String currGrapheme = "";
@@ -130,15 +130,15 @@ public class ExternalFileReplacer {
 		PhonemeRule initPhoneme = new PhonemeRule(
 				new String[] { "" }, "sentenceEdge", new String[] {""},
 				new String[] { "" }, "sentenceEdge", new String[] {""});
-		phonemes.fill(initPhoneme); // enter it 3 times so the phoneme stack is never empty
+		phonemeStack.fill(initPhoneme); // enter it 3 times so the phoneme stack is never empty
 
-		Set<String> counterKeySet = counters.keySet();
+		Set<String> counterKeySet = consoTypeToCounterMap.keySet();
 
 		/*DEBUG*/System.out.println("Initialised!");
 
 		// Reset the counters
 		for (String key : counterKeySet) {
-			counters.get(key).reset();
+			consoTypeToCounterMap.get(key).reset();
 		}
 
 		// Process all chars in the input string 
@@ -146,10 +146,10 @@ public class ExternalFileReplacer {
 		for (int i = 0; i < input.length() + maxGraphemeSize; i++) {
 			/*DEBUG*/System.out.printf("----------i=%d----------\n", i);
 
-			//////////////////////////////////////////
-			// LOOK UP NGRAPH AND INSERT INTO STACK //
-			//////////////////////////////////////////
-			/*DEBUG*/System.out.println("LOOK UP NGRAPH AND INSERT INTO STACK...");
+			////////////////////////////////////////////
+			// LOOK UP GRAPHEME AND INSERT INTO STACK //
+			////////////////////////////////////////////
+			/*DEBUG*/System.out.println("LOOK UP GRAPHEME AND INSERT INTO STACK...");
 			if (i < input.length()) {
 				// Looks ahead at the next chars, detecting graphemes of decreasing size
 				// so that they get detected first
@@ -163,23 +163,23 @@ public class ExternalFileReplacer {
 
 					// Look up the reference HashMap with the current grapheme to see if there is an entry.
 					// If there is a match, add it to the phoneme stack
-					PhonemeRule curr = (toScript) ? this.rulesToScript.get(currGrapheme)
-							: this.rulesFromScript.get(currGrapheme);
+					PhonemeRule curr = (toScript) ? this.l1GraphemeToPhonemeMap.get(currGrapheme)
+							: this.l2GraphemeToPhonemeMap.get(currGrapheme);
 					if (curr != null) {
 						/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
-						phonemes.push(curr);
-						phonemeVarIndexStack.push(phonemeVarIndexMap.get(currGrapheme));
+						phonemeStack.push(curr);
+						graphemeVarIndexStack.push(graphemeVarIndexMap.get(currGrapheme));
 						graphemeSize = limit;
 					}
 					// Insert the original (punctuation) character if it was not covered by a rule
 					else if (limit == 1) {
 						// BUT only if the grapheme's 1 char long!
 						/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
-						defPhoneme = new PhonemeRule(
+						defaultPhoneme = new PhonemeRule(
 								new String[] { currGrapheme }, "punctuation", new String[] {""},
 								new String[] { currGrapheme }, "punctuation", new String[] {""});
-						phonemes.push(defPhoneme);
-						phonemeVarIndexStack.push(null); // no phoneme variant index if there's no corresponding phoneme
+						phonemeStack.push(defaultPhoneme);
+						graphemeVarIndexStack.push(null); // no phoneme variant index if there's no corresponding phoneme
 						graphemeSize = 1;
 					}
 
@@ -196,8 +196,8 @@ public class ExternalFileReplacer {
 			// Insert a dummy PhonemeRule to push the last grapheme into position
 			else {
 				/*DEBUG*/System.out.println("\tDummy phonemerule inserted");
-				phonemes.push(initPhoneme);
-				phonemeVarIndexStack.push(null);
+				phonemeStack.push(initPhoneme);
+				graphemeVarIndexStack.push(null);
 			}
 
 			//////////////////////////////////////////
@@ -205,24 +205,24 @@ public class ExternalFileReplacer {
 			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected grapheme
-			replPhoneme = currPhoneme();
-			Integer currGraphemeIndex = phonemeVarIndexStack.nthTop(1);
+			replacementPhoneme = currPhoneme();
+			Integer currGraphemeIndex = graphemeVarIndexStack.nthTop(1);
 
 			// If no replacement phoneme could be found, the current phoneme is a
 			// non-defined punctuation mark
-			if (replPhoneme == null) {
-				/*DEBUG*/System.out.println("NGRAPH: no repl found");
-				sb.append(currGrapheme);
+			if (replacementPhoneme == null) {
+				/*DEBUG*/System.out.println("GRAPHEME: no repl found");
+				output.append(currGrapheme);
 				continue;
 			}
-			/*DEBUG*/System.out.println(phonemes);
-			/*DEBUG*/System.out.println(phonemeVarIndexStack);
-			/*DEBUG*/System.out.println("NGRAPH: repl found - " + replPhoneme.l2()[0]);
+			/*DEBUG*/System.out.println(phonemeStack);
+			/*DEBUG*/System.out.println(graphemeVarIndexStack);
+			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + replacementPhoneme.l2()[0]);
 
-			// Increment counter for the current phoneme's type
-			String currType = (toScript) ? typeReference.get(replPhoneme.l2type()).name()
-					: typeReference.get(replPhoneme.l1type()).name();
-			PhonemeCounter pCounter = counters.get(currType);
+			// Increment the counter for the current phoneme's type
+			String currType = (toScript) ? PhonemeTypeReferenceMap.get(replacementPhoneme.l2type()).name()
+					: PhonemeTypeReferenceMap.get(replacementPhoneme.l1type()).name();
+			PhonemeCounter pCounter = consoTypeToCounterMap.get(currType);
 			if (pCounter != null) {
 				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
 				Rule[] cRules = pCounter.incrRuleParsed();
@@ -237,28 +237,28 @@ public class ExternalFileReplacer {
 				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
 			}
 
-			Rule[] pRules = (toScript) ? replPhoneme.l2ruleParsed() : replPhoneme.l1ruleParsed();
+			Rule[] pRules = (toScript) ? replacementPhoneme.l2ruleParsed() : replacementPhoneme.l1ruleParsed();
 			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
 			if (letterIndex < 0) {
 				// default letter is the last one
-				letterIndex = (toScript) ? replPhoneme.l2().length - 1 : replPhoneme.l1().length - 1;
+				letterIndex = (toScript) ? replacementPhoneme.l2().length - 1 : replacementPhoneme.l1().length - 1;
 			}
 
 			// Reset counter values if they have reached the maximum value
 			for (String key : counterKeySet) {
-				if (key.equals(currType) && !counters.get(key).valueIsMax()) {
+				if (key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax()) {
 				} else {
-					counters.get(key).reset(); // reset counter value to 0
+					consoTypeToCounterMap.get(key).reset(); // reset counter value to 0
 				}
 			}
 
 			// Append the replacement grapheme
-			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", sb.toString());
-			String repl = (toScript) ? replPhoneme.l2()[letterIndex] : replPhoneme.l1()[letterIndex];
-			sb.append(repl);
+			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
+			String repl = (toScript) ? replacementPhoneme.l2()[letterIndex] : replacementPhoneme.l1()[letterIndex];
+			output.append(repl);
 		}
 
-		return sb.toString();
+		return output.toString();
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class ExternalFileReplacer {
 	 */
 	private int selectRule(Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
 		String prevType = (toScript) ? prevPhoneme().l2type() : prevPhoneme().l1type();
-		String currType = (toScript) ? replPhoneme.l2type() : replPhoneme.l1type();
+		String currType = (toScript) ? replacementPhoneme.l2type() : replacementPhoneme.l1type();
 		String nextType = (toScript) ? nextPhoneme().l2type() : nextPhoneme().l1type();
 
 		// Go through each rule until one matching the current pattern is found
@@ -383,7 +383,7 @@ public class ExternalFileReplacer {
 	 */
 	private boolean typeEquals(String a, String b, boolean isStrictTypeMatch) {
 		boolean matchesMainType = (isStrictTypeMatch) ? false
-				: (typeReference.get(a).name().equals(b) || typeReference.get(b).name().equals(a));
+				: (PhonemeTypeReferenceMap.get(a).name().equals(b) || PhonemeTypeReferenceMap.get(b).name().equals(a));
 		boolean matchesSubType = (a.equals(b));
 		/*DEBUG*/System.out.printf("\t\t\ttypeEquals(%s, %s): matchesMainType=%b, matchesSubType=%b\n",
 		/*DEBUG*/		a, b, matchesMainType, matchesSubType);
@@ -414,14 +414,14 @@ public class ExternalFileReplacer {
 	 * @param jsonRulefile The JSON rulefile string to process
 	 */
 	public void loadJsonRulefile(String jsonRulefile) {
-		Gson jrf = new Gson();
+		Gson rulefileGson = new Gson();
 
 		try {
-			RuleSchema tjfRuleSchema = jrf.fromJson(jsonRulefile, RuleSchema.class);
+			RuleSchema rulefileSchema = rulefileGson.fromJson(jsonRulefile, RuleSchema.class);
 
 			// Get the counters
-			for (int i = 0; i < tjfRuleSchema.counters().length; i++) {
-				PhonemeCounter phonemeCounter = tjfRuleSchema.counters()[i];
+			for (int i = 0; i < rulefileSchema.counters().length; i++) {
+				PhonemeCounter phonemeCounter = rulefileSchema.counters()[i];
 
 				// Parse phoneme counter rule strings into Rule objects
 				Rule[] rule = new Rule[phonemeCounter.incrRule().length];
@@ -430,12 +430,12 @@ public class ExternalFileReplacer {
 					phonemeCounter.setIncrRuleParsed(rule);
 				}
 
-				counters.put(phonemeCounter.type(), phonemeCounter);
+				consoTypeToCounterMap.put(phonemeCounter.type(), phonemeCounter);
 			}
 
 			// Read each phoneme
-			for (int i = 0; i < tjfRuleSchema.rules().length; i++) {
-				PhonemeRule phonemeRule = tjfRuleSchema.rules()[i];
+			for (int i = 0; i < rulefileSchema.rules().length; i++) {
+				PhonemeRule phonemeRule = rulefileSchema.rules()[i];
 
 				// Parse phoneme rule strings into Rule objects
 				Rule[] rule1 = new Rule[phonemeRule.l1rule().length];
@@ -452,9 +452,9 @@ public class ExternalFileReplacer {
 				// Read letter 1 graphemes
 				for (int j = 0; j < phonemeRule.l1().length; j++) {
 					String letter1Grapheme = phonemeRule.l1()[j];
-					rulesToScript.put(letter1Grapheme, phonemeRule);
-					rulesReference.put(letter1Grapheme, phonemeRule);
-					phonemeVarIndexMap.put(letter1Grapheme, j);
+					l1GraphemeToPhonemeMap.put(letter1Grapheme, phonemeRule);
+					graphemeToPhonemeMap.put(letter1Grapheme, phonemeRule);
+					graphemeVarIndexMap.put(letter1Grapheme, j);
 
 					// Update maxGraphemeSize to match the longest grapheme found
 					maxGraphemeSize = Math.max(letter1Grapheme.length(), maxGraphemeSize);
@@ -464,9 +464,9 @@ public class ExternalFileReplacer {
 				// Read letter 2 graphemes
 				for (int j = 0; j < phonemeRule.l2().length; j++) {
 					String letter2Grapheme = phonemeRule.l2()[j];
-					rulesFromScript.put(letter2Grapheme, phonemeRule);
-					rulesReference.put(letter2Grapheme, phonemeRule);
-					phonemeVarIndexMap.put(letter2Grapheme, j);
+					l2GraphemeToPhonemeMap.put(letter2Grapheme, phonemeRule);
+					graphemeToPhonemeMap.put(letter2Grapheme, phonemeRule);
+					graphemeVarIndexMap.put(letter2Grapheme, j);
 
 					// Update maxGraphemeSize to match the longest grapheme found
 					maxGraphemeSize = Math.max(letter2Grapheme.length(), maxGraphemeSize);
@@ -477,14 +477,14 @@ public class ExternalFileReplacer {
 			}
 
 			// Read each type
-			for (int i = 0; i < tjfRuleSchema.types().length; i++) {
+			for (int i = 0; i < rulefileSchema.types().length; i++) {
 				// Insert main type
-				PhonemeType phonemeType = tjfRuleSchema.types()[i];
-				typeReference.put(phonemeType.name(), phonemeType);
+				PhonemeType phonemeType = rulefileSchema.types()[i];
+				PhonemeTypeReferenceMap.put(phonemeType.name(), phonemeType);
 
 				// Insert subtypes
 				for (int j = 0; j < phonemeType.extraTypes().length; j++) {
-					typeReference.put(phonemeType.extraTypes()[j], phonemeType);
+					PhonemeTypeReferenceMap.put(phonemeType.extraTypes()[j], phonemeType);
 				}
 			}
 
@@ -500,7 +500,7 @@ public class ExternalFileReplacer {
 	 * @return
 	 */
 	protected PhonemeRule prevPhoneme() {
-		return phonemes.nthTop(2);
+		return phonemeStack.nthTop(2);
 	}
 
 	/**
@@ -508,7 +508,7 @@ public class ExternalFileReplacer {
 	 * @return
 	 */
 	protected PhonemeRule currPhoneme() {
-		return phonemes.nthTop(1);
+		return phonemeStack.nthTop(1);
 	}
 
 	/**
@@ -516,7 +516,7 @@ public class ExternalFileReplacer {
 	 * @return
 	 */
 	protected PhonemeRule nextPhoneme() {
-		return phonemes.top();
+		return phonemeStack.top();
 	}
 
 	public String filePath() {
