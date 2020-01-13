@@ -1,11 +1,17 @@
 package asb.schema;
 
+/**
+ * Phoneme counters help to count the presence of a certain phoneme type to help decide
+ * which grapheme will be selected.
+ * @author perry
+ *
+ */
 public class PhonemeCounter {
 	private String type;
 	private int maxNum = 0;
 	private int value = 0;
-	private String[] incrRule;
-	private Rule[] incrRuleParsed;
+	private String[] incrRule; // List of pattern rules defining when to increment the counter
+	private Rule[] incrRuleParsed; // Parsed version of incrRule
 	
 	public String type() {
 		return type;

@@ -1,9 +1,14 @@
 package asb.schema;
 
+/**
+ * A representation of the JSON rulefile schema, used for parsing the rulefiles.
+ * @author perry
+ *
+ */
 public class RuleSchema {
-	private PhonemeRule[] rules;
-	private PhonemeType[] types;
-	private PhonemeCounter[] counters;
+	private PhonemeRule[] rules; // List of phoneme rules
+	private PhonemeType[] types; // List of phoneme types used
+	private PhonemeCounter[] counters; // List of phoneme type counters
 	
 	public RuleSchema() {
 	}

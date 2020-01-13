@@ -117,20 +117,18 @@ public class ExternalFileReplacer {
 	 */
 	protected String translateFromToScript(String input, boolean toScript) {
 		/**
-		 * NOTE: An 'grapheme' is a string of up to n characters representing a single
-		 * phoneme. Digraphs are graphemes with 2 characters
+		 * NOTE: A 'grapheme' is a string of up to n characters representing a single phoneme.
 		 */
 		output = new StringBuilder();
 
 		/* The current grapheme to analyse */
 		String currGrapheme = "";
 
-		// Insert the 1st phoneme with the type SENTENCEEND, since
-		// the beginning marks the start of a new sentence
+		// Insert the 1st phoneme with the type SENTENCEEND, since the beginning marks the start of a new sentence
 		PhonemeRule initPhoneme = new PhonemeRule(
 				new String[] { "" }, "sentenceEdge", new String[] {""},
 				new String[] { "" }, "sentenceEdge", new String[] {""});
-		phonemeStack.fill(initPhoneme); // enter it 3 times so the phoneme stack is never empty
+		phonemeStack.fill(initPhoneme); // fill it so the phoneme stack is never empty
 
 		Set<String> counterKeySet = consoTypeToCounterMap.keySet();
 
@@ -141,7 +139,7 @@ public class ExternalFileReplacer {
 			consoTypeToCounterMap.get(key).reset();
 		}
 
-		// Process all chars in the input string 
+		// Process all chars in the input string.
 		// Need to accomodate the maximum possible grapheme length in the for loop
 		for (int i = 0; i < input.length() + maxGraphemeSize; i++) {
 			/*DEBUG*/System.out.printf("----------i=%d----------\n", i);
@@ -162,18 +160,18 @@ public class ExternalFileReplacer {
 					int graphemeSize = 0;
 
 					// Look up the reference HashMap with the current grapheme to see if there is an entry.
-					// If there is a match, add it to the phoneme stack
 					PhonemeRule curr = (toScript) ? this.l1GraphemeToPhonemeMap.get(currGrapheme)
 							: this.l2GraphemeToPhonemeMap.get(currGrapheme);
+					// If there is a match, add it to the phoneme stack
 					if (curr != null) {
 						/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
 						phonemeStack.push(curr);
 						graphemeVarIndexStack.push(graphemeVarIndexMap.get(currGrapheme));
 						graphemeSize = limit;
 					}
-					// Insert the original (punctuation) character if it was not covered by a rule
+					// Otherwise, insert the original (punctuation) character if it was not covered by a rule,
+					// only if the grapheme is 1 char long.
 					else if (limit == 1) {
-						// BUT only if the grapheme's 1 char long!
 						/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
 						defaultPhoneme = new PhonemeRule(
 								new String[] { currGrapheme }, "punctuation", new String[] {""},

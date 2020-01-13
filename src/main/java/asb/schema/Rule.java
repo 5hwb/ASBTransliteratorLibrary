@@ -1,5 +1,10 @@
 package asb.schema;
 
+/**
+ * Rules help to map the graphemes of 1 script to the graphemes of another script.
+ * @author perry
+ *
+ */
 public class Rule {
 
 	// Rule attributes
