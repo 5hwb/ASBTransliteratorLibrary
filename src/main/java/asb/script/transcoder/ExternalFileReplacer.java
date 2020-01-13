@@ -206,8 +206,7 @@ public class ExternalFileReplacer {
 			replacementPhoneme = currPhoneme();
 			Integer currGraphemeIndex = graphemeVarIndexStack.nthTop(1);
 
-			// If no replacement phoneme could be found, the current phoneme is a
-			// non-defined punctuation mark
+			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
 			if (replacementPhoneme == null) {
 				/*DEBUG*/System.out.println("GRAPHEME: no repl found");
 				output.append(currGrapheme);
@@ -235,6 +234,7 @@ public class ExternalFileReplacer {
 				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
 			}
 
+			// Select the grapheme to append
 			Rule[] pRules = (toScript) ? replacementPhoneme.l2ruleParsed() : replacementPhoneme.l1ruleParsed();
 			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
 			if (letterIndex < 0) {
@@ -275,57 +275,61 @@ public class ExternalFileReplacer {
 
 		// Go through each rule until one matching the current pattern is found
 		int letterIndex = -1;
-		for (int j = 0; j < pRules.length; j++) {
+		for (int i = 0; i < pRules.length; i++) {
 			
-			boolean isAndRuleMatch = pRules[j].isAndRuleMatch();
+			boolean isAndRuleMatch = pRules[i].isAndRuleMatch();
 			boolean subRulesDoMatch = true;
 			/*DEBUG*/System.out.printf("\t\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
 			/*DEBUG*/System.out.printf("\t\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
 
 			// Go through each subrule: should be either AND (all must match) or OR (at least 1 must match).
 			// If any 1 of them matches the current pattern, select its corresponding grapheme for insertion to output
-			for (int k = 0; k < pRules[j].numOfSubRules(); k++) {
-				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", k);
+			for (int j = 0; j < pRules[i].numOfSubRules(); j++) {
+				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", j);
 
-				// Rule is a pattern rule
-				if (pRules[j].subRulecVal(k) == 0 && pRules[j].subRulePvVal(k) < 0) {
+				//////////////////////////////
+				// Rule is a pattern rule   //
+				//////////////////////////////
+				if (pRules[i].subRulecVal(j) == 0 && pRules[i].subRulePvVal(j) < 0) {
 
 					// COMPARISON!
-					boolean prevIsMatch = (pRules[j].subsubRuleType(k, 0).equals("anything"))
+					boolean prevIsMatch = (pRules[i].subsubRuleType(j, 0).equals("anything"))
 							? true // always true if it matches 'anything'
-							: (pRules[j].subsubRuleIsNot(k, 0))
-								? !typeEquals(pRules[j].subsubRuleType(k, 0), prevType, pRules[j].subsubRuleIsStrictTypeMatch(k, 0))
-								: typeEquals(pRules[j].subsubRuleType(k, 0), prevType, pRules[j].subsubRuleIsStrictTypeMatch(k, 0));
-
-					boolean currIsMatch = (pRules[j].subsubRuleType(k, 1).equals("anything"))
-							? true // always true if it matches 'anything'
-							: (pRules[j].subsubRuleIsNot(k, 1))
-								? !typeEquals(pRules[j].subsubRuleType(k, 1), currType, pRules[j].subsubRuleIsStrictTypeMatch(k, 1))
-								: typeEquals(pRules[j].subsubRuleType(k, 1), currType, pRules[j].subsubRuleIsStrictTypeMatch(k, 1));
-
-					boolean nextIsMatch = (pRules[j].subsubRuleType(k, 2).equals("anything"))
-							? true // always true if it matches 'anything'
-							: (pRules[j].subsubRuleIsNot(k, 2))
-								? !typeEquals(pRules[j].subsubRuleType(k, 2), nextType, pRules[j].subsubRuleIsStrictTypeMatch(k, 2))
-								: typeEquals(pRules[j].subsubRuleType(k, 2), nextType, pRules[j].subsubRuleIsStrictTypeMatch(k, 2));
+							: (pRules[i].subsubRuleIsNot(j, 0))
+								? !typeEquals(pRules[i].subsubRuleType(j, 0), prevType, pRules[i].subsubRuleIsStrictTypeMatch(j, 0))
+								: typeEquals(pRules[i].subsubRuleType(j, 0), prevType, pRules[i].subsubRuleIsStrictTypeMatch(j, 0));
 					/*DEBUG*/System.out.printf("\t\tPREVMATCH: [%b]\n", prevIsMatch);
+
+					boolean currIsMatch = (pRules[i].subsubRuleType(j, 1).equals("anything"))
+							? true // always true if it matches 'anything'
+							: (pRules[i].subsubRuleIsNot(j, 1))
+								? !typeEquals(pRules[i].subsubRuleType(j, 1), currType, pRules[i].subsubRuleIsStrictTypeMatch(j, 1))
+								: typeEquals(pRules[i].subsubRuleType(j, 1), currType, pRules[i].subsubRuleIsStrictTypeMatch(j, 1));
 					/*DEBUG*/System.out.printf("\t\tCURRMATCH: [%b]\n", currIsMatch);
+
+					boolean nextIsMatch = (pRules[i].subsubRuleType(j, 2).equals("anything"))
+							? true // always true if it matches 'anything'
+							: (pRules[i].subsubRuleIsNot(j, 2))
+								? !typeEquals(pRules[i].subsubRuleType(j, 2), nextType, pRules[i].subsubRuleIsStrictTypeMatch(j, 2))
+								: typeEquals(pRules[i].subsubRuleType(j, 2), nextType, pRules[i].subsubRuleIsStrictTypeMatch(j, 2));
 					/*DEBUG*/System.out.printf("\t\tNEXTMATCH: [%b]\n", nextIsMatch);
-					/*DEBUG*/System.out.printf("\t\tRule num: %d\n", j);
+					/*DEBUG*/System.out.printf("\t\tRule num: %d\n", i);
 
 					// Match if the pattern matches the scenario
 					boolean isMatch = ((prevIsMatch && nextIsMatch) && currIsMatch);
 					subRulesDoMatch &= isMatch;
 					/*DEBUG*/System.out.printf("\t\tPatmat's ISMATCH: [%b]\n", isMatch);
 					if (isMatch && !isAndRuleMatch) {
-						letterIndex = j;
-						/*DEBUG*/System.out.printf("\t\tChosen PATTERN rule num: %d\n", j);
+						letterIndex = i;
+						/*DEBUG*/System.out.printf("\t\tChosen PATTERN rule num: %d\n", i);
 						return letterIndex;
 					}
 				}
-				// Rule is a counter rule
-				else if (pRules[j].subRulecVal(k) >= 1 && pCounter != null) {
-					int cVal = pRules[j].subRulecVal(k);
+				//////////////////////////////
+				// Rule is a counter rule   //
+				//////////////////////////////
+				else if (pRules[i].subRulecVal(j) >= 1 && pCounter != null) {
+					int cVal = pRules[i].subRulecVal(j);
 					/*DEBUG*/System.out.printf("\t\tRULEd counter? curr counter val = %d\n", pCounter.value());
 
 					// Match if counter value for current phoneme's type equals cVal.
@@ -335,14 +339,16 @@ public class ExternalFileReplacer {
 					/*DEBUG*/System.out.printf("\t\tCountmat's ISMATCH: [%b]\n", isMatch);
 					if (isMatch && !isAndRuleMatch) {
 						pCounter.reset(); // reset counter value to 0
-						letterIndex = j;
-						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", j);
+						letterIndex = i;
+						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", i);
 						return letterIndex;
 					}
 				}
+				//////////////////////////////
 				// Rule is a phoneme variant selection rule
-				else if (pRules[j].subRulePvVal(k) >= 0 && pVariantIndex != null) {
-					int pvVal = pRules[j].subRulePvVal(k);
+				//////////////////////////////
+				else if (pRules[i].subRulePvVal(j) >= 0 && pVariantIndex != null) {
+					int pvVal = pRules[i].subRulePvVal(j);
 					/*DEBUG*/System.out.printf("\t\tRULEd phovarsel? curr variant val = %d\n", pVariantIndex);
 
 					// Match if counter value for current phoneme's type equals cVal.
@@ -351,16 +357,16 @@ public class ExternalFileReplacer {
 					subRulesDoMatch &= isMatch;
 					/*DEBUG*/System.out.printf("\t\tPhovarsel's ISMATCH: [%b]\n", isMatch);
 					if (isMatch && !isAndRuleMatch) {
-						letterIndex = j;
-						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", j);
+						letterIndex = i;
+						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", i);
 						return letterIndex;
 					}
 				}
 			}
 			
 			if (isAndRuleMatch && subRulesDoMatch) {
-				letterIndex = j;
-				/*DEBUG*/System.out.printf("\t\tAll subrules match! Rule num: %d\n", j);
+				letterIndex = i;
+				/*DEBUG*/System.out.printf("\t\tAll subrules match! Rule num: %d\n", i);
 				return letterIndex;
 			} else {
 				/*DEBUG*/System.out.printf("\t\tAll subrules do not match.\n");
