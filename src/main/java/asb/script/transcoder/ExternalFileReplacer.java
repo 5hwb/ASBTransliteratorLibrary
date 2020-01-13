@@ -53,8 +53,8 @@ public class ExternalFileReplacer {
 	/** A placeholder PhonemeRule for non-replaced characters */
 	protected PhonemeRule defPhoneme;
 
-	/** The maximum number of chars to scan ahead */
-	protected int nMax;
+	/** The maximum grapheme size, which determines the number of chars to scan ahead */
+	protected int maxGraphemeSize;
 
 	/** Indicate if the replacer's script supports case */
 	protected boolean hasCase;
@@ -84,7 +84,7 @@ public class ExternalFileReplacer {
 		this.phonemes = new FixedStack<PhonemeRule>(3);
 		this.phonemeVarIndexStack = new FixedStack<Integer>(3);
 		this.counters = new HashMap<String, PhonemeCounter>();
-		this.nMax = 0;
+		this.maxGraphemeSize = 0;
 		this.hasCase = false;
 	}
 
@@ -141,22 +141,23 @@ public class ExternalFileReplacer {
 			counters.get(key).reset();
 		}
 
+		// Process all chars in the input string 
 		// Need to accomodate the maximum possible grapheme length in the for loop
-		for (int i = 0; i < input.length() + nMax; i++) {
+		for (int i = 0; i < input.length() + maxGraphemeSize; i++) {
 			/*DEBUG*/System.out.printf("----------i=%d----------\n", i);
 
 			//////////////////////////////////////////
 			// LOOK UP NGRAPH AND INSERT INTO STACK //
 			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("LOOK UP NGRAPH AND INSERT INTO STACK...");
-			// Looks ahead at the next chars, detecting graphemes of decreasing size
-			// so that they get detected first
 			if (i < input.length()) {
-				for (int c = this.nMax; c >= 1; c--) {
-					/*DEBUG*/System.out.printf("c=%d\n", c);
+				// Looks ahead at the next chars, detecting graphemes of decreasing size
+				// so that they get detected first
+				for (int limit = this.maxGraphemeSize; limit >= 1; limit--) {
+					/*DEBUG*/System.out.printf("limit=%d\n", limit);
 					// Limit the lookup so it does not go beyond the end of the input
-					int limit = (i + c >= input.length()) ? input.length() : i + c;
-					currGrapheme = input.substring(i, limit);
+					int graphemeLimit = (i + limit >= input.length()) ? input.length() : i + limit;
+					currGrapheme = input.substring(i, graphemeLimit);
 
 					int graphemeSize = 0;
 
@@ -168,10 +169,10 @@ public class ExternalFileReplacer {
 						/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
 						phonemes.push(curr);
 						phonemeVarIndexStack.push(phonemeVarIndexMap.get(currGrapheme));
-						graphemeSize = c;
+						graphemeSize = limit;
 					}
 					// Insert the original (punctuation) character if it was not covered by a rule
-					else if (c == 1) {
+					else if (limit == 1) {
 						// BUT only if the grapheme's 1 char long!
 						/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
 						defPhoneme = new PhonemeRule(
@@ -455,9 +456,9 @@ public class ExternalFileReplacer {
 					rulesReference.put(letter1Grapheme, phonemeRule);
 					phonemeVarIndexMap.put(letter1Grapheme, j);
 
-					// Update nMax to match the longest grapheme found
-					nMax = Math.max(letter1Grapheme.length(), nMax);
-					/*DEBUG*/System.out.printf("1: Loading %s, nMax = %d\n", letter1Grapheme, nMax);
+					// Update maxGraphemeSize to match the longest grapheme found
+					maxGraphemeSize = Math.max(letter1Grapheme.length(), maxGraphemeSize);
+					/*DEBUG*/System.out.printf("1: Loading %s, maxGraphemeSize = %d\n", letter1Grapheme, maxGraphemeSize);
 				}
 
 				// Read letter 2 graphemes
@@ -467,9 +468,9 @@ public class ExternalFileReplacer {
 					rulesReference.put(letter2Grapheme, phonemeRule);
 					phonemeVarIndexMap.put(letter2Grapheme, j);
 
-					// Update nMax to match the longest grapheme found
-					nMax = Math.max(letter2Grapheme.length(), nMax);
-					/*DEBUG*/System.out.printf("2: Loading %s, nMax = %d\n", letter2Grapheme, nMax);
+					// Update maxGraphemeSize to match the longest grapheme found
+					maxGraphemeSize = Math.max(letter2Grapheme.length(), maxGraphemeSize);
+					/*DEBUG*/System.out.printf("2: Loading %s, maxGraphemeSize = %d\n", letter2Grapheme, maxGraphemeSize);
 				}
 
 				/*DEBUG*/System.out.println("Rules object parsed successfully " + phonemeRule.toString());
