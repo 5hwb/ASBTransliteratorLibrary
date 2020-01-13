@@ -244,8 +244,8 @@ public class ExternalFileReplacer {
 
 			// Reset counter values if they have reached the maximum value
 			for (String key : counterKeySet) {
-				if (key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax()) {
-				} else {
+				boolean isCounterNotMax = (key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax());
+				if (!isCounterNotMax) {
 					consoTypeToCounterMap.get(key).reset(); // reset counter value to 0
 				}
 			}
