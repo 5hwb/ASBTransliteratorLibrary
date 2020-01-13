@@ -127,7 +127,8 @@ public class ExternalFileReplacer {
 
 		// Insert the 1st phoneme with the type SENTENCEEND, since
 		// the beginning marks the start of a new sentence
-		PhonemeRule initPhoneme = new PhonemeRule(new String[] { "" }, "sentenceEdge", new String[] {""},
+		PhonemeRule initPhoneme = new PhonemeRule(
+				new String[] { "" }, "sentenceEdge", new String[] {""},
 				new String[] { "" }, "sentenceEdge", new String[] {""});
 		phonemes.push(initPhoneme);
 		phonemes.push(initPhoneme);
@@ -150,8 +151,8 @@ public class ExternalFileReplacer {
 			// LOOK UP NGRAPH AND INSERT INTO STACK //
 			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("LOOK UP NGRAPH AND INSERT INTO STACK...");
-			// Looks ahead at the next chars, detecting graphemes of decreasing size so that
-			// they get detected first
+			// Looks ahead at the next chars, detecting graphemes of decreasing size
+			// so that they get detected first
 			if (i < input.length()) {
 				for (int c = this.nMax; c >= 1; c--) {
 					/*DEBUG*/System.out.printf("c=%d\n", c);
@@ -161,8 +162,7 @@ public class ExternalFileReplacer {
 
 					int graphemeSize = 0;
 
-					// Look up the reference HashMap with the current grapheme
-					// to see if there is an entry.
+					// Look up the reference HashMap with the current grapheme to see if there is an entry.
 					// If there is a match, add it to the phoneme stack
 					PhonemeRule curr = (toScript) ? this.rulesToScript.get(currGrapheme)
 							: this.rulesFromScript.get(currGrapheme);
@@ -176,7 +176,8 @@ public class ExternalFileReplacer {
 					else if (c == 1) {
 						// BUT only if the grapheme's 1 char long!
 						/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
-						defPhoneme = new PhonemeRule(new String[] { currGrapheme }, "punctuation", new String[] {""},
+						defPhoneme = new PhonemeRule(
+								new String[] { currGrapheme }, "punctuation", new String[] {""},
 								new String[] { currGrapheme }, "punctuation", new String[] {""});
 						phonemes.push(defPhoneme);
 						phonemeVarIndexStack.push(null); // no phoneme variant index if there's no corresponding phoneme
