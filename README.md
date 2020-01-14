@@ -33,6 +33,19 @@ function translateFromToScript():
 	return StringBuilder.toString()
 ```
 
+## Performance
+
+It currently takes ~148ms to transliterate a 60.9KB text file.
+
+## Refactoring idea
+
+The code, as it is now, is very complex and hard to maintain. `translateFromToScript()` and `selectRule()` are both very long methods that can be split up.
+
+Ideas:
+
+* In `translateFromToScript()`, move the 'grapheme insertion to output' to their own functions
+* Make rule selection in `selectRule()` based on new classes: RuleParser, with subclasses PatternRuleParser, CounterRuleParser and PhonemeVariantRuleParser
+
 # Replacer Rules File JSON syntax
 
 ## Rule syntax

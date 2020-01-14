@@ -1,59 +1,15 @@
 package asb.script.tests;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import asb.io.FileIO;
 import asb.script.transcoder.ExternalFileReplacer;
 
 public class Testing {
-	static void testExtFileRepl() {
-		ExternalFileReplacer efr = new ExternalFileReplacer("src/main/java/rulefiles/hangul.json");
-		
-		//String testoEbeo = "Léts du đis strakt rāt nà. Yor đe véri bést Kév!";
-		String testoEbeo = "Léts blē blkē ablkē inklud. Sdroŋ malds át đe hafs pibtkhśa níd ù tu éksklēm tu đe ūrld.";
-		String testoHan = "ㄲㅕㄷㅅㅡ ㅌㅜ ㄸㅣㅅ ㅅㅡㄷㄹㅏㄱㄷㅡ ㄹㅐㄷ ㄴㅒ. ㅇㅣㅇㅗㄹ ㄸㅓ ㅍㅡㅎㅕㄹㅣ ㅍㅕㅅㄷㅡ ㄱㅕㅍㅎㅡ!";
-		//String testoKhm = "លេត្ស ទុ ថិស ស្ត្រាក្ត រៃត នៅ៕ យួរ ថ់ ភេរិ ពេស្ត កេភ!";
-		String testoKhm = "លេត្ស ព្លែ ព្លកែ អព្លកែ ឥន្កលុទ៕ ស្ទ្រួង មាល្ទ្ស អ៉ត ថ់ ហាផ្ស បិព្តក្ហឆា នីទ យុ តុ ឯក្សក្លែម តុ ថ់ វ់រល្ទ៕";
-		
-		// TEST EBEO -> SCRIPT
-		if (true) {
-			String res = efr.translateToScript(testoEbeo);
-			System.out.println("============RESULT:=============");
-			System.out.printf("[%s]\n", res);
-			System.out.println("===========INTENDED:============");
-			System.out.printf("[%s]\n", testoKhm);
-			//System.out.println(HangulUtils.convertToHangulBlocks(res));
-		}
-
-		// TEST HANGUL -> EBEO
-		if (true) {
-			String res2 = efr.translateFromScript(testoHan);
-			System.out.println("============RESULT:=============");
-			System.out.printf("[%s]\n", res2);
-			System.out.println("===========INTENDED:============");
-			System.out.printf("[%s]\n", testoEbeo);		
-		}
-
-		// TEST KHMER -> EBEO
-		if (true) {
-			String res2 = efr.translateFromScript(testoKhm);
-			System.out.println("============RESULT:=============");
-			System.out.printf("[%s]\n", res2);
-			System.out.println("===========INTENDED:============");
-			System.out.printf("[%s]\n", testoEbeo);		
-		}
-	}
 	
-	static void testQuikscript() {
-		ExternalFileReplacer efr = new ExternalFileReplacer("src/main/java/rulefiles/quikscript.json");
-		String testoEbeo = "Input is glorès. Kán ù du it? Yés? Grēt trā, Korel!";
-		String testoQuik = "  .    ? ?  , !";
-		
-		String res2 = efr.translateToScript(testoEbeo);
-		System.out.println("============RESULT:=============");
-		System.out.printf("[%s]\n", res2);
-		System.out.println("===========INTENDED:============");
-		System.out.printf("[%s]\n", testoQuik);		
-	}
-	
+	static ExternalFileReplacer efr;
+
 	static void andMatchTest() {
 		boolean[][] isMatch = {
 				{false, false, false},
@@ -69,12 +25,31 @@ public class Testing {
 			}
 			System.out.printf("[%b]\n", theyDoMatch);
 		}
+	}
+	
+	static void replacerSpeedTest() {
+		efr = new ExternalFileReplacer("src/main/java/rulefiles/khmer.json");
+		
+		String input = null;
+		try {
+			input = FileIO.readFile("input.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("There is an issue with loading the input file");
+		}
+	
+        // Starts a timer to measure how long it took to read it
+        long begin = System.nanoTime();
+
+		String output = efr.translateToScript(input);
+        long duration = System.nanoTime() - begin;
+		//System.out.println(output);
+		System.out.println("Transcription took " + String.valueOf(duration / 1000000) + "ms");
 
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		//testExtFileRepl();
-		testQuikscript();
 		//andMatchTest();
+		replacerSpeedTest();
 	}
 }
