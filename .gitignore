@@ -1,0 +1,6 @@
+/.hg/
+/.gradle/
+/bin/
+/build/
+ASBTranscriptorLibrary.jar
+input.txt
