@@ -12,12 +12,15 @@ import asb.schema.PhonemeRule;
 
 public class TokeniserUnitTests {
 	
-	String input;
+	String input, input2, input3, inputPunct;
 	Map<String, PhonemeRule> mapping;
 	
 	@Before
 	public void init() {
 		input = "this is a test. you fine?";
+		input2 = "are you ready!";
+		input3 = "fine it is.";
+		inputPunct = "..reaine";
 		
 		// Maps graphemes to phonemes
 		mapping = new HashMap<>();
@@ -51,6 +54,14 @@ public class TokeniserUnitTests {
 		mapping.put("ine", new PhonemeRule( new String[] { "ine" }, "syllable", new String[] {""},
 				new String[] { "ān" }, "syllable", new String[] {""}));
 
+		mapping.put("are", new PhonemeRule( new String[] { "are" }, "vowel", new String[] {""},
+				new String[] { "ar" }, "vowel", new String[] {""}));
+
+		mapping.put("rea", new PhonemeRule( new String[] { "rea" }, "syllable", new String[] {""},
+				new String[] { "ré" }, "syllable", new String[] {""}));
+
+		mapping.put("dy", new PhonemeRule( new String[] { "dy" }, "syllable", new String[] {""},
+				new String[] { "di" }, "syllable", new String[] {""}));
 
 	}
 	
@@ -67,9 +78,10 @@ public class TokeniserUnitTests {
 	}
 
 	@Test
-	public void test_readNextToken() {
+	public void test_readNextToken_input() {
 		Tokeniser tokeniser = new Tokeniser(input, mapping);
 		
+		// input = "this is a test. you fine?";
 		assertEquals("đ", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("i", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("s", tokeniser.readNextToken().phonemeRule().l2()[0]);
@@ -92,6 +104,53 @@ public class TokeniserUnitTests {
 		assertEquals("ān", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("?", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertNull(tokeniser.readNextToken());
+	}
+
+	@Test
+	public void test_readNextToken_input2() {
+		Tokeniser tokeniser = new Tokeniser(input2, mapping);
+		
+		// input2 = "are you ready!";
+		assertEquals("ar", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals(" ", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("y", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("ù", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals(" ", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("ré", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("di", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("!", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertNull(tokeniser.readNextToken());
+	}
+
+	@Test
+	public void test_readNextToken_input3() {
+		Tokeniser tokeniser = new Tokeniser(input3, mapping);
+		
+		// input3 = "fine it is.";
+		assertEquals("f", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("ān", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals(" ", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("i", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("t", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals(" ", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("i", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("s", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals(".", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertNull(tokeniser.readNextToken());
+	}
+
+	@Test
+	public void test_readNextToken_inputPunct() {
+		Tokeniser tokeniser = new Tokeniser(inputPunct, mapping);
+		
+		// inputPunct = "..reaine";
+		assertEquals(".", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals(".", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("ré", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("ān", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertNull(tokeniser.readNextToken());
 	}
 
