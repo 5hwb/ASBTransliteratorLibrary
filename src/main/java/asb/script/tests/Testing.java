@@ -104,13 +104,13 @@ public class Testing {
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		//andMatchTest();
-		//replacerSpeedTest();
-		try {
-			readerTest();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		andMatchTest();
+		replacerSpeedTest();
+//		try {
+//			readerTest();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

@@ -18,6 +18,7 @@ import asb.schema.PhonemeRule;
 import asb.schema.PhonemeType;
 import asb.schema.RuleSchema;
 import asb.script.transcoder.parsing.CharToken;
+import asb.script.transcoder.parsing.Tokeniser;
 
 /**
  * An ExternalFileReplacer replaces each Latin script character in EBEO with the
@@ -127,72 +128,25 @@ public class ExternalFileReplacer {
 		/* The current grapheme to analyse */
 		String currGrapheme = "";
 
+		///////////////////////////////////////////////
+		// LOOK UP GRAPHEME AND APPEND TO TOKEN LIST //
+		///////////////////////////////////////////////
+		Map<String, PhonemeRule> mapping = (toScript) 
+				? this.l1GraphemeToPhonemeMap 
+				: this.l2GraphemeToPhonemeMap;
+		Tokeniser tokeniser = new Tokeniser(input, mapping);
+		CharToken token;
+
 		// Process all chars in the input string.
-		// Need to accommodate the maximum possible grapheme length in the for loop
-		for (int i = 0; i < input.length(); i++) {
-			/*DEBUG*/System.out.printf("----------i=%d----------\n", i);
-
-			///////////////////////////////////////////////
-			// LOOK UP GRAPHEME AND APPEND TO TOKEN LIST //
-			///////////////////////////////////////////////
-			/*DEBUG*/System.out.println("LOOK UP GRAPHEME AND APPEND TO TOKEN LIST...");
-			// Looks ahead at the next chars, detecting graphemes of decreasing size
-			// so that they get detected first
-			for (int limit = this.maxGraphemeSize; limit >= 1; limit--) {
-				/*DEBUG*/System.out.printf("limit=%d\n", limit);
-				// Limit the lookup so it does not go beyond the end of the input
-				int graphemeLimit = (i + limit >= input.length()) ? input.length() : i + limit;
-				currGrapheme = input.substring(i, graphemeLimit);
-
-				int graphemeSize = 0;
-
-				// Look up the reference HashMap with the current grapheme to see if there is an entry.
-				PhonemeRule curr = (toScript) ? this.l1GraphemeToPhonemeMap.get(currGrapheme)
-						: this.l2GraphemeToPhonemeMap.get(currGrapheme);
-				// If there is a match, add it to the phoneme stack
-				if (curr != null) {
-					/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
-					CharToken prevToken = (tokenOutput.size() == 0) 
-							? null 
-							: tokenOutput.get(tokenOutput.size() - 1);
-					CharToken charToken = new CharToken(curr, prevToken, null);
-					if (tokenOutput.size() > 0)
-						prevToken.setNext(charToken);					
-					tokenOutput.add(charToken);
-					graphemeSize = limit;
-				}
-				// Otherwise, insert the original (punctuation) character if it was not covered by a rule,
-				// only if the grapheme is 1 char long.
-				else if (limit == 1) {
-					/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
-					defaultPhoneme = new PhonemeRule(
-							new String[] { currGrapheme }, "punctuation", new String[] {""},
-							new String[] { currGrapheme }, "punctuation", new String[] {""});
-					CharToken prevToken = (tokenOutput.size() == 0) 
-							? null 
-							: tokenOutput.get(tokenOutput.size() - 1);
-					CharToken charToken = new CharToken(defaultPhoneme, prevToken, null);
-					if (tokenOutput.size() > 0)
-						prevToken.setNext(charToken);					
-					tokenOutput.add(charToken);
-					graphemeSize = 1;
-				}
-
-				// Skip to the next iteration of the loop
-				if (graphemeSize == 0)
-					continue;
-
-				// Adjust current index to avoid parsing the components of the grapheme
-				i += (graphemeSize - 1); // subtract 1 since the next iteration of the for loop will add 1 again
-				break;
-			}
-
-			//////////////////////////////////////////
-			// INSERT REPLACEMENT IN OUTPUT         //
-			//////////////////////////////////////////
-			// TODO implement this - parse the tokens, get appropriate rules
+		while ((token = tokeniser.readNextToken()) != null) {
+			tokenOutput.add(token);
 		}
 		
+		//////////////////////////////////////////
+		// INSERT REPLACEMENT IN OUTPUT         //
+		//////////////////////////////////////////
+		// TODO implement this - parse the tokens, get appropriate rules
+
 		for (CharToken cToken : tokenOutput) {
 			/*DEBUG*/System.out.println("==========");
 			/*DEBUG*/System.out.println("PREV: " + ((cToken.prev() != null) ? cToken.prev().phonemeRule() : ""));
