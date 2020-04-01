@@ -9,21 +9,23 @@ public class Tokeniser {
 	private int start = 0;
 	private String input;
 	private Map<String, PhonemeRule> mapping;
+	private Map<String, Integer> graphemeVarIndexMap;
 	private CharToken prevToken;
 	private boolean isFirstToken = true;
 	private int maxGraphemeSize = 6; // TODO change this when mature
 	
 	private PhonemeRule defaultPhoneme;
 	
-	public Tokeniser(String input, Map<String, PhonemeRule> mapping) {
+	public Tokeniser(String input, Map<String, PhonemeRule> mapping, Map<String, Integer> graphemeVarIndexMap) {
 		this.input = input;
 		this.mapping = mapping;
+		this.graphemeVarIndexMap = graphemeVarIndexMap;
 		
 		this.defaultPhoneme = new PhonemeRule(
 				new String[] { "" }, "punctuation", new String[] {""},
 				new String[] { "" }, "punctuation", new String[] {""});
 		
-		prevToken = new CharToken(this.defaultPhoneme, null, null);
+		prevToken = new CharToken(this.defaultPhoneme, 0, null, null);
 	}
 	
 	public CharToken prevToken() {
@@ -57,7 +59,7 @@ public class Tokeniser {
 			// If there is a match, add it to the phoneme stack
 			if (curr != null) {
 				/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
-				CharToken charToken = new CharToken(curr, prevToken, null);
+				CharToken charToken = new CharToken(curr, this.graphemeVarIndexMap.get(currGrapheme), prevToken, null);
 				if (isFirstToken) {
 					isFirstToken = false;
 				}
@@ -79,7 +81,7 @@ public class Tokeniser {
 				PhonemeRule defaultPhoneme = new PhonemeRule(
 						new String[] { currGrapheme }, "punctuation", new String[] {""},
 						new String[] { currGrapheme }, "punctuation", new String[] {""});
-				CharToken charToken = new CharToken(defaultPhoneme, prevToken, null);
+				CharToken charToken = new CharToken(defaultPhoneme, 0, prevToken, null);
 				if (isFirstToken) {
 					isFirstToken = false;
 				}

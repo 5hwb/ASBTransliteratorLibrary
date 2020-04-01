@@ -5,18 +5,24 @@ import asb.schema.PhonemeRule;
 public class CharToken {
 
 	protected PhonemeRule phonemeRule;
+	protected int graphemeVarIndex;
 	
 	protected CharToken prev;
 	protected CharToken next;
 
-	public CharToken(PhonemeRule phonemeRule, CharToken prev, CharToken next) {
+	public CharToken(PhonemeRule phonemeRule, int graphemeVarIndex, CharToken prev, CharToken next) {
 		this.phonemeRule = phonemeRule;
+		this.graphemeVarIndex = graphemeVarIndex;
 		this.prev = prev;
 		this.next = next;
 	}
 
 	public PhonemeRule phonemeRule() {
 		return phonemeRule;
+	}
+
+	public int graphemeVarIndex() {
+		return graphemeVarIndex;
 	}
 
 	public void setPhonemeRule(PhonemeRule phonemeRule) {

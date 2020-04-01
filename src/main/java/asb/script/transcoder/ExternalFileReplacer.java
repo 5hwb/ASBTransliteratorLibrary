@@ -127,6 +127,15 @@ public class ExternalFileReplacer {
 
 		/* The current grapheme to analyse */
 		String currGrapheme = "";
+		
+		Set<String> counterKeySet = consoTypeToCounterMap.keySet();
+
+		/*DEBUG*/System.out.println("Initialised!");
+
+		// Reset the counters
+		for (String key : counterKeySet) {
+			consoTypeToCounterMap.get(key).reset();
+		}
 
 		///////////////////////////////////////////////
 		// LOOK UP GRAPHEME AND APPEND TO TOKEN LIST //
@@ -134,13 +143,70 @@ public class ExternalFileReplacer {
 		Map<String, PhonemeRule> mapping = (toScript) 
 				? this.l1GraphemeToPhonemeMap 
 				: this.l2GraphemeToPhonemeMap;
-		Tokeniser tokeniser = new Tokeniser(input, mapping);
+		Tokeniser tokeniser = new Tokeniser(input, mapping, graphemeVarIndexMap);
 		CharToken token;
 
 		// Process all chars in the input string.
 		while ((token = tokeniser.readNextToken()) != null) {
 			CharToken prev = tokeniser.prevToken();
 			tokenOutput.add(prev);
+			
+//			//////////////////////////////////////////
+//			// INSERT REPLACEMENT IN OUTPUT         //
+//			//////////////////////////////////////////
+//			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
+//			// Get the PhonemeRule for the currently selected grapheme
+//			replacementPhoneme = prev.phonemeRule();
+//			Integer currGraphemeIndex = prev.graphemeVarIndex()/*graphemeVarIndexStack.nthTop(1)*/;
+//
+//			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
+//			if (replacementPhoneme == null) {
+//				/*DEBUG*/System.out.println("GRAPHEME: no repl found");
+//				output.append(currGrapheme);
+//				continue;
+//			}
+//			/*DEBUG*/System.out.println(phonemeStack);
+//			/*DEBUG*/System.out.println(graphemeVarIndexStack);
+//			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + replacementPhoneme.l2()[0]);
+//
+//			// Increment the counter for the current phoneme's type
+//			String currType = (toScript) ? PhonemeTypeReferenceMap.get(replacementPhoneme.l2type()).name()
+//					: PhonemeTypeReferenceMap.get(replacementPhoneme.l1type()).name();
+//			PhonemeCounter pCounter = consoTypeToCounterMap.get(currType);
+//			if (pCounter != null) {
+//				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
+//				Rule[] cRules = pCounter.incrRuleParsed();
+//				int matchingRuleIndex = selectRule(cRules, toScript, null, null);
+//				if (matchingRuleIndex >= 0) {
+//					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
+//					pCounter.increment();
+//				} else {
+//					/*DEBUG*/System.out.println("\tRule for counter increment is NOT a match");
+//				}
+//			} else {
+//				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
+//			}
+//
+//			// Select the grapheme to append
+//			Rule[] pRules = (toScript) ? replacementPhoneme.l2ruleParsed() : replacementPhoneme.l1ruleParsed();
+//			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
+//			if (letterIndex < 0) {
+//				// default letter is the last one
+//				letterIndex = (toScript) ? replacementPhoneme.l2().length - 1 : replacementPhoneme.l1().length - 1;
+//			}
+//
+//			// Reset counter values if they have reached the maximum value
+//			for (String key : counterKeySet) {
+//				boolean counterIsMax = !(key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax());
+//				if (counterIsMax) {
+//					consoTypeToCounterMap.get(key).reset(); // reset counter value to 0
+//				}
+//			}
+//
+//			// Append the replacement grapheme
+//			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
+//			String repl = (toScript) ? replacementPhoneme.l2()[letterIndex] : replacementPhoneme.l1()[letterIndex];
+//			output.append(repl);
 		}
 		
 		//////////////////////////////////////////

@@ -14,6 +14,7 @@ public class TokeniserUnitTests {
 	
 	String input, input2, input3, inputPunct;
 	Map<String, PhonemeRule> mapping;
+	Map<String, Integer> graphemeVarIndexMap;
 	
 	@Before
 	public void init() {
@@ -63,23 +64,37 @@ public class TokeniserUnitTests {
 		mapping.put("dy", new PhonemeRule( new String[] { "dy" }, "syllable", new String[] {""},
 				new String[] { "di" }, "syllable", new String[] {""}));
 
-	}
+		graphemeVarIndexMap = new HashMap<String, Integer>();
+		graphemeVarIndexMap.put("th", 0);		                             
+		graphemeVarIndexMap.put("i", 0);		                            
+		graphemeVarIndexMap.put("s", 0);		                             
+		graphemeVarIndexMap.put("a", 0);		                             
+		graphemeVarIndexMap.put("t", 0);		                             
+		graphemeVarIndexMap.put("e", 0);		                             
+		graphemeVarIndexMap.put("y", 0);		                             
+		graphemeVarIndexMap.put("ou", 0);		                             
+		graphemeVarIndexMap.put("f", 0);		                             
+		graphemeVarIndexMap.put("ine", 0);		                             
+		graphemeVarIndexMap.put("are", 0);		                             
+		graphemeVarIndexMap.put("rea", 0);		                             
+		graphemeVarIndexMap.put("dy", 0);
+}
 	
 	@Test
 	public void test_tokeniser_oddArguments() {
-		Tokeniser tokeniser_inputIsNull = new Tokeniser(null, mapping);
+		Tokeniser tokeniser_inputIsNull = new Tokeniser(null, mapping, graphemeVarIndexMap);
 		assertNull(tokeniser_inputIsNull.readNextToken());
 
-		Tokeniser tokeniser_mapIsNull = new Tokeniser(input, null);
+		Tokeniser tokeniser_mapIsNull = new Tokeniser(input, null, graphemeVarIndexMap);
 		assertNull(tokeniser_mapIsNull.readNextToken());
 
-		Tokeniser tokeniser_allNull = new Tokeniser(null, null);
+		Tokeniser tokeniser_allNull = new Tokeniser(null, null, graphemeVarIndexMap);
 		assertNull(tokeniser_allNull.readNextToken());
 	}
 
 	@Test
 	public void test_readNextToken_input() {
-		Tokeniser tokeniser = new Tokeniser(input, mapping);
+		Tokeniser tokeniser = new Tokeniser(input, mapping, graphemeVarIndexMap);
 		
 		// input = "this is a test. you fine?";
 		assertEquals("đ", tokeniser.readNextToken().phonemeRule().l2()[0]);
@@ -109,7 +124,7 @@ public class TokeniserUnitTests {
 
 	@Test
 	public void test_readNextToken_input2() {
-		Tokeniser tokeniser = new Tokeniser(input2, mapping);
+		Tokeniser tokeniser = new Tokeniser(input2, mapping, graphemeVarIndexMap);
 		
 		// input2 = "are you ready!";
 		assertEquals("ar", tokeniser.readNextToken().phonemeRule().l2()[0]);
@@ -126,7 +141,7 @@ public class TokeniserUnitTests {
 
 	@Test
 	public void test_readNextToken_input3() {
-		Tokeniser tokeniser = new Tokeniser(input3, mapping);
+		Tokeniser tokeniser = new Tokeniser(input3, mapping, graphemeVarIndexMap);
 		
 		// input3 = "fine it is.";
 		assertEquals("f", tokeniser.readNextToken().phonemeRule().l2()[0]);
@@ -144,7 +159,7 @@ public class TokeniserUnitTests {
 
 	@Test
 	public void test_readNextToken_inputPunct() {
-		Tokeniser tokeniser = new Tokeniser(inputPunct, mapping);
+		Tokeniser tokeniser = new Tokeniser(inputPunct, mapping, graphemeVarIndexMap);
 		
 		// inputPunct = "..reaine";
 		assertEquals(".", tokeniser.readNextToken().phonemeRule().l2()[0]);
