@@ -46,5 +46,26 @@ public class CharToken {
 	}
 	
 	
+	@Override
+	public String toString() {
+		String prevString = "";
+		if (this.prev() != null) {
+			prevString += this.prev().graphemeVarIndex() + " ";
+			prevString += this.prev().phonemeRule().toString();
+		}
+		String nextString = "";
+		if (this.next() != null) {
+			nextString += this.next().graphemeVarIndex() + " ";
+			nextString += this.next().phonemeRule().toString();
+		}		
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("==========\n");
+		sb.append("PREV: " + prevString + "\n");
+		sb.append("CURR: " + this.graphemeVarIndex + " " + this.phonemeRule.toString() + "\n");
+		sb.append("NEXT: " + nextString + "\n");
+		return sb.toString();
+	}
+	
 	
 }

@@ -215,10 +215,7 @@ public class ExternalFileReplacer {
 		// TODO implement this - parse the tokens, get appropriate rules
 
 		for (CharToken cToken : tokenOutput) {
-			/*DEBUG*/System.out.println("==========");
-			/*DEBUG*/System.out.println("PREV: " + ((cToken.prev() != null) ? cToken.prev().phonemeRule() : ""));
-			/*DEBUG*/System.out.println("CURR: " + cToken.phonemeRule());
-			/*DEBUG*/System.out.println("NEXT: " + ((cToken.next() != null) ? cToken.next().phonemeRule() : ""));
+			/*DEBUG*/System.out.println(cToken);
 			output.append(cToken.phonemeRule().l1()[0]);
 		}
 
