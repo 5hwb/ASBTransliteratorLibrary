@@ -28,7 +28,7 @@ public class Tokeniser {
 	
 	public CharToken readNextToken() {
 		
-		if (this.input == null || this.mapping == null) {
+		if ((this.input == null || this.mapping == null) || start > this.input.length()) {
 			return null;
 		}
 		

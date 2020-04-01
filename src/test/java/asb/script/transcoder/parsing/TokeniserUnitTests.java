@@ -91,6 +91,8 @@ public class TokeniserUnitTests {
 		assertEquals("f", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("ān", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("?", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
+		assertNull(tokeniser.readNextToken());
 	}
 
 }
