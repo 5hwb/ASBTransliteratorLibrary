@@ -26,6 +26,10 @@ public class Tokeniser {
 		prevToken = new CharToken(this.defaultPhoneme, null, null);
 	}
 	
+	public CharToken prevToken() {
+		return this.prevToken;
+	}
+	
 	public CharToken readNextToken() {
 		
 		if ((this.input == null || this.mapping == null) || start > this.input.length()) {
@@ -55,12 +59,13 @@ public class Tokeniser {
 				/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
 				CharToken charToken = new CharToken(curr, prevToken, null);
 				if (isFirstToken) {
-					prevToken.setNext(charToken);
 					isFirstToken = false;
 				}
 				graphemeSize = limit;
 				
-
+				// Link the previous token to the current token
+				prevToken.setNext(charToken);
+				
 				// Adjust current index to avoid parsing the components of the grapheme
 				start += (graphemeSize); 
 				
@@ -76,11 +81,13 @@ public class Tokeniser {
 						new String[] { currGrapheme }, "punctuation", new String[] {""});
 				CharToken charToken = new CharToken(defaultPhoneme, prevToken, null);
 				if (isFirstToken) {
-					prevToken.setNext(charToken);
 					isFirstToken = false;
 				}
 				graphemeSize = 1;
 
+				// Link the previous token to the current token
+				prevToken.setNext(charToken);
+				
 				// Adjust current index to avoid parsing the components of the grapheme
 				start += (graphemeSize); 
 

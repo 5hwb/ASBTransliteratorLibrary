@@ -40,7 +40,8 @@ public class Testing {
 		
 		String input = null;
 		try {
-			input = FileIO.readFile("input.txt");
+			//input = FileIO.readFile("input.txt");
+			input = FileIO.readFile("small_input.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("There is an issue with loading the input file");

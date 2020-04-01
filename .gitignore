@@ -3,4 +3,4 @@
 /bin/
 /build/
 ASBTranscriptorLibrary.jar
-input.txt
+*input.txt

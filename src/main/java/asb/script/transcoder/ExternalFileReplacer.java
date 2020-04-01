@@ -139,7 +139,8 @@ public class ExternalFileReplacer {
 
 		// Process all chars in the input string.
 		while ((token = tokeniser.readNextToken()) != null) {
-			tokenOutput.add(token);
+			CharToken prev = tokeniser.prevToken();
+			tokenOutput.add(prev);
 		}
 		
 		//////////////////////////////////////////
