@@ -1,6 +1,5 @@
 package asb.script.transcoder.parsing;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import asb.schema.PhonemeRule;
@@ -28,6 +27,11 @@ public class Tokeniser {
 	}
 	
 	public CharToken readNextToken() {
+		
+		if (this.input == null || this.mapping == null) {
+			return null;
+		}
+		
 		String currGrapheme = "";
 		
 		///////////////////////////////////////////////

@@ -5,18 +5,22 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import asb.schema.PhonemeRule;
 
 public class TokeniserUnitTests {
-
-	@Test
-	public void test_readNextToken() {
-		String input = "this is a test. you fine?";
+	
+	String input;
+	Map<String, PhonemeRule> mapping;
+	
+	@Before
+	public void init() {
+		input = "this is a test. you fine?";
 		
 		// Maps graphemes to phonemes
-		Map<String, PhonemeRule> mapping = new HashMap<>();
+		mapping = new HashMap<>();
 		mapping.put("th", new PhonemeRule( new String[] { "th" }, "consonant", new String[] {""},
 				new String[] { "đ" }, "consonant", new String[] {""}));
 
@@ -47,6 +51,23 @@ public class TokeniserUnitTests {
 		mapping.put("ine", new PhonemeRule( new String[] { "ine" }, "syllable", new String[] {""},
 				new String[] { "ān" }, "syllable", new String[] {""}));
 
+
+	}
+	
+	@Test
+	public void test_tokeniser_oddArguments() {
+		Tokeniser tokeniser_inputIsNull = new Tokeniser(null, mapping);
+		assertNull(tokeniser_inputIsNull.readNextToken());
+
+		Tokeniser tokeniser_mapIsNull = new Tokeniser(input, null);
+		assertNull(tokeniser_mapIsNull.readNextToken());
+
+		Tokeniser tokeniser_allNull = new Tokeniser(null, null);
+		assertNull(tokeniser_allNull.readNextToken());
+	}
+
+	@Test
+	public void test_readNextToken() {
 		Tokeniser tokeniser = new Tokeniser(input, mapping);
 		
 		assertEquals("đ", tokeniser.readNextToken().phonemeRule().l2()[0]);
