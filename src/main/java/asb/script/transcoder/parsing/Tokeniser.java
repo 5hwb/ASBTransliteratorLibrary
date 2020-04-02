@@ -12,7 +12,7 @@ public class Tokeniser {
 	private Map<String, Integer> graphemeVarIndexMap;
 	private CharToken prevToken;
 	private boolean isFirstToken = true;
-	private int maxGraphemeSize = 3; // TODO change this when mature
+	private int maxGraphemeSize = 0;
 	
 	private PhonemeRule defaultPhoneme;
 	
@@ -20,6 +20,20 @@ public class Tokeniser {
 		this.input = input;
 		this.mapping = mapping;
 		this.graphemeVarIndexMap = graphemeVarIndexMap;
+		
+		// Find the maximum grapheme size required for the given mapping
+		for (String key : mapping.keySet()) {
+			String[] listOfL1Graphemes = mapping.get(key).l1();
+			String[] listOfL2Graphemes = mapping.get(key).l2();
+			
+			// Update maxGraphemeSize to match the longest graphemes found
+			for (String l1Grapheme : listOfL1Graphemes) {
+				maxGraphemeSize = Math.max(l1Grapheme.length(), maxGraphemeSize);
+			}
+			for (String l2Grapheme : listOfL2Graphemes) {
+				maxGraphemeSize = Math.max(l2Grapheme.length(), maxGraphemeSize);				
+			}
+		}
 		
 		this.defaultPhoneme = new PhonemeRule(
 				new String[] { "" }, "sentenceEdge", new String[] {""},
