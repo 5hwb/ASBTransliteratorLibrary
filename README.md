@@ -35,7 +35,7 @@ function translateFromToScript():
 
 ## Performance
 
-It currently takes ~148ms to transliterate a 60.9KB text file.
+It currently takes ~90ms to transliterate a 62.7KB text file.
 
 ## Refactoring idea
 

@@ -1,6 +1,7 @@
 package asb.script.transcoder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +17,8 @@ import asb.schema.PhonemeCounter;
 import asb.schema.PhonemeRule;
 import asb.schema.PhonemeType;
 import asb.schema.RuleSchema;
+import asb.script.transcoder.parsing.CharToken;
+import asb.script.transcoder.parsing.Tokeniser;
 
 /**
  * An ExternalFileReplacer replaces each Latin script character in EBEO with the
@@ -119,111 +122,75 @@ public class ExternalFileReplacer {
 		/**
 		 * NOTE: A 'grapheme' is a string of up to n characters representing a single phoneme.
 		 */
+		ArrayList<CharToken> tokenOutput = new ArrayList<>();
 		output = new StringBuilder();
 
 		/* The current grapheme to analyse */
 		String currGrapheme = "";
-
-		// Insert the 1st phoneme with the type SENTENCEEND, since the beginning marks the start of a new sentence
-		PhonemeRule initPhoneme = new PhonemeRule(
-				new String[] { "" }, "sentenceEdge", new String[] {""},
-				new String[] { "" }, "sentenceEdge", new String[] {""});
-		phonemeStack.fill(initPhoneme); // fill it so the phoneme stack is never empty
-
+		
 		Set<String> counterKeySet = consoTypeToCounterMap.keySet();
 
 		/*DEBUG*/System.out.println("Initialised!");
 
 		// Reset the counters
 		for (String key : counterKeySet) {
+			/*DEBUG*/System.out.printf("Resetting %s...\n", key);			
 			consoTypeToCounterMap.get(key).reset();
 		}
 
+		///////////////////////////////////////////////
+		// LOOK UP GRAPHEME AND APPEND TO TOKEN LIST //
+		///////////////////////////////////////////////
+		Map<String, PhonemeRule> mapping = (toScript) 
+				? this.l1GraphemeToPhonemeMap 
+				: this.l2GraphemeToPhonemeMap;
+		Tokeniser tokeniser = new Tokeniser(input, mapping, graphemeVarIndexMap);
+		CharToken token;
+
 		// Process all chars in the input string.
-		// Need to accomodate the maximum possible grapheme length in the for loop
-		for (int i = 0; i < input.length() + maxGraphemeSize; i++) {
-			/*DEBUG*/System.out.printf("----------i=%d----------\n", i);
+		while ((token = tokeniser.readNextToken()) != null) {
+			CharToken prev = tokeniser.prevToken();
+			tokenOutput.add(prev);
+		}
+		
+		//////////////////////////////////////////
+		// INSERT REPLACEMENT IN OUTPUT         //
+		//////////////////////////////////////////
 
-			////////////////////////////////////////////
-			// LOOK UP GRAPHEME AND INSERT INTO STACK //
-			////////////////////////////////////////////
-			/*DEBUG*/System.out.println("LOOK UP GRAPHEME AND INSERT INTO STACK...");
-			if (i < input.length()) {
-				// Looks ahead at the next chars, detecting graphemes of decreasing size
-				// so that they get detected first
-				for (int limit = this.maxGraphemeSize; limit >= 1; limit--) {
-					/*DEBUG*/System.out.printf("limit=%d\n", limit);
-					// Limit the lookup so it does not go beyond the end of the input
-					int graphemeLimit = (i + limit >= input.length()) ? input.length() : i + limit;
-					currGrapheme = input.substring(i, graphemeLimit);
-
-					int graphemeSize = 0;
-
-					// Look up the reference HashMap with the current grapheme to see if there is an entry.
-					PhonemeRule curr = (toScript) ? this.l1GraphemeToPhonemeMap.get(currGrapheme)
-							: this.l2GraphemeToPhonemeMap.get(currGrapheme);
-					// If there is a match, add it to the phoneme stack
-					if (curr != null) {
-						/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
-						phonemeStack.push(curr);
-						graphemeVarIndexStack.push(graphemeVarIndexMap.get(currGrapheme));
-						graphemeSize = limit;
-					}
-					// Otherwise, insert the original (punctuation) character if it was not covered by a rule,
-					// only if the grapheme is 1 char long.
-					else if (limit == 1) {
-						/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
-						defaultPhoneme = new PhonemeRule(
-								new String[] { currGrapheme }, "punctuation", new String[] {""},
-								new String[] { currGrapheme }, "punctuation", new String[] {""});
-						phonemeStack.push(defaultPhoneme);
-						graphemeVarIndexStack.push(null); // no phoneme variant index if there's no corresponding phoneme
-						graphemeSize = 1;
-					}
-
-					// Skip to the next iteration of the loop
-					if (graphemeSize == 0)
-						continue;
-
-					// Adjust current index to avoid parsing the components of the grapheme
-					i += (graphemeSize - 1); // subtract 1 since the next iteration of the for loop will add 1 again
-					break;
-				}
+		for (CharToken cToken : tokenOutput) {
+			/*DEBUG*/System.out.println(cToken);
+			
+			// Set dummy sentence edge token
+			if (cToken.next() == null) {
+				PhonemeRule sentenceEdgePhoneme = new PhonemeRule(
+						new String[] { "" }, "sentenceEdge", new String[] {""},
+						new String[] { "" }, "sentenceEdge", new String[] {""});
+				CharToken sentenceEdgeToken = new CharToken(sentenceEdgePhoneme, 0, cToken, null);
+				
+				cToken.setNext(sentenceEdgeToken);
 			}
-			// The last 3 graphemes are in the stack, but the last grapheme hasn't been processed yet.
-			// Insert a dummy PhonemeRule to push the last grapheme into position
-			else {
-				/*DEBUG*/System.out.println("\tDummy phonemerule inserted");
-				phonemeStack.push(initPhoneme);
-				graphemeVarIndexStack.push(null);
-			}
-
-			//////////////////////////////////////////
-			// INSERT REPLACEMENT IN OUTPUT         //
-			//////////////////////////////////////////
+			
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected grapheme
-			replacementPhoneme = currPhoneme();
-			Integer currGraphemeIndex = graphemeVarIndexStack.nthTop(1);
+			replacementPhoneme = cToken.phonemeRule();
+			Integer currGraphemeIndex = cToken.graphemeVarIndex()/*graphemeVarIndexStack.nthTop(1)*/;
 
 			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
-			if (replacementPhoneme == null) {
+			if (cToken.phonemeRule() == null) {
 				/*DEBUG*/System.out.println("GRAPHEME: no repl found");
 				output.append(currGrapheme);
 				continue;
 			}
-			/*DEBUG*/System.out.println(phonemeStack);
-			/*DEBUG*/System.out.println(graphemeVarIndexStack);
-			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + replacementPhoneme.l2()[0]);
+			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + cToken.phonemeRule().l2()[0]);
 
 			// Increment the counter for the current phoneme's type
-			String currType = (toScript) ? PhonemeTypeReferenceMap.get(replacementPhoneme.l2type()).name()
-					: PhonemeTypeReferenceMap.get(replacementPhoneme.l1type()).name();
+			String currType = (toScript) ? PhonemeTypeReferenceMap.get(cToken.phonemeRule().l2type()).name()
+					: PhonemeTypeReferenceMap.get(cToken.phonemeRule().l1type()).name();
 			PhonemeCounter pCounter = consoTypeToCounterMap.get(currType);
 			if (pCounter != null) {
 				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
 				Rule[] cRules = pCounter.incrRuleParsed();
-				int matchingRuleIndex = selectRule(cRules, toScript, null, null);
+				int matchingRuleIndex = selectRule(cToken, cRules, toScript, null, null);
 				if (matchingRuleIndex >= 0) {
 					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
 					pCounter.increment();
@@ -235,11 +202,11 @@ public class ExternalFileReplacer {
 			}
 
 			// Select the grapheme to append
-			Rule[] pRules = (toScript) ? replacementPhoneme.l2ruleParsed() : replacementPhoneme.l1ruleParsed();
-			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
+			Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
+			int letterIndex = selectRule(cToken, pRules, toScript, pCounter, currGraphemeIndex);
 			if (letterIndex < 0) {
 				// default letter is the last one
-				letterIndex = (toScript) ? replacementPhoneme.l2().length - 1 : replacementPhoneme.l1().length - 1;
+				letterIndex = (toScript) ? cToken.phonemeRule().l2().length - 1 : cToken.phonemeRule().l1().length - 1;
 			}
 
 			// Reset counter values if they have reached the maximum value
@@ -252,13 +219,14 @@ public class ExternalFileReplacer {
 
 			// Append the replacement grapheme
 			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
-			String repl = (toScript) ? replacementPhoneme.l2()[letterIndex] : replacementPhoneme.l1()[letterIndex];
+			String repl = (toScript) ? cToken.phonemeRule().l2()[letterIndex] : cToken.phonemeRule().l1()[letterIndex];
 			output.append(repl);
+//			output.append(cToken.phonemeRule().l1()[0]);
 		}
 
 		return output.toString();
 	}
-
+	
 	/**
 	 * Look for a rule that matches the current situation
 	 *
@@ -268,10 +236,10 @@ public class ExternalFileReplacer {
 	 * @param pVariantIndex The index of the selected grapheme in phoneme's variant list
 	 * @return Index of matching rule. -1 if no match was found
 	 */
-	private int selectRule(Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
-		String prevType = (toScript) ? prevPhoneme().l2type() : prevPhoneme().l1type();
-		String currType = (toScript) ? replacementPhoneme.l2type() : replacementPhoneme.l1type();
-		String nextType = (toScript) ? nextPhoneme().l2type() : nextPhoneme().l1type();
+	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
+		String prevType = (toScript) ? cToken.prev().phonemeRule().l2type() : cToken.prev().phonemeRule().l1type();
+		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
+		String nextType = (toScript) ? cToken.next().phonemeRule().l2type() : cToken.next().phonemeRule().l1type();
 
 		// Go through each rule until one matching the current pattern is found
 		int letterIndex = -1;
