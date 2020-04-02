@@ -134,6 +134,7 @@ public class ExternalFileReplacer {
 
 		// Reset the counters
 		for (String key : counterKeySet) {
+			/*DEBUG*/System.out.printf("Resetting %s...\n", key);			
 			consoTypeToCounterMap.get(key).reset();
 		}
 
@@ -150,63 +151,6 @@ public class ExternalFileReplacer {
 		while ((token = tokeniser.readNextToken()) != null) {
 			CharToken prev = tokeniser.prevToken();
 			tokenOutput.add(prev);
-			
-//			//////////////////////////////////////////
-//			// INSERT REPLACEMENT IN OUTPUT         //
-//			//////////////////////////////////////////
-//			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
-//			// Get the PhonemeRule for the currently selected grapheme
-//			replacementPhoneme = prev.phonemeRule();
-//			Integer currGraphemeIndex = prev.graphemeVarIndex()/*graphemeVarIndexStack.nthTop(1)*/;
-//
-//			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
-//			if (replacementPhoneme == null) {
-//				/*DEBUG*/System.out.println("GRAPHEME: no repl found");
-//				output.append(currGrapheme);
-//				continue;
-//			}
-//			/*DEBUG*/System.out.println(phonemeStack);
-//			/*DEBUG*/System.out.println(graphemeVarIndexStack);
-//			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + replacementPhoneme.l2()[0]);
-//
-//			// Increment the counter for the current phoneme's type
-//			String currType = (toScript) ? PhonemeTypeReferenceMap.get(replacementPhoneme.l2type()).name()
-//					: PhonemeTypeReferenceMap.get(replacementPhoneme.l1type()).name();
-//			PhonemeCounter pCounter = consoTypeToCounterMap.get(currType);
-//			if (pCounter != null) {
-//				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
-//				Rule[] cRules = pCounter.incrRuleParsed();
-//				int matchingRuleIndex = selectRule(cRules, toScript, null, null);
-//				if (matchingRuleIndex >= 0) {
-//					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
-//					pCounter.increment();
-//				} else {
-//					/*DEBUG*/System.out.println("\tRule for counter increment is NOT a match");
-//				}
-//			} else {
-//				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
-//			}
-//
-//			// Select the grapheme to append
-//			Rule[] pRules = (toScript) ? replacementPhoneme.l2ruleParsed() : replacementPhoneme.l1ruleParsed();
-//			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
-//			if (letterIndex < 0) {
-//				// default letter is the last one
-//				letterIndex = (toScript) ? replacementPhoneme.l2().length - 1 : replacementPhoneme.l1().length - 1;
-//			}
-//
-//			// Reset counter values if they have reached the maximum value
-//			for (String key : counterKeySet) {
-//				boolean counterIsMax = !(key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax());
-//				if (counterIsMax) {
-//					consoTypeToCounterMap.get(key).reset(); // reset counter value to 0
-//				}
-//			}
-//
-//			// Append the replacement grapheme
-//			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
-//			String repl = (toScript) ? replacementPhoneme.l2()[letterIndex] : replacementPhoneme.l1()[letterIndex];
-//			output.append(repl);
 		}
 		
 		//////////////////////////////////////////
@@ -216,14 +160,190 @@ public class ExternalFileReplacer {
 
 		for (CharToken cToken : tokenOutput) {
 			/*DEBUG*/System.out.println(cToken);
-			output.append(cToken.phonemeRule().l1()[0]);
+			
+			if (cToken.next() == null)
+				break;
+			
+			//////////////////////////////////////////
+			// INSERT REPLACEMENT IN OUTPUT         //
+			//////////////////////////////////////////
+			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
+			// Get the PhonemeRule for the currently selected grapheme
+			replacementPhoneme = cToken.phonemeRule();
+			Integer currGraphemeIndex = cToken.graphemeVarIndex()/*graphemeVarIndexStack.nthTop(1)*/;
+
+			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
+			if (cToken.phonemeRule() == null) {
+				/*DEBUG*/System.out.println("GRAPHEME: no repl found");
+				output.append(currGrapheme);
+				continue;
+			}
+			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + cToken.phonemeRule().l2()[0]);
+
+			// Increment the counter for the current phoneme's type
+			String currType = (toScript) ? PhonemeTypeReferenceMap.get(cToken.phonemeRule().l2type()).name()
+					: PhonemeTypeReferenceMap.get(cToken.phonemeRule().l1type()).name();
+			PhonemeCounter pCounter = consoTypeToCounterMap.get(currType);
+			if (pCounter != null) {
+				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
+				Rule[] cRules = pCounter.incrRuleParsed();
+				int matchingRuleIndex = selectRule(cToken, cRules, toScript, null, null);
+				if (matchingRuleIndex >= 0) {
+					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
+					pCounter.increment();
+				} else {
+					/*DEBUG*/System.out.println("\tRule for counter increment is NOT a match");
+				}
+			} else {
+				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
+			}
+
+			// Select the grapheme to append
+			Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
+			int letterIndex = selectRule(cToken, pRules, toScript, pCounter, currGraphemeIndex);
+			if (letterIndex < 0) {
+				// default letter is the last one
+				letterIndex = (toScript) ? cToken.phonemeRule().l2().length - 1 : cToken.phonemeRule().l1().length - 1;
+			}
+
+			// Reset counter values if they have reached the maximum value
+			for (String key : counterKeySet) {
+				boolean counterIsMax = !(key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax());
+				if (counterIsMax) {
+					consoTypeToCounterMap.get(key).reset(); // reset counter value to 0
+				}
+			}
+
+			// Append the replacement grapheme
+			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
+			String repl = (toScript) ? cToken.phonemeRule().l2()[letterIndex] : cToken.phonemeRule().l1()[letterIndex];
+			output.append(repl);
+//			output.append(cToken.phonemeRule().l1()[0]);
 		}
 
 		return output.toString();
 	}
 	
 	/**
-	 * The base method for the translateFromScript and translateToScript methods.
+	 * Look for a rule that matches the current situation
+	 *
+	 * @param pRules   List of rules to check for matches
+	 * @param toScript Translate the input to script, or back?
+	 * @param pCounter Phoneme counter for this type
+	 * @param pVariantIndex The index of the selected grapheme in phoneme's variant list
+	 * @return Index of matching rule. -1 if no match was found
+	 */
+	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
+		// TODO change this to refer to the CharToken cToken() and next() methods
+		String prevType = (toScript) ? cToken.prev().phonemeRule().l2type() : cToken.prev().phonemeRule().l1type();
+		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
+		String nextType = (toScript) ? cToken.next().phonemeRule().l2type() : cToken.next().phonemeRule().l1type();
+
+		// Go through each rule until one matching the current pattern is found
+		int letterIndex = -1;
+		for (int i = 0; i < pRules.length; i++) {
+			
+			boolean isAndRuleMatch = pRules[i].isAndRuleMatch();
+			boolean subRulesDoMatch = true;
+			/*DEBUG*/System.out.printf("\t\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
+			/*DEBUG*/System.out.printf("\t\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
+
+			// Go through each subrule: should be either AND (all must match) or OR (at least 1 must match).
+			// If any 1 of them matches the current pattern, select its corresponding grapheme for insertion to output
+			for (int j = 0; j < pRules[i].numOfSubRules(); j++) {
+				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", j);
+
+				//////////////////////////////
+				// Rule is a pattern rule   //
+				//////////////////////////////
+				if (pRules[i].subRulecVal(j) == 0 && pRules[i].subRulePvVal(j) < 0) {
+
+					// COMPARISON!
+					boolean prevIsMatch = (pRules[i].subsubRuleType(j, 0).equals("anything"))
+							? true // always true if it matches 'anything'
+							: (pRules[i].subsubRuleIsNot(j, 0))
+								? !typeEquals(pRules[i].subsubRuleType(j, 0), prevType, pRules[i].subsubRuleIsStrictTypeMatch(j, 0))
+								: typeEquals(pRules[i].subsubRuleType(j, 0), prevType, pRules[i].subsubRuleIsStrictTypeMatch(j, 0));
+					/*DEBUG*/System.out.printf("\t\tPREVMATCH: [%b]\n", prevIsMatch);
+
+					boolean currIsMatch = (pRules[i].subsubRuleType(j, 1).equals("anything"))
+							? true // always true if it matches 'anything'
+							: (pRules[i].subsubRuleIsNot(j, 1))
+								? !typeEquals(pRules[i].subsubRuleType(j, 1), currType, pRules[i].subsubRuleIsStrictTypeMatch(j, 1))
+								: typeEquals(pRules[i].subsubRuleType(j, 1), currType, pRules[i].subsubRuleIsStrictTypeMatch(j, 1));
+					/*DEBUG*/System.out.printf("\t\tCURRMATCH: [%b]\n", currIsMatch);
+
+					boolean nextIsMatch = (pRules[i].subsubRuleType(j, 2).equals("anything"))
+							? true // always true if it matches 'anything'
+							: (pRules[i].subsubRuleIsNot(j, 2))
+								? !typeEquals(pRules[i].subsubRuleType(j, 2), nextType, pRules[i].subsubRuleIsStrictTypeMatch(j, 2))
+								: typeEquals(pRules[i].subsubRuleType(j, 2), nextType, pRules[i].subsubRuleIsStrictTypeMatch(j, 2));
+					/*DEBUG*/System.out.printf("\t\tNEXTMATCH: [%b]\n", nextIsMatch);
+					/*DEBUG*/System.out.printf("\t\tRule num: %d\n", i);
+
+					// Match if the pattern matches the scenario
+					boolean isMatch = ((prevIsMatch && nextIsMatch) && currIsMatch);
+					subRulesDoMatch &= isMatch;
+					/*DEBUG*/System.out.printf("\t\tPatmat's ISMATCH: [%b]\n", isMatch);
+					if (isMatch && !isAndRuleMatch) {
+						letterIndex = i;
+						/*DEBUG*/System.out.printf("\t\tChosen PATTERN rule num: %d\n", i);
+						return letterIndex;
+					}
+				}
+				//////////////////////////////
+				// Rule is a counter rule   //
+				//////////////////////////////
+				else if (pRules[i].subRulecVal(j) >= 1 && pCounter != null) {
+					int cVal = pRules[i].subRulecVal(j);
+					/*DEBUG*/System.out.printf("\t\tRULEd counter? curr counter val = %d\n", pCounter.value());
+
+					// Match if counter value for current phoneme's type equals cVal.
+					// Useful for consonant clusters
+					boolean isMatch = (pCounter.value() >= cVal);
+					subRulesDoMatch &= isMatch;
+					/*DEBUG*/System.out.printf("\t\tCountmat's ISMATCH: [%b]\n", isMatch);
+					if (isMatch && !isAndRuleMatch) {
+						pCounter.reset(); // reset counter value to 0
+						letterIndex = i;
+						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", i);
+						return letterIndex;
+					}
+				}
+				//////////////////////////////
+				// Rule is a phoneme variant selection rule
+				//////////////////////////////
+				else if (pRules[i].subRulePvVal(j) >= 0 && pVariantIndex != null) {
+					int pvVal = pRules[i].subRulePvVal(j);
+					/*DEBUG*/System.out.printf("\t\tRULEd phovarsel? curr variant val = %d\n", pVariantIndex);
+
+					// Match if counter value for current phoneme's type equals cVal.
+					// Useful for scripts that have uppercase and lowercase forms
+					boolean isMatch = (pVariantIndex == pvVal);
+					subRulesDoMatch &= isMatch;
+					/*DEBUG*/System.out.printf("\t\tPhovarsel's ISMATCH: [%b]\n", isMatch);
+					if (isMatch && !isAndRuleMatch) {
+						letterIndex = i;
+						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", i);
+						return letterIndex;
+					}
+				}
+			}
+			
+			if (isAndRuleMatch && subRulesDoMatch) {
+				letterIndex = i;
+				/*DEBUG*/System.out.printf("\t\tAll subrules match! Rule num: %d\n", i);
+				return letterIndex;
+			} else {
+				/*DEBUG*/System.out.printf("\t\tAll subrules do not match.\n");
+			}
+		}
+		return letterIndex;
+	}
+	
+	
+	/**
+	 * (OLD) The base method for the translateFromScript and translateToScript methods.
 	 *
 	 * @param input    Self-descriptive
 	 * @param toScript Translate the input to script, or back?
@@ -337,7 +457,7 @@ public class ExternalFileReplacer {
 			if (pCounter != null) {
 				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
 				Rule[] cRules = pCounter.incrRuleParsed();
-				int matchingRuleIndex = selectRule(cRules, toScript, null, null);
+				int matchingRuleIndex = selectRuleOld(cRules, toScript, null, null);
 				if (matchingRuleIndex >= 0) {
 					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
 					pCounter.increment();
@@ -350,7 +470,7 @@ public class ExternalFileReplacer {
 
 			// Select the grapheme to append
 			Rule[] pRules = (toScript) ? replacementPhoneme.l2ruleParsed() : replacementPhoneme.l1ruleParsed();
-			int letterIndex = selectRule(pRules, toScript, pCounter, currGraphemeIndex);
+			int letterIndex = selectRuleOld(pRules, toScript, pCounter, currGraphemeIndex);
 			if (letterIndex < 0) {
 				// default letter is the last one
 				letterIndex = (toScript) ? replacementPhoneme.l2().length - 1 : replacementPhoneme.l1().length - 1;
@@ -382,7 +502,7 @@ public class ExternalFileReplacer {
 	 * @param pVariantIndex The index of the selected grapheme in phoneme's variant list
 	 * @return Index of matching rule. -1 if no match was found
 	 */
-	private int selectRule(Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
+	private int selectRuleOld(Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
 		String prevType = (toScript) ? prevPhoneme().l2type() : prevPhoneme().l1type();
 		String currType = (toScript) ? replacementPhoneme.l2type() : replacementPhoneme.l1type();
 		String nextType = (toScript) ? nextPhoneme().l2type() : nextPhoneme().l1type();

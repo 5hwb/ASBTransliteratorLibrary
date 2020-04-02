@@ -22,8 +22,8 @@ public class Tokeniser {
 		this.graphemeVarIndexMap = graphemeVarIndexMap;
 		
 		this.defaultPhoneme = new PhonemeRule(
-				new String[] { "" }, "punctuation", new String[] {""},
-				new String[] { "" }, "punctuation", new String[] {""});
+				new String[] { "" }, "sentenceEdge", new String[] {""},
+				new String[] { "" }, "sentenceEdge", new String[] {""});
 		
 		prevToken = new CharToken(this.defaultPhoneme, 0, null, null);
 	}
@@ -60,9 +60,6 @@ public class Tokeniser {
 			if (curr != null) {
 				/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
 				CharToken charToken = new CharToken(curr, this.graphemeVarIndexMap.get(currGrapheme), prevToken, null);
-				if (isFirstToken) {
-					isFirstToken = false;
-				}
 				graphemeSize = limit;
 				
 				// Link the previous token to the current token
@@ -72,19 +69,20 @@ public class Tokeniser {
 				start += (graphemeSize); 
 				
 				prevToken = charToken;
+				
+				if (isFirstToken) {
+					isFirstToken = false;
+				}
 				return charToken;
 			}
 			// Otherwise, insert the original (punctuation) character if it was not covered by a rule,
 			// only if the grapheme is 1 char long.
 			else if (limit == 1) {
 				/*DEBUG*/System.out.printf("\tNO MATCH FOUND. INSERTING ORIGINAL PUNCTUATION INTO THE STACK\n");
-				PhonemeRule defaultPhoneme = new PhonemeRule(
+				PhonemeRule punctPhoneme = new PhonemeRule(
 						new String[] { currGrapheme }, "punctuation", new String[] {""},
 						new String[] { currGrapheme }, "punctuation", new String[] {""});
-				CharToken charToken = new CharToken(defaultPhoneme, 0, prevToken, null);
-				if (isFirstToken) {
-					isFirstToken = false;
-				}
+				CharToken charToken = new CharToken(punctPhoneme, 0, prevToken, null);
 				graphemeSize = 1;
 
 				// Link the previous token to the current token
@@ -94,6 +92,10 @@ public class Tokeniser {
 				start += (graphemeSize); 
 
 				prevToken = charToken;
+				
+				if (isFirstToken) {
+					isFirstToken = false;
+				}
 				return charToken;
 			}
 
