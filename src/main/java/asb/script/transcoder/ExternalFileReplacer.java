@@ -160,9 +160,15 @@ public class ExternalFileReplacer {
 		for (CharToken cToken : tokenOutput) {
 			/*DEBUG*/System.out.println(cToken);
 			
-			// TODO find out why last char sometimes doesn't get inserted in output!
-			if (cToken.next() == null)
-				break;
+			// Set dummy sentence edge token
+			if (cToken.next() == null) {
+				PhonemeRule sentenceEdgePhoneme = new PhonemeRule(
+						new String[] { "" }, "sentenceEdge", new String[] {""},
+						new String[] { "" }, "sentenceEdge", new String[] {""});
+				CharToken sentenceEdgeToken = new CharToken(sentenceEdgePhoneme, 0, cToken, null);
+				
+				cToken.setNext(sentenceEdgeToken);
+			}
 			
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected grapheme

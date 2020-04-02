@@ -20,7 +20,7 @@ public class TokeniserUnitTests {
 	public void init() {
 		input = "this is a test. you fine?";
 		input2 = "are you ready!";
-		input3 = "fine it is.";
+		input3 = "fine it is";
 		inputPunct = "..reaine";
 		
 		// Maps graphemes to phonemes
@@ -118,7 +118,6 @@ public class TokeniserUnitTests {
 		assertEquals("f", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("ān", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("?", tokeniser.readNextToken().phonemeRule().l2()[0]);
-		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertNull(tokeniser.readNextToken());
 	}
 
@@ -135,7 +134,6 @@ public class TokeniserUnitTests {
 		assertEquals("ré", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("di", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("!", tokeniser.readNextToken().phonemeRule().l2()[0]);
-		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertNull(tokeniser.readNextToken());
 	}
 
@@ -152,8 +150,6 @@ public class TokeniserUnitTests {
 		assertEquals(" ", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("i", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertEquals("s", tokeniser.readNextToken().phonemeRule().l2()[0]);
-		assertEquals(".", tokeniser.readNextToken().phonemeRule().l2()[0]);
-		assertEquals("", tokeniser.readNextToken().phonemeRule().l2()[0]);
 		assertNull(tokeniser.readNextToken());
 	}
 

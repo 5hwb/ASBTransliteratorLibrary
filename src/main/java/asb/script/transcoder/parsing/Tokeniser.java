@@ -12,7 +12,7 @@ public class Tokeniser {
 	private Map<String, Integer> graphemeVarIndexMap;
 	private CharToken prevToken;
 	private boolean isFirstToken = true;
-	private int maxGraphemeSize = 6; // TODO change this when mature
+	private int maxGraphemeSize = 3; // TODO change this when mature
 	
 	private PhonemeRule defaultPhoneme;
 	
@@ -34,7 +34,7 @@ public class Tokeniser {
 	
 	public CharToken readNextToken() {
 		
-		if ((this.input == null || this.mapping == null) || start > this.input.length()) {
+		if ((this.input == null || this.mapping == null)) {
 			return null;
 		}
 		
@@ -44,10 +44,16 @@ public class Tokeniser {
 		// LOOK UP GRAPHEME AND APPEND TO TOKEN LIST //
 		///////////////////////////////////////////////
 		/*DEBUG*/System.out.println("LOOK UP GRAPHEME...");
+		
 		// Looks ahead at the next chars, detecting graphemes of decreasing size
-		// so that they get detected first
-		for (int limit = this.maxGraphemeSize; limit >= 1; limit--) {
-			// Limit the lookup so it does not go beyond the end of the input
+		// so that they get detected first.
+		// First though, limit the lookup so it does not go beyond the end of the input.
+		int limitValue = ((this.start + this.maxGraphemeSize) > this.input.length()) 
+				? this.maxGraphemeSize - ((this.start + this.maxGraphemeSize) - input.length())
+				: this.maxGraphemeSize;
+		
+		for (int limit = limitValue; limit >= 1; limit--) {
+			// Limit the substring end index so it does not go beyond the end of the input
 			int graphemeLimit = (start + limit >= input.length()) ? input.length() : start + limit;
 			currGrapheme = input.substring(start, graphemeLimit);
 			/*DEBUG*/System.out.printf("limit=%d currGrapheme=%s\n", limit, currGrapheme);
@@ -56,10 +62,13 @@ public class Tokeniser {
 
 			// Look up the reference HashMap with the current grapheme to see if there is an entry.
 			PhonemeRule curr = this.mapping.get(currGrapheme);
+			
+			CharToken charToken;
+			
 			// If there is a match, add it to the phoneme stack
 			if (curr != null) {
 				/*DEBUG*/System.out.printf("\tPHONEME FOUND, INSERTING CORRS RULE TO STACK\n");
-				CharToken charToken = new CharToken(curr, this.graphemeVarIndexMap.get(currGrapheme), prevToken, null);
+				charToken = new CharToken(curr, this.graphemeVarIndexMap.get(currGrapheme), prevToken, null);
 				graphemeSize = limit;
 				
 				// Link the previous token to the current token
@@ -82,7 +91,7 @@ public class Tokeniser {
 				PhonemeRule punctPhoneme = new PhonemeRule(
 						new String[] { currGrapheme }, "punctuation", new String[] {""},
 						new String[] { currGrapheme }, "punctuation", new String[] {""});
-				CharToken charToken = new CharToken(punctPhoneme, 0, prevToken, null);
+				charToken = new CharToken(punctPhoneme, 0, prevToken, null);
 				graphemeSize = 1;
 
 				// Link the previous token to the current token
