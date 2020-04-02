@@ -156,17 +156,14 @@ public class ExternalFileReplacer {
 		//////////////////////////////////////////
 		// INSERT REPLACEMENT IN OUTPUT         //
 		//////////////////////////////////////////
-		// TODO implement this - parse the tokens, get appropriate rules
 
 		for (CharToken cToken : tokenOutput) {
 			/*DEBUG*/System.out.println(cToken);
 			
+			// TODO find out why last char sometimes doesn't get inserted in output!
 			if (cToken.next() == null)
 				break;
 			
-			//////////////////////////////////////////
-			// INSERT REPLACEMENT IN OUTPUT         //
-			//////////////////////////////////////////
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected grapheme
 			replacementPhoneme = cToken.phonemeRule();
@@ -234,7 +231,6 @@ public class ExternalFileReplacer {
 	 * @return Index of matching rule. -1 if no match was found
 	 */
 	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
-		// TODO change this to refer to the CharToken cToken() and next() methods
 		String prevType = (toScript) ? cToken.prev().phonemeRule().l2type() : cToken.prev().phonemeRule().l1type();
 		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
 		String nextType = (toScript) ? cToken.next().phonemeRule().l2type() : cToken.next().phonemeRule().l1type();
