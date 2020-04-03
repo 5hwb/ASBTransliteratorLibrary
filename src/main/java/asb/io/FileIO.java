@@ -92,14 +92,17 @@ public class FileIO {
 		        Path jarFile = Paths.get(jar.toString().substring(trimOff.length()));
 		        FileSystem fs = FileSystems.newFileSystem(jarFile, null);
 		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(rulefileFolderDir));
-		        
+	            
 		        for (Path p: directoryStream) {
-		            InputStream is = FileIO.class.getResourceAsStream(p.toString());
+		        	// Note: getResourceAsStream() expects a slash before the directory! e.g. '/rulefiles/'
+		            InputStream is = FileIO.class.getResourceAsStream("/" + p.toString());
+		            System.out.println("p=" + p.toString());
+		            System.out.println("is=" + is);
 		            
 		            // Need to move 'rulefileFolderDir' to the folder dir, to make initialisation of folder and files easier
 		            rulefileDir = jar.toString().substring(trimOff.length()).replace("/ASBTranscriptorApp.jar", "")
 		            		+ "/" + rulefileFolderDir;
-		            String fileDir = p.toString().replace("/" + rulefileFolderDir, "");
+		            String fileDir = p.toString().replace(rulefileFolderDir, "");
 		            System.out.println("FILE from JAR! " + rulefileDir + " - " + fileDir);
 		            
 		            copyFromInputStreamToFile(is, rulefileDir, fileDir);
@@ -122,6 +125,9 @@ public class FileIO {
 	private static void copyFromInputStreamToFile(InputStream is, String folderPath, String filePath) throws IOException {		
 		File folder = new File(folderPath);
 		File file = new File(folder, filePath);
+        System.out.println("folderPath=" + folderPath);
+        System.out.println("filePath=" + filePath);
+
 		// If the folder doesn't exist, then create it
 		if (!folder.exists()) {
 			System.out.println("Creating folder at '" + folder.getPath() + "'");
