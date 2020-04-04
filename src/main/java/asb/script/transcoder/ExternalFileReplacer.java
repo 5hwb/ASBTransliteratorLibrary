@@ -35,32 +35,17 @@ public class ExternalFileReplacer {
 	 */
 	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Latin grapheme -> Script PhonemeRule
 	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script grapheme -> Latin PhonemeRule
-	protected Map<String, PhonemeRule> graphemeToPhonemeMap; // Grapheme -> corresponding PhonemeRule
+	//protected Map<String, PhonemeRule> graphemeToPhonemeMap; // Grapheme -> corresponding PhonemeRule
 	protected Map<String, Integer> graphemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
 
 	/** Stores the output string */
 	protected StringBuilder output;
 
-	/** The current grapheme to analyse */
-	// protected String currGrapheme;
-
-	/** Stack of the last 3 phonemes */
-	protected FixedStack<PhonemeRule> phonemeStack;
-	
-	/** Stack of the phoneme variant indexes of the last 3 selected graphemes */
-	protected FixedStack<Integer> graphemeVarIndexStack;
-
-	/** The PhonemeRule which will replace the currently selected grapheme */
-	protected PhonemeRule replacementPhoneme;
-
 	/** A placeholder PhonemeRule for non-replaced characters */
-	protected PhonemeRule defaultPhoneme;
+	//protected PhonemeRule defaultPhoneme;
 
 	/** The maximum grapheme size, which determines the number of chars to scan ahead */
 	protected int maxGraphemeSize;
-
-	/** Indicate if the replacer's script supports case */
-	protected boolean hasCase;
 
 	/** Consonant counters */
 	protected Map<String, PhonemeCounter> consoTypeToCounterMap;
@@ -68,7 +53,7 @@ public class ExternalFileReplacer {
 	/** Reference hashmap for phoneme types */
 	protected Map<String, PhonemeType> PhonemeTypeReferenceMap;
 
-	protected String ruleFile;
+	protected String rulefileDir;
 
 	public ExternalFileReplacer(String filePath) {
 		initialiseValues();
@@ -81,14 +66,10 @@ public class ExternalFileReplacer {
 	private void initialiseValues() {
 		this.l1GraphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
 		this.l2GraphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
-		this.graphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
 		this.PhonemeTypeReferenceMap = new HashMap<String, PhonemeType>();
 		this.graphemeVarIndexMap = new HashMap<String, Integer>();
-		this.phonemeStack = new FixedStack<PhonemeRule>(3);
-		this.graphemeVarIndexStack = new FixedStack<Integer>(3);
 		this.consoTypeToCounterMap = new HashMap<String, PhonemeCounter>();
 		this.maxGraphemeSize = 0;
-		this.hasCase = false;
 	}
 
 	/**
@@ -172,7 +153,7 @@ public class ExternalFileReplacer {
 			
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected grapheme
-			replacementPhoneme = cToken.phonemeRule();
+			PhonemeRule replacementPhoneme = cToken.phonemeRule();
 			Integer currGraphemeIndex = cToken.graphemeVarIndex()/*graphemeVarIndexStack.nthTop(1)*/;
 
 			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
@@ -425,7 +406,6 @@ public class ExternalFileReplacer {
 				for (int j = 0; j < phonemeRule.l1().length; j++) {
 					String letter1Grapheme = phonemeRule.l1()[j];
 					l1GraphemeToPhonemeMap.put(letter1Grapheme, phonemeRule);
-					graphemeToPhonemeMap.put(letter1Grapheme, phonemeRule);
 					graphemeVarIndexMap.put(letter1Grapheme, j);
 
 					// Update maxGraphemeSize to match the longest grapheme found
@@ -437,7 +417,6 @@ public class ExternalFileReplacer {
 				for (int j = 0; j < phonemeRule.l2().length; j++) {
 					String letter2Grapheme = phonemeRule.l2()[j];
 					l2GraphemeToPhonemeMap.put(letter2Grapheme, phonemeRule);
-					graphemeToPhonemeMap.put(letter2Grapheme, phonemeRule);
 					graphemeVarIndexMap.put(letter2Grapheme, j);
 
 					// Update maxGraphemeSize to match the longest grapheme found
@@ -468,39 +447,11 @@ public class ExternalFileReplacer {
 	}
 
 	/**
-	 * Get the previously selected phoneme from the stack.
-	 * @return
-	 */
-	protected PhonemeRule prevPhoneme() {
-		return phonemeStack.nthTop(2);
-	}
-
-	/**
-	 * Get the currently selected phoneme from the stack.
-	 * @return
-	 */
-	protected PhonemeRule currPhoneme() {
-		return phonemeStack.nthTop(1);
-	}
-
-	/**
-	 * Get the next upcoming phoneme from the stack.
-	 * @return
-	 */
-	protected PhonemeRule nextPhoneme() {
-		return phonemeStack.top();
-	}
-
-	public String filePath() {
-		return this.ruleFile;
-	}
-
-	/**
 	 * Set a new rule file for the replacer to load.
 	 * @param filePath The full file path to the rules file
 	 */
 	public void setFilePath(String filePath) {
-		this.ruleFile = filePath;
+		this.rulefileDir = filePath;
 		initialiseValues();
 		loadJsonRulefile(readExternalJsonFile(filePath));
 	}
