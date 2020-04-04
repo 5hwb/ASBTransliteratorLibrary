@@ -6,15 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -63,22 +54,28 @@ public class FileIO {
 	}
 	
 	/**
+	 * Copy the rulefiles from the runnable JAR where this class was initiated.
+	 * Useful for extracting default rulefiles for immediate use.
 	 * From here: https://stackoverflow.com/questions/11012819/how-can-i-get-a-resource-folder-from-inside-my-jar-file/20073154
 	 */
-	public void copyRulefilesFromAssets() {		
+	public void copyRulefilesFromAssets() {
+		/** Intended rulefile directory */
 		final String rulefileFolderDir = "rulefiles/";
+		
+		/** File object representing the JAR file */
 		final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
 		System.out.printf("jarFile.getPath()=%s\n", jarFile.getPath());
 		System.out.printf("jarFile.getParent()=%s\n", jarFile.getParent());
-		if (jarFile.isFile()) {  // Run with JAR file
+		
+		// Check if the JAR file is actually a file
+		if (jarFile.isFile()) {
 			System.out.println("JAR MODE!");
 		    JarFile jar;
 			try {
 				// Get the path to the rulefiles folder, which will be
 				// located in the same directory as the JAR
-	            String folderPath = jarFile.getParent() + "/" + rulefileFolderDir;
-	            rulefileDir = folderPath;
+				rulefileDir = jarFile.getParent() + "/" + rulefileFolderDir;
 				
 				// Get all entries in the JAR
 				jar = new JarFile(jarFile);
@@ -89,32 +86,31 @@ public class FileIO {
 			    while (entries.hasMoreElements()) {
 			        final String name = entries.nextElement().getName();
 			        
-			        // Filter entries that do not start with the rulefile folder directory
+			        // Go thru entries that start with the rulefile folder directory
 			        if (name.startsWith(rulefileFolderDir)) {
-			            System.out.println("name=" + name);
+			            System.out.println("===== name=" + name + "=====");
 			            
-			            // Copy the file!
+			            // Copy the rulefile!
 			            String filePath = name.replace(rulefileFolderDir, "");
 			            InputStream is = jar.getInputStream(jar.getEntry(name));
-			            copyFromInputStreamToFile(is, folderPath, filePath);
+			            copyFromInputStreamToFile(is, rulefileDir, filePath);
 			        }
 			    }
 			    jar.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-		System.out.println("===== THE END FOR now =====");
-		
-		
-		// just for now
-		//rulefileDir = "/media/perry/44e7c00f-9dd4-4713-b6e7-0a54f1e9cdf4/home/perry/workspace/ASBTransliteratorLibrary/src/main/resources/rulefiles/";
 	}
 	
-	
-	private static void copyFromInputStreamToFile(InputStream is, String folderPath, String filePath) throws IOException {		
+	/**
+	 * Copy the contents of an InputStream to a given file.
+	 * @param is The InputStream to copy from
+	 * @param folderPath Absolute directory to parent folder of file
+	 * @param filePath Name of file to write the InputStream contents to
+	 * @throws IOException
+	 */
+	private void copyFromInputStreamToFile(InputStream is, String folderPath, String filePath) throws IOException {		
 		File folder = new File(folderPath);
 		File file = new File(folder, filePath);
         System.out.println("folderPath=" + folderPath);
