@@ -1,6 +1,5 @@
 syntax: regexp
 ^.git
-^.gradle
 ^bin
 ^build
 ASBTransliteratorLibrary.jar
