@@ -2,7 +2,7 @@ package asb.hangul;
 
 public class HangulUtils {
 
-	// 19 initials
+	// List of 19 initials
 	private static char[] initials = {
 			'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ',
 			'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ',
@@ -10,7 +10,7 @@ public class HangulUtils {
 			'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
 	};
 
-	// 21 medials
+	// List of 21 medials
 	private static char[] medials = {
 			'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ',
 			'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ',
@@ -19,7 +19,7 @@ public class HangulUtils {
 			'ㅣ'
 	};
 
-	// 28 finals
+	// List of 28 finals
 	private static char[] finals = {
 			' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ',
 			'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ',
@@ -29,6 +29,12 @@ public class HangulUtils {
 			'ㅌ', 'ㅍ', 'ㅎ'
 	};
 	
+	/**
+	 * Get the index of a character in the given char array.
+	 * @param data Char array
+	 * @param c Char to find
+	 * @return The index of the char in the char array
+	 */
 	private static int getIndex(char[] data, char c) {
 		for (int i = 0; i < data.length; i++) {
 			if (c == data[i]) return i;
@@ -36,6 +42,12 @@ public class HangulUtils {
 		return 0;
 	}
 	
+	/**
+	 * Converts a string of Hangul Compatibility Jamo letters into Hangul syllable blocks.
+	 * The non-Hangul letters in the input are ignored and inserted as-is in the output.
+	 * @param input String input containing Hangul Compatibility Jamo letters
+	 * @return String output with equivalent Hangul syllable blocks
+	 */
 	public static String convertToHangulBlocks(String input) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -101,7 +113,7 @@ public class HangulUtils {
 				continue;
 			}
 			
-			/** NAK: The above 2 situations do not apply but the current syllable has a final consonant */
+			/** NAK: The first 2 situations do not apply but the current syllable has a final consonant */
 			else if (buf3.matches(matchIMF)) {
 				char syl = (char) ((init * 588 + med * 28 + fin) + 44032);
 				//*DEBUG*/System.out.println("NAK:    ");
@@ -111,7 +123,7 @@ public class HangulUtils {
 				continue;
 			}
 			
-			/** NA: The above 2 situations do not apply but the current syllable has no final */
+			/** NA: The first 2 situations do not apply but the current syllable has no final */
 			else if (buf2.matches(matchIM)) {
 				char syl = (char) ((init * 588 + med * 28) + 44032);
 				//*DEBUG*/System.out.println("NA:     ");
@@ -120,7 +132,6 @@ public class HangulUtils {
 				i += 1;
 				continue;
 			}
-			
 			
 			/** NO MATCH: it's a punctuation char or stray Hangul jamo */
 			//*DEBUG*/System.out.printf("NOMATCH:%s\n", buf4);
@@ -132,6 +143,12 @@ public class HangulUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * Converts a string of Hangul syllable blocks into Hangul Compatibility Jamo letters.
+	 * The non-Hangul letters in the input are ignored and inserted as-is in the output.
+	 * @param input String input containing Hangul syllable blocks
+	 * @return String output with equivalent Hangul Compatibility Jamo letters
+	 */
 	public static String convertFromHangulBlocks(String input) {
 		StringBuilder sb = new StringBuilder();
 		
