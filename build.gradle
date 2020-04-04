@@ -26,6 +26,15 @@ dependencies {
 	implementation files('../ASBTransliteratorLibrary/libraries/gson-2.8.5.jar')
 }
 
+sourceSets {
+	// Include rulefiles 
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+    }
+}
+
 jar {
 	// Collect all 'implementation' dependencies 
     from {

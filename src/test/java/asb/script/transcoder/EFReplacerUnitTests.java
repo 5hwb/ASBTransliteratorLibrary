@@ -37,7 +37,7 @@ public class EFReplacerUnitTests {
 	
 	@Before
 	public void init() {
-		efr = new ExternalFileReplacer("src/main/java/rulefiles/hangul.json");
+		efr = new ExternalFileReplacer("src/main/resources/rulefiles/hangul.json");
 	}
 
 	@Test
@@ -65,49 +65,49 @@ public class EFReplacerUnitTests {
 	
 	@Test
 	public void test_toScript_hangul() {
-		efr.setFilePath("src/main/java/rulefiles/hangul.json");
+		efr.setFilePath("src/main/resources/rulefiles/hangul.json");
 		assertEquals(testoHan, HangulUtils.convertToHangulBlocks(efr.translateToScript(testo)));
 	}
 	
 	@Test
 	public void test_fromScript_hangul() {
-		efr.setFilePath("src/main/java/rulefiles/hangul.json");
+		efr.setFilePath("src/main/resources/rulefiles/hangul.json");
 		assertEquals(testo, efr.translateFromScript(HangulUtils.convertFromHangulBlocks(testoHan)));
 	}
 	
 	@Test
 	public void test_consonants_hangul() {
-		efr.setFilePath("src/main/java/rulefiles/hangul.json");
+		efr.setFilePath("src/main/resources/rulefiles/hangul.json");
 		assertEquals(testoConsoHan2, HangulUtils.convertToHangulBlocks(efr.translateToScript(testoConsoEbeo2)));
 	}
 
 	@Test
 	public void test_toScript_khmer() {
-		efr.setFilePath("src/main/java/rulefiles/khmer.json");
+		efr.setFilePath("src/main/resources/rulefiles/khmer.json");
 		assertEquals(testoKhm, efr.translateToScript(testo));
 	}
 	
 	@Test
 	public void test_fromScript_khmer() {
-		efr.setFilePath("src/main/java/rulefiles/khmer.json");
+		efr.setFilePath("src/main/resources/rulefiles/khmer.json");
 		assertEquals(testo, efr.translateFromScript(testoKhm));
 	}
 	
 	@Test
 	public void test_consonants_khmer() {
-		efr.setFilePath("src/main/java/rulefiles/khmer.json");
+		efr.setFilePath("src/main/resources/rulefiles/khmer.json");
 		assertEquals(testoConsoKhm1, efr.translateToScript(testoConsoEbeo1));
 	}
 
 	@Test
 	public void test_toScript_quikscript() {
-		efr.setFilePath("src/main/java/rulefiles/quikscript.json");
+		efr.setFilePath("src/main/resources/rulefiles/quikscript.json");
 		assertEquals(testoQuik, efr.translateToScript(testo));
 	}
 	
 	@Test
 	public void test_fromScript_quikscript() {
-		efr.setFilePath("src/main/java/rulefiles/quikscript.json");
+		efr.setFilePath("src/main/resources/rulefiles/quikscript.json");
 		assertEquals(testo, efr.translateFromScript(testoQuik));
 	}
 }

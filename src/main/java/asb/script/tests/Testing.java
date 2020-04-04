@@ -36,7 +36,7 @@ public class Testing {
 	}
 	
 	static void replacerSpeedTest() {
-		efr = new ExternalFileReplacer("src/main/java/rulefiles/khmer.json");
+		efr = new ExternalFileReplacer("src/main/resources/rulefiles/khmer.json");
 		
 		String input = null;
 		try {
