@@ -15,6 +15,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class FileIO {
 	
@@ -62,63 +65,52 @@ public class FileIO {
 	/**
 	 * From here: https://stackoverflow.com/questions/11012819/how-can-i-get-a-resource-folder-from-inside-my-jar-file/20073154
 	 */
-	public static void copyRulefilesFromAssets() {
-		String rulefileFolderDir = "rulefiles/";
-		URI uri = null;
-		String trimOff = "file:"; // WEIRD: Windows - 'file:/', LINUX - 'file:'
-		
-		ClassLoader classLoader = FileIO.class.getClassLoader();
-		try {
-		    uri = classLoader.getResource(rulefileFolderDir).toURI();
-		} catch (URISyntaxException e) {
-		    e.printStackTrace();
-		} catch (NullPointerException e) {
-		    e.printStackTrace();
-		}
+	public void copyRulefilesFromAssets() {		
+		final String rulefileFolderDir = "rulefiles/";
+		final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
-		if (uri == null) {
-		    System.err.println("Directory or files are missing");
-		}
-
-		/** App is running from a JAR file: copy assets to external folder */
-		if (uri.getScheme().contains("jar")) {
-			System.out.println("Environment = JAR");
+		System.out.printf("jarFile.getPath()=%s\n", jarFile.getPath());
+		System.out.printf("jarFile.getParent()=%s\n", jarFile.getParent());
+		if (jarFile.isFile()) {  // Run with JAR file
+			System.out.println("JAR MODE!");
+		    JarFile jar;
 			try {
-				// Get full filepath to JAR file
-				URL jar = FileIO.class.getProtectionDomain().getCodeSource().getLocation();
-		        System.out.println("DIR! " + jar.toString());
-		        
-		        // Trim out the 'file:/' part
-		        Path jarFile = Paths.get(jar.toString().substring(trimOff.length()));
-		        FileSystem fs = FileSystems.newFileSystem(jarFile, null);
-		        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath(rulefileFolderDir));
-	            
-		        for (Path p: directoryStream) {
-		        	// Note: getResourceAsStream() expects a slash before the directory! e.g. '/rulefiles/'
-		            InputStream is = FileIO.class.getResourceAsStream("/" + p.toString());
-		            System.out.println("p=" + p.toString());
-		            System.out.println("is=" + is);
-		            
-		            // Need to move 'rulefileFolderDir' to the folder dir, to make initialisation of folder and files easier
-		            rulefileDir = jar.toString().substring(trimOff.length()).replace("/ASBTranscriptorApp.jar", "")
-		            		+ "/" + rulefileFolderDir;
-		            String fileDir = p.toString().replace(rulefileFolderDir, "");
-		            System.out.println("FILE from JAR! " + rulefileDir + " - " + fileDir);
-		            
-		            copyFromInputStreamToFile(is, rulefileDir, fileDir);
-		            is.close();
-		        }
-		    } catch (IOException e) {
-		        e.printStackTrace();     
-		    }
+				// Get the path to the rulefiles folder, which will be
+				// located in the same directory as the JAR
+	            String folderPath = jarFile.getParent() + "/" + rulefileFolderDir;
+	            rulefileDir = folderPath;
+				
+				// Get all entries in the JAR
+				jar = new JarFile(jarFile);
+			    final Enumeration<JarEntry> entries = jar.entries();
+
+				// Go thru all entries in the JAR
+			    System.out.println("(JAR) Getting names...");
+			    while (entries.hasMoreElements()) {
+			        final String name = entries.nextElement().getName();
+			        
+			        // Filter entries that do not start with the rulefile folder directory
+			        if (name.startsWith(rulefileFolderDir)) {
+			            System.out.println("name=" + name);
+			            
+			            // Copy the file!
+			            String filePath = name.replace(rulefileFolderDir, "");
+			            InputStream is = jar.getInputStream(jar.getEntry(name));
+			            copyFromInputStreamToFile(is, folderPath, filePath);
+			        }
+			    }
+			    jar.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		/** App is running from IDE */
-		else {
-			System.out.println("Environment = IDE");
-			URL rulefileDirUrl = FileIO.class.getClassLoader().getResource("rulefiles/");
-			FileIO.rulefileDir = rulefileDirUrl.toString().replace(trimOff, "");
-			System.out.println("rulefileDir = " + FileIO.rulefileDir);
-		}
+		
+		System.out.println("===== THE END FOR now =====");
+		
+		
+		// just for now
+		//rulefileDir = "/media/perry/44e7c00f-9dd4-4713-b6e7-0a54f1e9cdf4/home/perry/workspace/ASBTransliteratorLibrary/src/main/resources/rulefiles/";
 	}
 	
 	
