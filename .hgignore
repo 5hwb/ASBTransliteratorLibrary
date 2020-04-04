@@ -3,5 +3,5 @@ syntax: regexp
 ^.gradle
 ^bin
 ^build
-ASBTranscriptorLibrary.jar
+ASBTransliteratorLibrary.jar
 input.txt
