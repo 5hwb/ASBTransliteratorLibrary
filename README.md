@@ -2,15 +2,15 @@
 
 ## About
 
-This is a GUI Java program that aims to transliterate between different phonetic orthographies and scripts.
-
-At this point in time, it can transliterate between phonetic English orthography (Even Better English Orthography, abbreviated as 'EBEO') and a collection of foreign scripts including Korean hangul and Khmer script.
+This is a Java library that aims to transliterate between different phonetic orthographies and scripts. Transliteration can be done from 1 script to another, and the rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'.
 
 ## How it works
 
 Transliteration between scripts is done in the ExternalFileReplacer class. Each writing system is represented with a 'replacer rules file', an external JSON file containing a list of rules that map the correct graphemes from EBEO to the target script.
 
 The Replacer algorithm works like this:
+
+> TODO update this to show new refactored algorithm
 
 ```
 function translateFromToScript():
@@ -45,8 +45,9 @@ Ideas:
 
 * In `translateFromToScript()`, move the 'grapheme insertion to output' to their own functions
 * Make rule selection in `selectRule()` based on new classes: RuleParser, with subclasses PatternRuleParser, CounterRuleParser and PhonemeVariantRuleParser
+	* Or even better: Move the selectRule() code to the Rule class
 
-# Replacer Rules File JSON syntax
+# Replacer Rulefile JSON syntax
 
 ## Rule syntax
 
@@ -201,14 +202,3 @@ e.g. `!C_._V | P_._!V | c=6` becomes
 ```
 
 This site may come in handy: http://lisperator.net/pltut/parser/
-
-## TODO  
-
-* Complete rule files for the following:
-	* Quikscript
-	* Shavian
-	* Thai
-	* Myanmar
-	* Kannada
-	* Deseret
-* Create window for modifying the replacer rules, which will allow the user to import and export the rules as a JSON file
