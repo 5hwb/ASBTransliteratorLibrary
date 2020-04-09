@@ -1,14 +1,19 @@
 package asb.schema;
 
 /**
- * Rules help to map the graphemes of 1 script to the graphemes of another script.
+ * The Rule helps to map the graphemes of 1 script to the graphemes of another script.
+ * Rules are composed of 1 or more SubRules, which defines the properties of the
+ * previous, current and next graphemes that must match the situation.
+ * The SubRules themselves are composed of SubSubRules, 1 for each grapheme to be checked.
  * @author perry
  *
  */
 public class Rule {
 
-	// Rule attributes
+	/** List of SubRules */
 	private SubRule[] subRules;
+
+	/** Do all SubRules need to match? */
 	private boolean isAndRuleMatch;
 
 	public Rule(int subruleLength) {
@@ -18,6 +23,10 @@ public class Rule {
 		}
 	}
 
+	//////////////////////////////////////////////////
+	// GETTER AND SETTER METHODS
+	//////////////////////////////////////////////////
+	
 	public int numOfSubRules() {
 		return subRules.length;
 	}
@@ -70,6 +79,10 @@ public class Rule {
 		this.isAndRuleMatch = isAndRuleMatch;
 	}
 
+	//////////////////////////////////////////////////
+	// TOSTRING()
+	//////////////////////////////////////////////////
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -90,6 +103,14 @@ public class Rule {
 		return sb.toString();
 	}
 
+	//////////////////////////////////////////////////
+	// USEFUL METHODS
+	//////////////////////////////////////////////////
+
+	/**
+	 * Create a new Rule object that matches anything.
+	 * @return New Rule object
+	 */
 	public static Rule emptyRule() {
 		Rule rule = new Rule(1);
 		rule.setSubsubRuleType(0, 0, "anything");
@@ -99,10 +120,9 @@ public class Rule {
 	}
 
 	/**
-	 * Convert a rule string into a Rule object
-	 *
-	 * @param pRule
-	 * @return a Rule object
+	 * Convert a rule string into a Rule object.
+	 * @param pRule The string representing a rule
+	 * @return a Rule object with the same contents as the rule String
 	 */
 	public static Rule parseStringToRule(String pRule) {
 		//*DEBUG*/System.out.printf("RULE: [%s]\n", pRule);
@@ -202,5 +222,9 @@ class SubRule {
 		for (int i = 0; i < subsubRules.length; i++) {
 			subsubRules[i] = new SubSubRule();
 		}
+		
+		// Set default values
+		this.cVal = 0;
+		this.pvVal = -1;
 	}
 }
