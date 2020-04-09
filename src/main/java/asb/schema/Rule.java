@@ -75,16 +75,17 @@ public class Rule {
 		StringBuilder sb = new StringBuilder();
 
 		for (SubRule sr: subRules) {
-			sb.append('[');
+			sb.append("[\n");
 			for (SubSubRule ssr: sr.subsubRules) {
-				sb.append('{');
-				sb.append("type="+ssr.type);
-				sb.append("isNot="+ssr.isNot);
-				sb.append("isStrictTypeMatch="+ssr.isStrictTypeMatch);
-				sb.append('}');
+				sb.append("  {");
+				sb.append(String.format(" type=%s ", ssr.type));
+				sb.append(String.format("isNot=%s ", ssr.isNot));
+				sb.append(String.format("isStrictTypeMatch=%s ", ssr.isStrictTypeMatch));
+				sb.append("}\n");
 			}
-			sb.append("cVal="+sr.cVal);
-			sb.append(']');
+			sb.append(String.format("  cVal=%s\n", sr.cVal));
+			sb.append(String.format("  pvVal=%s\n", sr.pvVal));
+			sb.append("]");
 		}
 		return sb.toString();
 	}
