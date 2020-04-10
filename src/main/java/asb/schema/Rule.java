@@ -86,9 +86,12 @@ public class Rule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("isAndRuleMatch=%s\n", this.isAndRuleMatch));
 
 		for (SubRule sr: subRules) {
 			sb.append("[\n");
+			sb.append(String.format("  cVal=%s\n", sr.cVal));
+			sb.append(String.format("  pvVal=%s\n", sr.pvVal));
 			for (SubSubRule ssr: sr.subsubRules) {
 				sb.append("  {");
 				sb.append(String.format(" type=%s ", ssr.type));
@@ -96,9 +99,7 @@ public class Rule {
 				sb.append(String.format("isStrictTypeMatch=%s ", ssr.isStrictTypeMatch));
 				sb.append("}\n");
 			}
-			sb.append(String.format("  cVal=%s\n", sr.cVal));
-			sb.append(String.format("  pvVal=%s\n", sr.pvVal));
-			sb.append("]");
+			sb.append("]\n");
 		}
 		return sb.toString();
 	}
