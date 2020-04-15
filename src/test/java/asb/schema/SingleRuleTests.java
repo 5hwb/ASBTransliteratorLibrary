@@ -22,8 +22,16 @@ public class SingleRuleTests {
 		exampleRule.setSubsubRuleIsStrictTypeMatch(0, 0, false);
 		exampleRule.setSubsubRuleIsStrictTypeMatch(0, 1, false);
 		exampleRule.setSubsubRuleIsStrictTypeMatch(0, 2, false);
-		exampleRule.setSubRulecVal(0, 0);
+	}
 
+	@Test
+	public void test_parseStringToEmptyRule() {
+		// Create empty rule
+		exampleRule = Rule.emptyRule();
+		
+		String exampleRuleString = "";
+		Rule parsedRule = Rule.parseStringToRule(exampleRuleString);		
+		assertEquals(exampleRule.toString(), parsedRule.toString());
 	}
 
 	@Test
@@ -31,7 +39,6 @@ public class SingleRuleTests {
 		// Check if parsing the given rule string matches the example Rule object
 		String exampleRuleString = "C_._V";
 		Rule parsedRule = Rule.parseStringToRule(exampleRuleString);
-		
 		assertEquals(exampleRule.toString(), parsedRule.toString());
 	}
 
@@ -43,7 +50,6 @@ public class SingleRuleTests {
 		
 		String exampleRuleString = "!C_._V";
 		Rule parsedRule = Rule.parseStringToRule(exampleRuleString);
-		
 		assertEquals(exampleRule.toString(), parsedRule.toString());
 	}
 
@@ -56,7 +62,28 @@ public class SingleRuleTests {
 		
 		String exampleRuleString = "C_._<narrowConso>";
 		Rule parsedRule = Rule.parseStringToRule(exampleRuleString);
+		assertEquals(exampleRule.toString(), parsedRule.toString());
+	}
+
+	@Test
+	public void test_parseStringToRule_counterRule() {
+		// Create rule that represents the rule string "c=2"
+		exampleRule = new Rule(1);
+		exampleRule.setSubRulecVal(0, 2);
 		
+		String exampleRuleString = "c=2";
+		Rule parsedRule = Rule.parseStringToRule(exampleRuleString);		
+		assertEquals(exampleRule.toString(), parsedRule.toString());
+	}
+
+	@Test
+	public void test_parseStringToRule_phonemeVariantRule() {
+		// Create rule that represents the rule string "pv=1"
+		exampleRule = new Rule(1);
+		exampleRule.setSubRulePvVal(0, 1);
+		
+		String exampleRuleString = "pv=1";
+		Rule parsedRule = Rule.parseStringToRule(exampleRuleString);
 		assertEquals(exampleRule.toString(), parsedRule.toString());
 	}
 
