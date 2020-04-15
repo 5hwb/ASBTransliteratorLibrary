@@ -33,7 +33,7 @@
 		{"l1": ["È", "è"],	"l1type": "vowel",	"l1rule": ["#_._."],
 		 "l2": ["ᠢᡝ"],	"l2type": "vowel",	"l2rule": [""]},
 		{"l1": ["Ò", "ò"],	"l1type": "vowel",	"l1rule": ["#_._."],
-		 "l2": ["ᠣᡠ"],	"l2type": "vowel",	"l2rule": [""]},
+		 "l2": ["ᡇ"],	"l2type": "vowel",	"l2rule": [""]},
 		{"l1": ["Ù", "ù"],	"l1type": "vowel",	"l1rule": ["#_._."],
 		 "l2": ["ᠶᡠ"],	"l2type": "vowel",	"l2rule": [""]},
 
@@ -48,7 +48,7 @@
 		{"l1": ["V", "v"],	"l1type": "consonant",	"l1rule": ["#_._."],
 		 "l2": ["ᢨ"],	"l2type": "consonant",	"l2rule": [""]},
 		{"l1": ["N", "n"],	"l1type": "consonant",	"l1rule": ["#_._."],
-		 "l2": ["ᠨ᠌"],	"l2type": "consonant",	"l2rule": [""]},
+		 "l2": ["ᠨ", "ᠨ᠌"],	"l2type": "consonant",	"l2rule": ["P_._. | #_._."]},
 		{"l1": ["T", "t"],	"l1type": "consonant",	"l1rule": ["#_._."],
 		 "l2": ["ᡨ"],	"l2type": "consonant",	"l2rule": [""]},
 		{"l1": ["D", "d"],	"l1type": "consonant",	"l1rule": ["#_._."],
@@ -117,8 +117,6 @@
 		 "l2": ["᠃"],	"l2type": "punctuation",	"l2rule": [""]},
 		{"l1": [":"],	"l1type": "punctuation",	"l1rule": [""],
 		 "l2": ["᠄"],	"l2type": "punctuation",	"l2rule": [""]},
-		{"l1": ["-"],	"l1type": "punctuation",	"l1rule": [""],
-		 "l2": ["᠊"],	"l2type": "punctuation",	"l2rule": [""]},
 
 		{"l1": ["\n"],	"l1type": "sentenceEdge",	"l1rule": [""],
 		 "l2": ["\n"],	"l2type": "sentenceEdge",	"l2rule": [""]},
