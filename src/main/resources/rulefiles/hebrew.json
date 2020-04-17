@@ -35,7 +35,7 @@
 		{"l1": ["Ò", "ò"],	"l1type": "vowel",	"l1rule": ["#_._."],
 		"l2": ["ָו", "אָו"],	"l2type": "vowel",	"l2rule": ["C_._."]},
 		{"l1": ["Ù", "ù"],	"l1type": "vowel",	"l1rule": ["#_._."],
-		"l2": ["יֻ"],	"l2type": "vowel",	"l2rule": [""]},
+		"l2": ["יו"],	"l2type": "vowel",	"l2rule": [""]},
 
 		{"l1": ["M", "m"],	"l1type": "consonant",	"l1rule": ["#_._."],
 		"l2": ["ם", "מ"],	"l2type": "consonant",	"l2rule": ["._._P | ._._#"]},
@@ -119,7 +119,7 @@
 		{"l1": ["Wò", "wò"],	"l1type": "vowel",	"l1rule": ["#_._."],
 		 "l2": ["וָו"],	"l2type": "vowel",	"l2rule": [""]},
 		{"l1": ["Wù", "wù"],	"l1type": "vowel",	"l1rule": ["#_._."],
-		 "l2": ["ויֻ"],	"l2type": "vowel",	"l2rule": [""]},
+		 "l2": ["ויו"],	"l2type": "vowel",	"l2rule": [""]},
 		
 		{"l1": ["Ya", "ya"],	"l1type": "vowel",	"l1rule": ["#_._."],
 		"l2": ["יַ"],	"l2type": "vowel",	"l2rule": [""]},
@@ -154,7 +154,7 @@
 		{"l1": ["Yò", "yò"],	"l1type": "vowel",	"l1rule": ["#_._."],
 		"l2": ["יָו"],	"l2type": "vowel",	"l2rule": [""]},
 		{"l1": ["Yù", "yù"],	"l1type": "vowel",	"l1rule": ["#_._."],
-		"l2": ["ייֻ"],	"l2type": "vowel",	"l2rule": [""]},
+		"l2": ["ייו"],	"l2type": "vowel",	"l2rule": [""]},
 		
 		{"l1": ["Gh", "gh"],	"l1type": "consonant",	"l1rule": ["#_._."],
 		"l2": ["ג'ה"],	"l2type": "consonant",	"l2rule": [""]},
