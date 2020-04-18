@@ -28,7 +28,7 @@
 		{"l1": ["T", "t"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Т", "т"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["D", "d"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Д", "д"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Ŧ", "ŧ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ц", "ц"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Đ", "đ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Дһ", "дһ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Đ", "đ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ҙ", "ҙ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Ŋ", "ŋ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ң", "ң"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["K", "k"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["К", "к"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["G", "g"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Г", "г"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
@@ -39,7 +39,7 @@
 		{"l1": ["Ś", "ś"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ш", "ш"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Ź", "ź"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ж", "ж"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["C", "c"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ч", "ч"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["J", "j"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Дж", "дж"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["J", "j"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Џ", "џ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["R", "r"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Р", "р"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["L", "l"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Л", "л"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["H", "h"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Һ", "һ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
@@ -94,7 +94,6 @@
 
 		{"l1": ["Dh", "dh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Д'һ", "д'һ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Gh", "gh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Г'һ", "г'һ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Dź", "dź"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Д'ж", "д'ж"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 
 		{"l1": ["1"],	"l1type": "numeral",	"l1rule": [""],		"l2": ["1"],	"l2type": "numeral",	"l2rule": [""]},
 		{"l1": ["2"],	"l1type": "numeral",	"l1rule": [""],		"l2": ["2"],	"l2type": "numeral",	"l2rule": [""]},
