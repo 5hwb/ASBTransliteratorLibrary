@@ -47,7 +47,7 @@
 		{"l1": ["St", "st"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Щ", "щ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 
 		{"l1": ["Wa", "wa"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Уа", "уа"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Wi", "wi"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Уь", "уь"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Wi", "wi"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Уи", "уи"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Wo", "wo"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Уо", "уо"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Wu", "wu"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Уу", "уу"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Wá", "wá"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Уя", "уя"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
