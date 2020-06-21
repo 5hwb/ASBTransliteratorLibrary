@@ -29,7 +29,7 @@
 		{"l1": ["D", "d"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["D", "d"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Ŧ", "ŧ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Th", "th"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Đ", "đ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Dh", "dh"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ŋ", "ŋ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ng", "ng"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Ŋ", "ŋ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ŋ", "ŋ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["K", "k"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["K", "k"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["G", "g"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["G", "g"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Ĥ", "ĥ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Kh", "kh"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
@@ -78,7 +78,6 @@
 		
 		{"l1": ["Th", "th"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["T'h", "t'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Dh", "dh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["D'h", "d'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ng", "ng"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["N'g", "n'g"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Kh", "kh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["K'h", "k'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Gh", "gh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["G'h", "g'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Sh", "sh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["S'h", "s'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
