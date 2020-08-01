@@ -2,11 +2,11 @@
 
 ## About
 
-This is a Java library that aims to transliterate between different phonetic orthographies and scripts. Transliteration can be done from 1 script to another, and the rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'.
+This is a Java library that aims to transliterate between different writing systems/scripts. Transliteration can be done from 1 script to another, and the rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'.
 
 ## How it works
 
-Transliteration between scripts is done in the ExternalFileReplacer class. Each writing system is represented with a 'replacer rules file', an external JSON file containing a list of rules that map the correct graphemes from EBEO to the target script.
+Transliteration between scripts is done in the ExternalFileReplacer class. Each writing system is represented with a 'replacer rules file', an external JSON file containing a list of rules that map the correct graphemes from the source script (Script 1) to the target script (Script 2) and vice versa.
 
 The Replacer algorithm works like this:
 

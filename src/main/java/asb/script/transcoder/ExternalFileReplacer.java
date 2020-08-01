@@ -21,8 +21,8 @@ import asb.script.transcoder.parsing.CharToken;
 import asb.script.transcoder.parsing.Tokeniser;
 
 /**
- * An ExternalFileReplacer replaces each Latin script character in EBEO with the
- * corresponding letter for an adapted script.
+ * An ExternalFileReplacer replaces each occurrence of a Script 1 grapheme with the
+ * corresponding grapheme for Script 2 using context from the surrounding graphemes.
  *
  * @author perry
  *
@@ -33,8 +33,8 @@ public class ExternalFileReplacer {
 	 * These HashMaps map String keys representing the original char with
 	 * PhonemeRule class values representing what they will be replaced with
 	 */
-	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Latin grapheme -> Script PhonemeRule
-	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script grapheme -> Latin PhonemeRule
+	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Script 1 grapheme -> Script 2 PhonemeRule
+	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script 2 grapheme -> Script 1 PhonemeRule
 	//protected Map<String, PhonemeRule> graphemeToPhonemeMap; // Grapheme -> corresponding PhonemeRule
 	protected Map<String, Integer> graphemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
 
@@ -73,7 +73,7 @@ public class ExternalFileReplacer {
 	}
 
 	/**
-	 * Translate a Latin EBEO text into the desired script
+	 * Translate a text written in Script 1 into Script 2
 	 *
 	 * @param input Self-descriptive
 	 * @return
@@ -83,7 +83,7 @@ public class ExternalFileReplacer {
 	}
 
 	/**
-	 * Translate a text in the desired script into Latin EBEO script
+	 * Translate a text written in Script 2 into Script 1
 	 *
 	 * @param input Self-descriptive
 	 * @return
