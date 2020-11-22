@@ -45,7 +45,7 @@ Ideas:
 
 * In `translateFromToScript()`, move the 'grapheme insertion to output' to their own functions
 * Make rule selection in `selectRule()` based on new classes: RuleParser, with subclasses PatternRuleParser, CounterRuleParser and PhonemeVariantRuleParser
-	* Or even better: Move the selectRule() code to the Rule class
+    * Or even better: Move the selectRule() code to the Rule class
 
 # Replacer Rulefile JSON syntax
 
