@@ -154,7 +154,6 @@ public class ExternalFileReplacer {
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
 			// Get the PhonemeRule for the currently selected grapheme
 			PhonemeRule replacementPhoneme = cToken.phonemeRule();
-			Integer currGraphemeIndex = cToken.graphemeVarIndex()/*graphemeVarIndexStack.nthTop(1)*/;
 
 			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
 			if (cToken.phonemeRule() == null) {
@@ -171,7 +170,7 @@ public class ExternalFileReplacer {
 			if (pCounter != null) {
 				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
 				Rule[] cRules = pCounter.incrRuleParsed();
-				int matchingRuleIndex = selectRule(cToken, cRules, toScript, null, null);
+				int matchingRuleIndex = selectRule(cToken, cRules, toScript, null);
 				if (matchingRuleIndex >= 0) {
 					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
 					pCounter.increment();
@@ -184,7 +183,7 @@ public class ExternalFileReplacer {
 
 			// Select the grapheme to append
 			Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
-			int letterIndex = selectRule(cToken, pRules, toScript, pCounter, currGraphemeIndex);
+			int letterIndex = selectRule(cToken, pRules, toScript, pCounter);
 			if (letterIndex < 0) {
 				// default letter is the last one
 				letterIndex = (toScript) ? cToken.phonemeRule().l2().length - 1 : cToken.phonemeRule().l1().length - 1;
@@ -214,14 +213,16 @@ public class ExternalFileReplacer {
 	 * @param pRules   List of rules to check for matches
 	 * @param toScript Translate the input to script, or back?
 	 * @param pCounter Phoneme counter for this type
-	 * @param pVariantIndex The index of the selected grapheme in phoneme's variant list
 	 * @return Index of matching rule. -1 if no match was found
 	 */
-	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter, Integer pVariantIndex) {
+	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter) {
 		String prevType = (toScript) ? cToken.prev().phonemeRule().l2type() : cToken.prev().phonemeRule().l1type();
 		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
 		String nextType = (toScript) ? cToken.next().phonemeRule().l2type() : cToken.next().phonemeRule().l1type();
 
+		// Get the index of the selected grapheme in phoneme's variant list
+		Integer pVariantIndex = cToken.graphemeVarIndex();
+		
 		// Go through each rule until one matching the current pattern is found
 		int letterIndex = -1;
 		for (int i = 0; i < pRules.length; i++) {
