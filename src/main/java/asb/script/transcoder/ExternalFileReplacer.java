@@ -13,6 +13,7 @@ import com.google.gson.JsonSyntaxException;
 
 import asb.ds.FixedStack;
 import asb.io.FileIO;
+import asb.mappings.Mappings;
 import asb.schema.PhonemeCounter;
 import asb.schema.PhonemeRule;
 import asb.schema.PhonemeType;
@@ -47,12 +48,6 @@ public class ExternalFileReplacer {
 	/** The maximum grapheme size, which determines the number of chars to scan ahead */
 	protected int maxGraphemeSize;
 
-	/** Consonant counters */
-	protected Map<String, PhonemeCounter> consoTypeToCounterMap;
-
-	/** Reference hashmap for phoneme types */
-	protected Map<String, PhonemeType> PhonemeTypeReferenceMap;
-
 	protected String rulefileDir;
 
 	public ExternalFileReplacer(String filePath) {
@@ -66,9 +61,7 @@ public class ExternalFileReplacer {
 	private void initialiseValues() {
 		this.l1GraphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
 		this.l2GraphemeToPhonemeMap = new HashMap<String, PhonemeRule>();
-		this.PhonemeTypeReferenceMap = new HashMap<String, PhonemeType>();
 		this.graphemeVarIndexMap = new HashMap<String, Integer>();
-		this.consoTypeToCounterMap = new HashMap<String, PhonemeCounter>();
 		this.maxGraphemeSize = 0;
 	}
 
@@ -109,14 +102,14 @@ public class ExternalFileReplacer {
 		/* The current grapheme to analyse */
 		String currGrapheme = "";
 		
-		Set<String> counterKeySet = consoTypeToCounterMap.keySet();
+		Set<String> counterKeySet = Mappings.getConsoTypeToCounterMap().keySet();
 
 		/*DEBUG*/System.out.println("Initialised!");
 
 		// Reset the counters
 		for (String key : counterKeySet) {
 			/*DEBUG*/System.out.printf("Resetting %s...\n", key);			
-			consoTypeToCounterMap.get(key).reset();
+			Mappings.getConsoTypeToCounterMap().get(key).reset();
 		}
 
 		///////////////////////////////////////////////
@@ -164,9 +157,9 @@ public class ExternalFileReplacer {
 			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + cToken.phonemeRule().l2()[0]);
 
 			// Increment the counter for the current phoneme's type
-			String currType = (toScript) ? PhonemeTypeReferenceMap.get(cToken.phonemeRule().l2type()).name()
-					: PhonemeTypeReferenceMap.get(cToken.phonemeRule().l1type()).name();
-			PhonemeCounter pCounter = consoTypeToCounterMap.get(currType);
+			String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
+					: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
+			PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
 			if (pCounter != null) {
 				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
 				Rule[] cRules = pCounter.incrRuleParsed();
@@ -191,9 +184,9 @@ public class ExternalFileReplacer {
 
 			// Reset counter values if they have reached the maximum value
 			for (String key : counterKeySet) {
-				boolean counterIsMax = !(key.equals(currType) && !consoTypeToCounterMap.get(key).valueIsMax());
+				boolean counterIsMax = !(key.equals(currType) && !Mappings.getConsoTypeToCounterMap().get(key).valueIsMax());
 				if (counterIsMax) {
-					consoTypeToCounterMap.get(key).reset(); // reset counter value to 0
+					Mappings.getConsoTypeToCounterMap().get(key).reset(); // reset counter value to 0
 				}
 			}
 
@@ -337,7 +330,7 @@ public class ExternalFileReplacer {
 	 */
 	private boolean typeEquals(String a, String b, boolean isStrictTypeMatch) {
 		boolean matchesMainType = (isStrictTypeMatch) ? false
-				: (PhonemeTypeReferenceMap.get(a).name().equals(b) || PhonemeTypeReferenceMap.get(b).name().equals(a));
+				: (Mappings.getPhonemeTypeReferenceMap().get(a).name().equals(b) || Mappings.getPhonemeTypeReferenceMap().get(b).name().equals(a));
 		boolean matchesSubType = (a.equals(b));
 		/*DEBUG*/System.out.printf("\t\t\ttypeEquals(%s, %s): matchesMainType=%b, matchesSubType=%b\n",
 		/*DEBUG*/		a, b, matchesMainType, matchesSubType);
@@ -384,7 +377,7 @@ public class ExternalFileReplacer {
 					phonemeCounter.setIncrRuleParsed(rule);
 				}
 
-				consoTypeToCounterMap.put(phonemeCounter.type(), phonemeCounter);
+				Mappings.getConsoTypeToCounterMap().put(phonemeCounter.type(), phonemeCounter);
 			}
 
 			// Read each phoneme
@@ -432,11 +425,11 @@ public class ExternalFileReplacer {
 			for (int i = 0; i < rulefileSchema.types().length; i++) {
 				// Insert main type
 				PhonemeType phonemeType = rulefileSchema.types()[i];
-				PhonemeTypeReferenceMap.put(phonemeType.name(), phonemeType);
+				Mappings.getPhonemeTypeReferenceMap().put(phonemeType.name(), phonemeType);
 
 				// Insert subtypes
 				for (int j = 0; j < phonemeType.extraTypes().length; j++) {
-					PhonemeTypeReferenceMap.put(phonemeType.extraTypes()[j], phonemeType);
+					Mappings.getPhonemeTypeReferenceMap().put(phonemeType.extraTypes()[j], phonemeType);
 				}
 			}
 
