@@ -2,7 +2,14 @@
 
 ## About
 
-This is a Java library that aims to transliterate between different writing systems/scripts. Transliteration can be done from 1 script to another, and the rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'.
+This is a Java library that aims to transliterate between different writing systems/scripts, such as Korean, Greek and Russian. For instance:
+
+* Korean Hangul '안녕하세요 세상' = 'Annyeonghaseyo sesang'
+* Greek 'Γειά σου Κόσμε' = 'Geiá sou Kósme'
+* Russian Cyrillic 'Привет, мир' = 'Privet, mir'
+* Hindi Devanagari 'नमस्ते दुनिया' = 'Namaste duniya'
+
+Transliteration can be done from 1 script to another, and the rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'.
 
 ## How it works
 
@@ -32,20 +39,6 @@ function translateFromToScript():
 
 	return StringBuilder.toString()
 ```
-
-## Performance
-
-It currently takes ~90ms to transliterate a 62.7KB text file.
-
-## Refactoring idea
-
-The code, as it is now, is very complex and hard to maintain. `translateFromToScript()` and `selectRule()` are both very long methods that can be split up.
-
-Ideas:
-
-* In `translateFromToScript()`, move the 'grapheme insertion to output' to their own functions
-* Make rule selection in `selectRule()` based on new classes: RuleParser, with subclasses PatternRuleParser, CounterRuleParser and PhonemeVariantRuleParser
-    * Or even better: Move the selectRule() code to the Rule class
 
 # Replacer Rulefile JSON syntax
 
@@ -202,3 +195,17 @@ e.g. `!C_._V | P_._!V | c=6` becomes
 ```
 
 This site may come in handy: http://lisperator.net/pltut/parser/
+
+## Performance
+
+It currently takes ~90ms to transliterate a 62.7KB text file.
+
+## Refactoring idea
+
+The code, as it is now, is very complex and hard to maintain. `translateFromToScript()` and `selectRule()` are both very long methods that can be split up.
+
+Ideas:
+
+* In `translateFromToScript()`, move the 'grapheme insertion to output' to their own functions
+* Make rule selection in `selectRule()` based on new classes: RuleParser, with subclasses PatternRuleParser, CounterRuleParser and PhonemeVariantRuleParser
+    * Or even better: Move the selectRule() code to the Rule class
