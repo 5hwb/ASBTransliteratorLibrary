@@ -2,7 +2,7 @@
 
 ## About
 
-This is a Java library that aims to transliterate between different writing systems/scripts, such as Korean, Greek and Russian. For instance:
+This is a Java library that transliterates between different writing systems/scripts, such as Latin, Korean, Greek and Russian. For instance:
 
 * Korean Hangul '안녕하세요 세상' = 'Annyeonghaseyo sesang'
 * Greek 'Γειά σου Κόσμε' = 'Geiá sou Kósme'
