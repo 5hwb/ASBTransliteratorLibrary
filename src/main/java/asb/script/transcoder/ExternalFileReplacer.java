@@ -19,6 +19,8 @@ import asb.schema.PhonemeRule;
 import asb.schema.PhonemeType;
 import asb.schema.RuleSchema;
 import asb.script.transcoder.parsing.CharToken;
+import asb.script.transcoder.parsing.RuleParser;
+import asb.script.transcoder.parsing.RuleParserFactory;
 import asb.script.transcoder.parsing.Tokeniser;
 
 /**
@@ -209,12 +211,7 @@ public class ExternalFileReplacer {
 	 * @return Index of matching rule. -1 if no match was found
 	 */
 	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter) {
-		String prevType = (toScript) ? cToken.prev().phonemeRule().l2type() : cToken.prev().phonemeRule().l1type();
-		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
-		String nextType = (toScript) ? cToken.next().phonemeRule().l2type() : cToken.next().phonemeRule().l1type();
-
-		// Get the index of the selected grapheme in phoneme's variant list
-		Integer pVariantIndex = cToken.graphemeVarIndex();
+		RuleParserFactory ruleParserFactory = RuleParserFactory.getInstance();
 		
 		// Go through each rule until one matching the current pattern is found
 		int letterIndex = -1;
@@ -230,80 +227,22 @@ public class ExternalFileReplacer {
 			for (int j = 0; j < pRules[i].numOfSubRules(); j++) {
 				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", j);
 
-				//////////////////////////////
-				// Rule is a pattern rule   //
-				//////////////////////////////
-				if (pRules[i].subRulecVal(j) == 0 && pRules[i].subRulePvVal(j) < 0) {
+				// Go thru each RuleParser instance
+				for (RuleParser ruleParser : ruleParserFactory.getRuleParsers()) {
+					if (ruleParser.matchesCondition(cToken, pRules[i], j, toScript)) {
+						// Match if the pattern matches the scenario
+						boolean isMatch = ruleParser.isSubruleMatch(cToken, pRules[i], j, toScript);
+						
+						subRulesDoMatch &= isMatch;
+						/*DEBUG*/System.out.printf("\t\t%s's ISMATCH: [%b]\n", ruleParser.name(), isMatch);
 
-					// COMPARISON!
-					boolean prevIsMatch = (pRules[i].subsubRuleType(j, 0).equals("anything"))
-							? true // always true if it matches 'anything'
-							: (pRules[i].subsubRuleIsNot(j, 0))
-								? !typeEquals(pRules[i].subsubRuleType(j, 0), prevType, pRules[i].subsubRuleIsStrictTypeMatch(j, 0))
-								: typeEquals(pRules[i].subsubRuleType(j, 0), prevType, pRules[i].subsubRuleIsStrictTypeMatch(j, 0));
-					/*DEBUG*/System.out.printf("\t\tPREVMATCH: [%b]\n", prevIsMatch);
-
-					boolean currIsMatch = (pRules[i].subsubRuleType(j, 1).equals("anything"))
-							? true // always true if it matches 'anything'
-							: (pRules[i].subsubRuleIsNot(j, 1))
-								? !typeEquals(pRules[i].subsubRuleType(j, 1), currType, pRules[i].subsubRuleIsStrictTypeMatch(j, 1))
-								: typeEquals(pRules[i].subsubRuleType(j, 1), currType, pRules[i].subsubRuleIsStrictTypeMatch(j, 1));
-					/*DEBUG*/System.out.printf("\t\tCURRMATCH: [%b]\n", currIsMatch);
-
-					boolean nextIsMatch = (pRules[i].subsubRuleType(j, 2).equals("anything"))
-							? true // always true if it matches 'anything'
-							: (pRules[i].subsubRuleIsNot(j, 2))
-								? !typeEquals(pRules[i].subsubRuleType(j, 2), nextType, pRules[i].subsubRuleIsStrictTypeMatch(j, 2))
-								: typeEquals(pRules[i].subsubRuleType(j, 2), nextType, pRules[i].subsubRuleIsStrictTypeMatch(j, 2));
-					/*DEBUG*/System.out.printf("\t\tNEXTMATCH: [%b]\n", nextIsMatch);
-					/*DEBUG*/System.out.printf("\t\tRule num: %d\n", i);
-
-					// Match if the pattern matches the scenario
-					boolean isMatch = ((prevIsMatch && nextIsMatch) && currIsMatch);
-					subRulesDoMatch &= isMatch;
-					/*DEBUG*/System.out.printf("\t\tPatmat's ISMATCH: [%b]\n", isMatch);
-					if (isMatch && !isAndRuleMatch) {
-						letterIndex = i;
-						/*DEBUG*/System.out.printf("\t\tChosen PATTERN rule num: %d\n", i);
-						return letterIndex;
-					}
-				}
-				//////////////////////////////
-				// Rule is a counter rule   //
-				//////////////////////////////
-				else if (pRules[i].subRulecVal(j) >= 1 && pCounter != null) {
-					int cVal = pRules[i].subRulecVal(j);
-					/*DEBUG*/System.out.printf("\t\tRULEd counter? curr counter val = %d\n", pCounter.value());
-
-					// Match if counter value for current phoneme's type equals cVal.
-					// Useful for consonant clusters
-					boolean isMatch = (pCounter.value() >= cVal);
-					subRulesDoMatch &= isMatch;
-					/*DEBUG*/System.out.printf("\t\tCountmat's ISMATCH: [%b]\n", isMatch);
-					if (isMatch && !isAndRuleMatch) {
-						pCounter.reset(); // reset counter value to 0
-						letterIndex = i;
-						/*DEBUG*/System.out.printf("\t\tChosen matching COUNTER rule num: %d\n", i);
-						return letterIndex;
-					}
-				}
-				//////////////////////////////
-				// Rule is a phoneme variant selection rule
-				//////////////////////////////
-				else if (pRules[i].subRulePvVal(j) >= 0 && pVariantIndex != null) {
-					int pvVal = pRules[i].subRulePvVal(j);
-					/*DEBUG*/System.out.printf("\t\tRULEd phovarsel? curr variant val = %d\n", pVariantIndex);
-
-					// Match if counter value for current phoneme's type equals cVal.
-					// Useful for scripts that have uppercase and lowercase forms
-					boolean isMatch = (pVariantIndex == pvVal);
-					subRulesDoMatch &= isMatch;
-					/*DEBUG*/System.out.printf("\t\tPhovarsel's ISMATCH: [%b]\n", isMatch);
-					if (isMatch && !isAndRuleMatch) {
-						letterIndex = i;
-						/*DEBUG*/System.out.printf("\t\tChosen matching PHOVARSEL rule num: %d\n", i);
-						return letterIndex;
-					}
+						if (isMatch && !isAndRuleMatch) {
+							ruleParser.postMatch(cToken, pRules[i], j, toScript);
+							letterIndex = i;
+							/*DEBUG*/System.out.printf("\t\tChosen %s rule num: %d\n", ruleParser.name(), i);
+							return letterIndex;
+						}
+					}					
 				}
 			}
 			
@@ -316,25 +255,6 @@ public class ExternalFileReplacer {
 			}
 		}
 		return letterIndex;
-	}
-
-	/**
-	 * Compare 2 phoneme types to see if they match. Matches main types with their
-	 * sub-types as defined in the replacer rules file.
-	 *
-	 * @param a                 1st type
-	 * @param b                 2nd type
-	 * @param isStrictTypeMatch If true, only match if a == b . If false, allow
-	 *                          matches between subtypes and main types
-	 * @return Whether the 2 phoneme types are a match
-	 */
-	private boolean typeEquals(String a, String b, boolean isStrictTypeMatch) {
-		boolean matchesMainType = (isStrictTypeMatch) ? false
-				: (Mappings.getPhonemeTypeReferenceMap().get(a).name().equals(b) || Mappings.getPhonemeTypeReferenceMap().get(b).name().equals(a));
-		boolean matchesSubType = (a.equals(b));
-		/*DEBUG*/System.out.printf("\t\t\ttypeEquals(%s, %s): matchesMainType=%b, matchesSubType=%b\n",
-		/*DEBUG*/		a, b, matchesMainType, matchesSubType);
-		return matchesMainType || matchesSubType;
 	}
 
 	/**
