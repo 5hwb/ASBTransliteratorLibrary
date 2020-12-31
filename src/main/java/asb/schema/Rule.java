@@ -206,15 +206,15 @@ public class Rule {
 // SubSubRule
 class SubSubRule {
 	// SubSubRule attributes
-	String type;
-	boolean isNot;
-	boolean isStrictTypeMatch;
+	String type;   // Grapheme type
+	boolean isNot; // True if match shall not equal the marked grapheme type
+	boolean isStrictTypeMatch; // True if type shall only match with the exact type
 }
 
 // SubRule
 class SubRule {
 	// SubRule attributes
-	SubSubRule[] subsubRules;
+	SubSubRule[] subsubRules; // List of SubSubRules
 	int cVal;  // counter value
 	int pvVal; // phoneme variant value. -1 = match any value, 0 = 1st value, 1 = 2nd value, etc.
 

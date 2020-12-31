@@ -38,20 +38,21 @@ public class ExternalFileReplacer {
 	 */
 	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Script 1 grapheme -> Script 2 PhonemeRule
 	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script 2 grapheme -> Script 1 PhonemeRule
-	//protected Map<String, PhonemeRule> graphemeToPhonemeMap; // Grapheme -> corresponding PhonemeRule
 	protected Map<String, Integer> graphemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
 
 	/** Stores the output string */
 	protected StringBuilder output;
 
-	/** A placeholder PhonemeRule for non-replaced characters */
-	//protected PhonemeRule defaultPhoneme;
-
 	/** The maximum grapheme size, which determines the number of chars to scan ahead */
 	protected int maxGraphemeSize;
 
+	/** Directory of the rule file */
 	protected String rulefileDir;
 
+	/**
+	 * Initialise a new ExternalFileReplacer with the substitution rules from the given rulefile.
+	 * @param filePath The directory of the rulefile
+	 */
 	public ExternalFileReplacer(String filePath) {
 		initialiseValues();
 		loadJsonRulefile(readExternalJsonFile(filePath));
@@ -70,8 +71,8 @@ public class ExternalFileReplacer {
 	/**
 	 * Translate a text written in Script 1 into Script 2
 	 *
-	 * @param input Self-descriptive
-	 * @return
+	 * @param input A text written in Script 1
+	 * @return The transliterated text in Script 2
 	 */
 	public String translateToScript(String input) {
 		return translateFromToScript(input, true);
@@ -80,8 +81,8 @@ public class ExternalFileReplacer {
 	/**
 	 * Translate a text written in Script 2 into Script 1
 	 *
-	 * @param input Self-descriptive
-	 * @return
+	 * @param input A text written in Script 2
+	 * @return The transliterated text in Script 1
 	 */
 	public String translateFromScript(String input) {
 		return translateFromToScript(input, false);
@@ -98,10 +99,11 @@ public class ExternalFileReplacer {
 		/**
 		 * NOTE: A 'grapheme' is a string of up to n characters representing a single phoneme.
 		 */
+		// List of tokens
 		ArrayList<CharToken> tokenOutput = new ArrayList<>();
 		output = new StringBuilder();
 
-		/* The current grapheme to analyse */
+		// The current grapheme to analyse
 		String currGrapheme = "";
 		
 		Set<String> counterKeySet = Mappings.getConsoTypeToCounterMap().keySet();
@@ -114,29 +116,28 @@ public class ExternalFileReplacer {
 			Mappings.getConsoTypeToCounterMap().get(key).reset();
 		}
 
-		///////////////////////////////////////////////
-		// LOOK UP GRAPHEME AND APPEND TO TOKEN LIST //
-		///////////////////////////////////////////////
+		////////////////////////////////////////////////////////////
+		// CONVERT THE INPUT STRING INTO A LIST OF TOKENS
+		////////////////////////////////////////////////////////////
 		Map<String, PhonemeRule> mapping = (toScript) 
 				? this.l1GraphemeToPhonemeMap 
 				: this.l2GraphemeToPhonemeMap;
 		Tokeniser tokeniser = new Tokeniser(input, mapping, graphemeVarIndexMap);
 		CharToken token;
 
-		// Process all chars in the input string.
 		while ((token = tokeniser.readNextToken()) != null) {
 			CharToken prev = tokeniser.prevToken();
 			tokenOutput.add(prev);
 		}
-		
-		//////////////////////////////////////////
-		// INSERT REPLACEMENT IN OUTPUT         //
-		//////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////
+		// GO THROUGH TOKENS AND INSERT REPLACEMENT IN OUTPUT
+		////////////////////////////////////////////////////////////
 
 		for (CharToken cToken : tokenOutput) {
 			/*DEBUG*/System.out.println(cToken);
 			
-			// Set dummy sentence edge token
+			// Set dummy sentence edge token for the last token
 			if (cToken.next() == null) {
 				PhonemeRule sentenceEdgePhoneme = new PhonemeRule(
 						new String[] { "" }, "sentenceEdge", new String[] {""},
@@ -145,10 +146,7 @@ public class ExternalFileReplacer {
 				
 				cToken.setNext(sentenceEdgeToken);
 			}
-			
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
-			// Get the PhonemeRule for the currently selected grapheme
-			PhonemeRule replacementPhoneme = cToken.phonemeRule();
 
 			// If no replacement phoneme could be found, the current phoneme is a non-defined punctuation mark
 			if (cToken.phonemeRule() == null) {
@@ -176,11 +174,11 @@ public class ExternalFileReplacer {
 				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
 			}
 
-			// Select the grapheme to append
+			// Select the grapheme to append - find the right grapheme variant for the current pattern
 			Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
 			int letterIndex = selectRule(cToken, pRules, toScript, pCounter);
 			if (letterIndex < 0) {
-				// default letter is the last one
+				// Set default grapheme variant (the last one) if none were found
 				letterIndex = (toScript) ? cToken.phonemeRule().l2().length - 1 : cToken.phonemeRule().l1().length - 1;
 			}
 
@@ -192,19 +190,19 @@ public class ExternalFileReplacer {
 				}
 			}
 
-			// Append the replacement grapheme
+			// Append the replacement grapheme to output
 			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
 			String repl = (toScript) ? cToken.phonemeRule().l2()[letterIndex] : cToken.phonemeRule().l1()[letterIndex];
 			output.append(repl);
-//			output.append(cToken.phonemeRule().l1()[0]);
 		}
 
 		return output.toString();
 	}
 	
 	/**
-	 * Look for a rule that matches the current situation
+	 * Look for a rule that matches the current pattern
 	 *
+	 * @param cToken   The current CharToken
 	 * @param pRules   List of rules to check for matches
 	 * @param toScript Translate the input to script, or back?
 	 * @param pCounter Phoneme counter for this type
@@ -213,21 +211,19 @@ public class ExternalFileReplacer {
 	private int selectRule(CharToken cToken, Rule[] pRules, boolean toScript, PhonemeCounter pCounter) {
 		RuleParserFactory ruleParserFactory = RuleParserFactory.getInstance();
 		
-		// Go through each rule until one matching the current pattern is found
+		// Parse each rule until one matching the current pattern is found
 		int letterIndex = -1;
 		for (int i = 0; i < pRules.length; i++) {
-			
-			boolean isAndRuleMatch = pRules[i].isAndRuleMatch();
-			boolean subRulesDoMatch = true;
+			boolean isAndRuleMatch = pRules[i].isAndRuleMatch(); // True = all subrules MUST match. False = at least 1 subrule shall match
+			boolean subRulesDoMatch = true;                      // True if all subrules are a match
 			/*DEBUG*/System.out.printf("\t\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
 			/*DEBUG*/System.out.printf("\t\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
 
-			// Go through each subrule: should be either AND (all must match) or OR (at least 1 must match).
-			// If any 1 of them matches the current pattern, select its corresponding grapheme for insertion to output
+			// Parse each subrule: should be either AND (all must match) or OR (at least 1 must match).
 			for (int j = 0; j < pRules[i].numOfSubRules(); j++) {
 				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", j);
 
-				// Go thru each RuleParser instance
+				// Check all rule types
 				for (RuleParser ruleParser : ruleParserFactory.getRuleParsers()) {
 					if (ruleParser.matchesCondition(cToken, pRules[i], j, toScript)) {
 						// Match if the pattern matches the scenario
@@ -236,7 +232,9 @@ public class ExternalFileReplacer {
 						subRulesDoMatch &= isMatch;
 						/*DEBUG*/System.out.printf("\t\t%s's ISMATCH: [%b]\n", ruleParser.name(), isMatch);
 
-						if (isMatch && !isAndRuleMatch) {
+						// If a subrule matches the current pattern, select the index of its corresponding grapheme
+						// for insertion to output
+						if (!isAndRuleMatch && isMatch) {
 							ruleParser.postMatch(cToken, pRules[i], j, toScript);
 							letterIndex = i;
 							/*DEBUG*/System.out.printf("\t\tChosen %s rule num: %d\n", ruleParser.name(), i);
@@ -246,6 +244,8 @@ public class ExternalFileReplacer {
 				}
 			}
 			
+			// If all subrules match the current pattern, select the index of its corresponding grapheme
+			// for insertion to output
 			if (isAndRuleMatch && subRulesDoMatch) {
 				letterIndex = i;
 				/*DEBUG*/System.out.printf("\t\tAll subrules match! Rule num: %d\n", i);
