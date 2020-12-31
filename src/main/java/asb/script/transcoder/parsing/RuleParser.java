@@ -21,22 +21,22 @@ public interface RuleParser {
 	/**
 	 * Select this rule if it matches a certain set of conditions.
 	 * 
-	 * @param cToken
-	 * @param pRule
-	 * @param j
-	 * @param toScript
-	 * @return
+	 * @param cToken The current token
+	 * @param pRule The Rule to check
+	 * @param j Index of subrule to check
+	 * @param toScript Translate the input to script, or back?
+	 * @return True if this rule is supported by a particular RuleParser implementation
 	 */
 	public boolean matchesCondition(CharToken cToken, Rule pRule, int j, boolean toScript);
 	
 	/**
 	 * Determine if a subrule matches the context.
 	 * 
-	 * @param cToken
-	 * @param pRule
-	 * @param j
-	 * @param toScript
-	 * @return
+	 * @param cToken The current token
+	 * @param pRule The Rule to check
+	 * @param j Index of subrule to check
+	 * @param toScript Translate the input to script, or back?
+	 * @return True if the subrule is a match for the context
 	 */
 	public boolean isSubruleMatch(CharToken cToken, Rule pRule, int j, boolean toScript);
 
@@ -44,11 +44,10 @@ public interface RuleParser {
 	/**
 	 * Action to carry out after a successful match.
 	 * 
-	 * @param cToken
-	 * @param pRule
-	 * @param j
-	 * @param toScript
-	 * @return
+	 * @param cToken The current token
+	 * @param pRule The Rule to check
+	 * @param j Index of subrule to check
+	 * @param toScript Translate the input to script, or back?
 	 */
 	public void postMatch(CharToken cToken, Rule pRule, int j, boolean toScript);
 

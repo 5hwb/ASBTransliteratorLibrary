@@ -6,12 +6,16 @@ package asb.schema;
  *
  */
 public class PhonemeCounter {
-	private String type;
-	private int maxNum = 0;
-	private int value = 0;
+	private String type;       // Phoneme type name
+	private int maxNum = 0;    // Maximum number of the counter
+	private int value = 0;     // Current counter value
 	private String[] incrRule; // List of pattern rules defining when to increment the counter
 	private Rule[] incrRuleParsed; // Parsed version of incrRule
 	
+	//////////////////////////////////////////////////
+	// GETTER AND SETTER METHODS
+	//////////////////////////////////////////////////
+
 	public String type() {
 		return type;
 	}
@@ -47,6 +51,9 @@ public class PhonemeCounter {
 		this.incrRuleParsed = incrRuleParsed;
 	}
 
+	//////////////////////////////////////////////////
+	// COUNTER METHODS
+	//////////////////////////////////////////////////
 	
 	public void increment() {
 		this.value++;

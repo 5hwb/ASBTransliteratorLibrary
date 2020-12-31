@@ -3,18 +3,18 @@ package asb.schema;
 import java.util.Arrays;
 
 /**
- * Map L1 graphemes to L2 graphemes using a set of rules to decide which distinct grapheme will be selected.
+ * Map Script 1 graphemes to Script 2 graphemes using a set of rules to decide which distinct grapheme will be selected.
  * @author perry
  *
  */
 public class PhonemeRule {
-	private String[] l1; // List of L1 graphemes
-	private String l1type; // The type of the L1 phoneme
-	private String[] l1rule; // List of rules for converting L2 to L1
+	private String[] l1;         // List of Script 1 graphemes
+	private String l1type;       // The type of the Script 1 phoneme
+	private String[] l1rule;     // List of rules for converting Script 2 to Script 1
 	private Rule[] l1ruleParsed; // Parsed version of l1rule
-	private String[] l2; // List of L2 graphemes
-	private String l2type; // The type of the L2 phoneme
-	private String[] l2rule; // List of rules for converting L1 to L2
+	private String[] l2;         // List of Script 2 graphemes
+	private String l2type;       // The type of the Script 2 phoneme
+	private String[] l2rule;     // List of rules for converting Script 1 to Script 2
 	private Rule[] l2ruleParsed; // Parsed version of l2rule
 	
 	public PhonemeRule(String[] l1, String l1type, String[] l1rule, String[] l2, String l2type,
@@ -41,6 +41,10 @@ public class PhonemeRule {
 		return "PhonemeRule [l1=" + Arrays.toString(l1) + ", l1type=" + l1type + ", l1rule=" + Arrays.toString(l1rule)
 				+ ", l2=" + Arrays.toString(l2) + ", l2type=" + l2type + ", l2rule=" + Arrays.toString(l2rule) + "]";
 	}
+	
+	//////////////////////////////////////////////////
+	// GETTER AND SETTER METHODS
+	//////////////////////////////////////////////////
 
 	public String[] l1() {
 		return l1;

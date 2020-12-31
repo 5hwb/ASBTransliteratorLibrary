@@ -9,10 +9,14 @@ import asb.schema.PhonemeRule;
  */
 public class CharToken {
 
+	/** PhonemeRule containing grapheme information */
 	protected PhonemeRule phonemeRule;
+	/** Index of selected grapheme variant */
 	protected int graphemeVarIndex;
 	
+	/** Preceding token */
 	protected CharToken prev;
+	/** Following token */
 	protected CharToken next;
 
 	public CharToken(PhonemeRule phonemeRule, int graphemeVarIndex, CharToken prev, CharToken next) {
@@ -21,6 +25,10 @@ public class CharToken {
 		this.prev = prev;
 		this.next = next;
 	}
+	
+	//////////////////////////////////////////////////
+	// GETTER AND SETTER METHODS
+	//////////////////////////////////////////////////
 
 	public PhonemeRule phonemeRule() {
 		return phonemeRule;
@@ -50,6 +58,9 @@ public class CharToken {
 		this.next = next;
 	}
 	
+	//////////////////////////////////////////////////
+	// OTHER METHODS
+	//////////////////////////////////////////////////
 	
 	@Override
 	public String toString() {

@@ -7,12 +7,16 @@ package asb.schema;
  */
 public class PhonemeType {
 
-	private String name;
-	private String[] extraTypes;
+	private String name;         // Main phoneme type name
+	private String[] extraTypes; // Names of extra types (subclasses of the main type)
 	
 	public PhonemeType(String name) {
 		this.name = name;
 	}
+	
+	//////////////////////////////////////////////////
+	// GETTER AND SETTER METHODS
+	//////////////////////////////////////////////////
 
 	public String name() {
 		return name;

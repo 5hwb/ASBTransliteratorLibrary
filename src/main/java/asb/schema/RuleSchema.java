@@ -13,6 +13,10 @@ public class RuleSchema {
 	public RuleSchema() {
 	}
 
+	//////////////////////////////////////////////////
+	// GETTER AND SETTER METHODS
+	//////////////////////////////////////////////////
+
 	public PhonemeRule[] rules() {
 		return rules;
 	}

@@ -200,7 +200,7 @@ public class ExternalFileReplacer {
 	/**
 	 * Look for a rule that matches the current pattern
 	 *
-	 * @param cToken   The current CharToken
+	 * @param cToken   The current token
 	 * @param pRules   List of rules to check for matches
 	 * @param toScript Translate the input to script, or back?
 	 * @param pCounter Phoneme counter for this type
@@ -212,8 +212,11 @@ public class ExternalFileReplacer {
 		// Parse each rule until one matching the current pattern is found
 		int letterIndex = -1;
 		for (int i = 0; i < pRules.length; i++) {
-			boolean isAndRuleMatch = pRules[i].isAndRuleMatch(); // True = all subrules MUST match. False = at least 1 subrule shall match
-			boolean subRulesDoMatch = true;                      // True if all subrules are a match
+			// True = AND matching - all subrules MUST match.
+			// False = OR matching - at least 1 subrule shall match.
+			boolean isAndRuleMatch = pRules[i].isAndRuleMatch();
+			// True if all subrules in this rule are found to be a match
+			boolean subRulesDoMatch = true;
 			/*DEBUG*/System.out.printf("\t\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
 			/*DEBUG*/System.out.printf("\t\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
 

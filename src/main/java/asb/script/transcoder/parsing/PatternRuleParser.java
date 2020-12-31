@@ -10,16 +10,6 @@ import asb.schema.Rule;
  *
  */
 public class PatternRuleParser implements RuleParser {
-
-//	@Override
-//	public boolean matchesCondition() {
-//		return false;
-//	}
-//
-//	@Override
-//	public int getMatchingRule() {
-//		return 888;
-//	}
 	
 	private final String NAME = "PatternRuleParser";
 	
