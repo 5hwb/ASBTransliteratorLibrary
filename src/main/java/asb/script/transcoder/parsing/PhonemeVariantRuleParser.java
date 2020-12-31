@@ -44,5 +44,10 @@ public class PhonemeVariantRuleParser implements RuleParser {
 		// Useful for scripts that have uppercase and lowercase forms
 		return (pVariantIndex == pvVal);
 	}
-
+	
+	@Override
+	public void postMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
+		// TODO Auto-generated method stub
+		
+	}
 }

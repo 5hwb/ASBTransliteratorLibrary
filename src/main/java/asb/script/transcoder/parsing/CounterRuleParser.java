@@ -45,4 +45,11 @@ public class CounterRuleParser implements RuleParser {
 		return (pCounter.value() >= cVal);
 	}
 
+	@Override
+	public void postMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
+		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
+		PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
+		pCounter.reset(); // reset counter value to 0		
+	}
+
 }

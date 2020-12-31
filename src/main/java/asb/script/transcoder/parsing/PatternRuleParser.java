@@ -59,6 +59,12 @@ public class PatternRuleParser implements RuleParser {
 		// Match if the pattern matches the scenario
 		return ((prevIsMatch && nextIsMatch) && currIsMatch);		
 	}
+
+	@Override
+	public void postMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	/**
 	 * Compare 2 phoneme types to see if they match. Matches main types with their

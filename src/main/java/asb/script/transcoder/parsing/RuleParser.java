@@ -32,6 +32,18 @@ public interface RuleParser {
 	 */
 	public boolean isSubruleMatch(CharToken cToken, Rule pRule, int j, boolean toScript);
 
+	
+	/**
+	 * Action to carry out after a successful match.
+	 * 
+	 * @param cToken
+	 * @param pRule
+	 * @param j
+	 * @param toScript
+	 * @return
+	 */
+	public void postMatch(CharToken cToken, Rule pRule, int j, boolean toScript);
+
 //	public boolean matchesCondition();
 //	public int getMatchingRule();
 }
