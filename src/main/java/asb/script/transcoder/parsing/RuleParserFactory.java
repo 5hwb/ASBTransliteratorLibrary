@@ -13,7 +13,7 @@ public class RuleParserFactory {
 
 	Set<RuleParser> ruleParsers;
 	
-	public RuleParserFactory() {
+	private RuleParserFactory() {
 		ruleParsers = new HashSet<RuleParser>();
 
 		// Add all RuleParser types
