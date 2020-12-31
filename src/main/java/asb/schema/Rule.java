@@ -126,7 +126,7 @@ public class Rule {
 	 * @return a Rule object with the same contents as the rule String
 	 */
 	public static Rule parseStringToRule(String pRule) {
-		//*DEBUG*/System.out.printf("RULE: [%s]\n", pRule);
+		//*OLDDEBUG*/System.out.printf("RULE: [%s]\n", pRule);
 
 		if (pRule.length() == 0) {
 			return emptyRule();
@@ -143,7 +143,7 @@ public class Rule {
 		Rule rule = new Rule(pRulesSub.length);
 		rule.setIsAndRuleMatch(isAndRuleMatch);
 		for (int k = 0; k < pRulesSub.length; k++) {
-			//*DEBUG*/System.out.printf("\tRULEd: [%s]\n", pRulesSub[k]);
+			//*OLDDEBUG*/System.out.printf("\tRULEd: [%s]\n", pRulesSub[k]);
 			String[] pRulesSubSub = pRulesSub[k].split("_");
 
 			// Rule is a pattern rule
@@ -184,8 +184,8 @@ public class Rule {
 					}
 					rule.setSubsubRuleType(k, l, pRulesSubSub[l]);
 				}
-				//*DEBUG*/System.out.printf("\t\tRULEdd: %b [%s], %b [%s], %b [%s]\n",
-				//*DEBUG*/notToBeMatched[0], pRulesSubSub[0], notToBeMatched[1], pRulesSubSub[1], notToBeMatched[2], pRulesSubSub[2]);
+				//*OLDDEBUG*/System.out.printf("\t\tRULEdd: %b [%s], %b [%s], %b [%s]\n",
+				//*OLDDEBUG*/notToBeMatched[0], pRulesSubSub[0], notToBeMatched[1], pRulesSubSub[1], notToBeMatched[2], pRulesSubSub[2]);
 				rule.setSubRulePvVal(k, -1);
 			}
 			// Rule is a counter rule
