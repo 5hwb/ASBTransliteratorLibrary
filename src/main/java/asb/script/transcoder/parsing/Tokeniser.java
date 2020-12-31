@@ -22,6 +22,12 @@ public class Tokeniser {
 	private PhonemeRule defaultPhoneme;
 	
 	public Tokeniser(String input, Map<String, PhonemeRule> mapping, Map<String, Integer> graphemeVarIndexMap) {
+
+		// Throw exception if any one of the arguments are null
+		if ((input == null || mapping == null) || graphemeVarIndexMap == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		this.input = input;
 		this.mapping = mapping;
 		this.graphemeVarIndexMap = graphemeVarIndexMap;
@@ -64,11 +70,6 @@ public class Tokeniser {
 	 *         or the end of the input string has been reached.
 	 */
 	public CharToken readNextToken() {
-		// TODO change this to throw an exception
-		if ((this.input == null || this.mapping == null)) {
-			return null;
-		}
-		
 		String currGrapheme = "";
 		
 		///////////////////////////////////////////////

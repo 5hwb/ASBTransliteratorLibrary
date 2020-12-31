@@ -81,15 +81,47 @@ public class TokeniserUnitTests {
 }
 	
 	@Test
-	public void test_tokeniser_oddArguments() {
-		Tokeniser tokeniser_inputIsNull = new Tokeniser(null, mapping, graphemeVarIndexMap);
-		assertNull(tokeniser_inputIsNull.readNextToken());
+	public void test_tokeniser_inputIsNull() {
+		Throwable throwable = null;
+		try {
+			Tokeniser tokeniser_inputIsNull = new Tokeniser(null, mapping, graphemeVarIndexMap);
+		} catch (Throwable e) {
+			throwable = e;
+		}
+		assertEquals(IllegalArgumentException.class, throwable.getClass());
+	}
 
-		Tokeniser tokeniser_mapIsNull = new Tokeniser(input, null, graphemeVarIndexMap);
-		assertNull(tokeniser_mapIsNull.readNextToken());
+	@Test
+	public void test_tokeniser_mapIsNull() {
+		Throwable throwable = null;
+		try {
+			Tokeniser tokeniser_mapIsNull = new Tokeniser(input, null, graphemeVarIndexMap);
+		} catch (Throwable e) {
+			throwable = e;
+		}
+		assertEquals(IllegalArgumentException.class, throwable.getClass());
+	}
 
-		Tokeniser tokeniser_allNull = new Tokeniser(null, null, graphemeVarIndexMap);
-		assertNull(tokeniser_allNull.readNextToken());
+	@Test
+	public void test_tokeniser_graphemevarmapIsNull() {
+		Throwable throwable = null;
+		try {
+			Tokeniser tokeniser_graphemevarmapIsNull = new Tokeniser(input, mapping, null);
+		} catch (Throwable e) {
+			throwable = e;
+		}
+		assertEquals(IllegalArgumentException.class, throwable.getClass());
+	}
+
+	@Test
+	public void test_tokeniser_allNull() {
+		Throwable throwable = null;
+		try {
+			Tokeniser tokeniser_allNull = new Tokeniser(null, null, graphemeVarIndexMap);
+		} catch (Throwable e) {
+			throwable = e;
+		}
+		assertEquals(IllegalArgumentException.class, throwable.getClass());
 	}
 
 	@Test
