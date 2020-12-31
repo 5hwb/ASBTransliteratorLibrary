@@ -2,14 +2,14 @@
 
 ## About
 
-This is a Java library that aims to transliterate between different writing systems/scripts, such as Korean, Greek and Russian. For instance:
+This is a configurable Java library that transliterates between different writing systems such as Latin, Korean, Greek and Russian. For instance:
 
 * Korean Hangul '안녕하세요 세상' = 'Annyeonghaseyo sesang'
 * Greek 'Γειά σου Κόσμε' = 'Geiá sou Kósme'
 * Russian Cyrillic 'Привет, мир' = 'Privet, mir'
 * Hindi Devanagari 'नमस्ते दुनिया' = 'Namaste duniya'
 
-Transliteration can be done from 1 script to another, and the rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'.
+The rules defining the substitutions to be made are stored in separate user-configurable files, which are called 'rulefiles'. Transliteration can be done from 1 script to another and vice versa.
 
 ## How it works
 

@@ -13,7 +13,14 @@ public class EFReplacerUnitTests {
 	
 	ExternalFileReplacer efr;
 
-	String testo = "Yor jast in tām Goĝ! Sē cíz, đe nù kar śòs of its ékstrávegens "
+	// Sample string to parse (with no capitalised pronouns, used for non-bicameral scripts)
+	String testo = "Yor jast in tām goĝ! Sē cíz, đe nù kar śòs of its ékstrávegens "
+			+ "wiŧ áźer kalers, dánsi bíts ánd hopiŋ loĥ nés stāl saspénśen. "
+			+ "Luk àt hèr, đis ēnt nò tō! Kya tei syo 1234567890.";
+	
+	// Sample string to parse (with capitalised pronouns. Used for the Quikscript test, since
+	// it's the only script with the ability to distinguish capitalised pronouns)
+	String testoWithCapitalPronouns = "Yor jast in tām Goĝ! Sē cíz, đe nù kar śòs of its ékstrávegens "
 			+ "wiŧ áźer kalers, dánsi bíts ánd hopiŋ Loĥ Nés stāl saspénśen. "
 			+ "Luk àt hèr, đis ēnt nò tō! Kya tei syo 1234567890.";
 	
@@ -102,12 +109,12 @@ public class EFReplacerUnitTests {
 	@Test
 	public void test_toScript_quikscript() {
 		efr.setFilePath("src/main/resources/rulefiles/quikscript.json");
-		assertEquals(testoQuik, efr.translateToScript(testo));
+		assertEquals(testoQuik, efr.translateToScript(testoWithCapitalPronouns));
 	}
 	
 	@Test
 	public void test_fromScript_quikscript() {
 		efr.setFilePath("src/main/resources/rulefiles/quikscript.json");
-		assertEquals(testo, efr.translateFromScript(testoQuik));
+		assertEquals(testoWithCapitalPronouns, efr.translateFromScript(testoQuik));
 	}
 }

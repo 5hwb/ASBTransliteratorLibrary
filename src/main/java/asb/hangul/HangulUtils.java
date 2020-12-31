@@ -63,7 +63,7 @@ public class HangulUtils {
 
 		int i;
 		for (i = 0; i < input.length(); i++) {
-			//*DEBUG*/System.out.println("=============================");
+			//*OLDDEBUG*/System.out.println("=============================");
 			String buf4 = (input.length() < 4)
 					? (input + "    ").substring(0, 4)
 					: (i+4 >= input.length())
@@ -78,9 +78,9 @@ public class HangulUtils {
 					? (input.substring(i, input.length()) + "  ").substring(0, 2)
 					: buf4.substring(0, 2);
 
-			//*DEBUG*/System.out.printf("buf4=[%s]\n", buf4);
-			//*DEBUG*/System.out.printf("buf3=[%s]\n", buf3);
-			//*DEBUG*/System.out.printf("buf2=[%s]\n", buf2);					
+			//*OLDDEBUG*/System.out.printf("buf4=[%s]\n", buf4);
+			//*OLDDEBUG*/System.out.printf("buf3=[%s]\n", buf3);
+			//*OLDDEBUG*/System.out.printf("buf2=[%s]\n", buf2);					
 			int init = getIndex(initials, buf4.charAt(0));
 			int med = getIndex(medials, buf4.charAt(1));
 			int fin = getIndex(finals, buf4.charAt(2));
@@ -95,8 +95,8 @@ public class HangulUtils {
 			 * it's certainly a part of the current syllable */
 			if (buf4.matches(matchIMFI)) {
 				char syl = (char) ((init * 588 + med * 28 + fin) + 44032);
-				//*DEBUG*/System.out.println("NAKD:   ");
-				//*DEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
+				//*OLDDEBUG*/System.out.println("NAKD:   ");
+				//*OLDDEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
 				sb.append(syl);
 				i += 2;
 				continue;
@@ -106,8 +106,8 @@ public class HangulUtils {
 			 * it's certainly not part of the current syllable  */
 			else if (buf4.matches(matchIMIM)) {
 				char syl = (char) ((init * 588 + med * 28) + 44032);
-				//*DEBUG*/System.out.println("NADA:   ");
-				//*DEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
+				//*OLDDEBUG*/System.out.println("NADA:   ");
+				//*OLDDEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
 				sb.append(syl);
 				i += 1;
 				continue;
@@ -116,8 +116,8 @@ public class HangulUtils {
 			/** NAK: The first 2 situations do not apply but the current syllable has a final consonant */
 			else if (buf3.matches(matchIMF)) {
 				char syl = (char) ((init * 588 + med * 28 + fin) + 44032);
-				//*DEBUG*/System.out.println("NAK:    ");
-				//*DEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
+				//*OLDDEBUG*/System.out.println("NAK:    ");
+				//*OLDDEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
 				sb.append(syl);
 				i += 2;
 				continue;
@@ -126,15 +126,15 @@ public class HangulUtils {
 			/** NA: The first 2 situations do not apply but the current syllable has no final */
 			else if (buf2.matches(matchIM)) {
 				char syl = (char) ((init * 588 + med * 28) + 44032);
-				//*DEBUG*/System.out.println("NA:     ");
-				//*DEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
+				//*OLDDEBUG*/System.out.println("NA:     ");
+				//*OLDDEBUG*/System.out.printf("i=%d init=%c med=%c fin=%c SYL=[%s]\n", i, initials[init], medials[med], finals[fin], syl);
 				sb.append(syl);
 				i += 1;
 				continue;
 			}
 			
 			/** NO MATCH: it's a punctuation char or stray Hangul jamo */
-			//*DEBUG*/System.out.printf("NOMATCH:%s\n", buf4);
+			//*OLDDEBUG*/System.out.printf("NOMATCH:%s\n", buf4);
 			sb.append(buf4.charAt(0));
 		}
 		
@@ -159,16 +159,16 @@ public class HangulUtils {
 			int mIndex = (sIndex % 588) / 28; // Medial vowel index
 			int fIndex = sIndex % 28; // Final consonant index
 			boolean isHangulSyllable = (s >= 0xAC00 && s <= 0xD7A3);
-			//*DEBUG*/System.out.printf("s=%c sVal=%d i=%d m=%d f=%d\n", s, sIndex, iIndex, mIndex, fIndex);
+			//*OLDDEBUG*/System.out.printf("s=%c sVal=%d i=%d m=%d f=%d\n", s, sIndex, iIndex, mIndex, fIndex);
 
 			if (isHangulSyllable) {
 				sb.append(initials[iIndex]);
 				sb.append(medials[mIndex]);
 				if (finals[fIndex] != ' ') sb.append(finals[fIndex]);
-				//*DEBUG*/System.out.printf("JUST APPENDED: [%c, %c, %c]\n", initials[iIndex], medials[mIndex], finals[fIndex]);
+				//*OLDDEBUG*/System.out.printf("JUST APPENDED: [%c, %c, %c]\n", initials[iIndex], medials[mIndex], finals[fIndex]);
 			} else {
 				sb.append(s);
-				//*DEBUG*/System.out.printf("JUST APPENDED: [%c]\n", s);
+				//*OLDDEBUG*/System.out.printf("JUST APPENDED: [%c]\n", s);
 			}
 		}
 
