@@ -16,6 +16,13 @@ public class PhonemeVariantRuleParser implements RuleParser {
 //		return 777;
 //	}
 
+	private final String NAME = "PhonemeVariantRuleParser";
+	
+	@Override
+	public String name() {
+		return NAME;
+	}
+
 	@Override
 	public boolean matchesCondition(CharToken cToken, Rule pRule, int j, boolean toScript) {
 		// Get the index of the selected grapheme in phoneme's variant list
@@ -25,7 +32,7 @@ public class PhonemeVariantRuleParser implements RuleParser {
 	}
 
 	@Override
-	public boolean isMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
+	public boolean isSubruleMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
 
 		// Get the index of the selected grapheme in phoneme's variant list
 		Integer pVariantIndex = cToken.graphemeVarIndex();

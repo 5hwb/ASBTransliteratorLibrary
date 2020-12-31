@@ -15,13 +15,20 @@ public class PatternRuleParser implements RuleParser {
 //		return 888;
 //	}
 	
+	private final String NAME = "PatternRuleParser";
+	
+	@Override
+	public String name() {
+		return NAME;
+	}
+
 	@Override
 	public boolean matchesCondition(CharToken cToken, Rule pRule, int j, boolean toScript) {
 		return (pRule.subRulecVal(j) == 0 && pRule.subRulePvVal(j) < 0);
 	}
 
 	@Override
-	public boolean isMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
+	public boolean isSubruleMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
 		String prevType = (toScript) ? cToken.prev().phonemeRule().l2type() : cToken.prev().phonemeRule().l1type();
 		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
 		String nextType = (toScript) ? cToken.next().phonemeRule().l2type() : cToken.next().phonemeRule().l1type();

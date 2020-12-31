@@ -1,30 +1,20 @@
 package asb.script.transcoder.parsing;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RuleParserFactory {
-	Map<String, RuleParser> ruleParserMap;
-	
 	private static RuleParserFactory instance;
+
+	Set<RuleParser> ruleParsers;
 	
 	public RuleParserFactory() {
-		ruleParserMap = new HashMap<>();
-		
+		ruleParsers = new HashSet<RuleParser>();
+
 		// add all RuleParser types
-		addRuleParser(new PatternRuleParser(), "PatternRuleParser");
-		addRuleParser(new CounterRuleParser(), "CounterRuleParser");
-	}
-	
-	/**
-	 * (Private) Add the RuleParser instance with the given name to the map. 
-	 * @param ruleParser The RuleParser instance
-	 * @param name The name
-	 */
-	private void addRuleParser(RuleParser ruleParser, String name) {
-		if (!ruleParserMap.containsKey(name)) {
-			ruleParserMap.put(name, ruleParser);
-		}
+		ruleParsers.add(new PatternRuleParser());
+		ruleParsers.add(new CounterRuleParser());
+		ruleParsers.add(new PhonemeVariantRuleParser());
 	}
 	
 	/**
@@ -40,12 +30,24 @@ public class RuleParserFactory {
 	}
 	
 	/**
-	 * Get the rule parser with the given name.
+	 * Get the RuleParser with the given name.
 	 * @param rpName The name of the RuleParser. e.g. 'PatternRuleParser'
-	 * @return The matching RuleParser if present. and null if the name is invalid.
+	 * @return The matching RuleParser if present. Returns null if the name is invalid.
 	 */
 	public RuleParser getRuleParser(String rpName) {
-		return ruleParserMap.get(rpName);
+		for (RuleParser rp : ruleParsers) {
+			if (rp.name().equals(rpName))
+				return rp;
+		}
+		return null;
+	}
+	
+	/**
+	 * Get all RuleParser instances.
+	 * @return HashSet of all RuleParser instances
+	 */
+	public Set<RuleParser> getRuleParsers() {
+		return ruleParsers;
 	}
 	
 	

@@ -18,6 +18,13 @@ public class CounterRuleParser implements RuleParser {
 //		return 777;
 //	}
 
+	private final String NAME = "CounterRuleParser";
+	
+	@Override
+	public String name() {
+		return NAME;
+	}
+
 	@Override
 	public boolean matchesCondition(CharToken cToken, Rule pRule, int j, boolean toScript) {
 		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
@@ -26,7 +33,7 @@ public class CounterRuleParser implements RuleParser {
 	}
 
 	@Override
-	public boolean isMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
+	public boolean isSubruleMatch(CharToken cToken, Rule pRule, int j, boolean toScript) {
 		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
 		PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
 		
