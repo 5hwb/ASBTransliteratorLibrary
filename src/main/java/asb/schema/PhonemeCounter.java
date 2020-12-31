@@ -1,8 +1,7 @@
 package asb.schema;
 
 /**
- * Phoneme counters help to count the presence of a certain phoneme type to help decide
- * which grapheme will be selected.
+ * Count the presence of a certain phoneme type to help decide which grapheme will be selected.
  * @author perry
  *
  */

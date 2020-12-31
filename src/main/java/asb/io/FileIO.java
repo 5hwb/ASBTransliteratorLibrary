@@ -10,6 +10,11 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * Handle file IO operations.
+ * @author perry
+ *
+ */
 public class FileIO {
 	
 	// File directory to rule files

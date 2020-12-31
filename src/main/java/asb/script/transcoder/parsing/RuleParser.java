@@ -2,6 +2,14 @@ package asb.script.transcoder.parsing;
 
 import asb.schema.Rule;
 
+/**
+ * Interface for RuleParser implementations.
+ * RuleParser contains methods for handling rule parsing to determine which
+ * grapheme character should be substituted based on the surrounding context of
+ * its neighbouring graphemes.
+ * @author perry
+ *
+ */
 public interface RuleParser {
 	
 	/**

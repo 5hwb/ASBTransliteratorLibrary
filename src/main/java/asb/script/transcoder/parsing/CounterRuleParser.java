@@ -4,6 +4,12 @@ import asb.mappings.Mappings;
 import asb.schema.PhonemeCounter;
 import asb.schema.Rule;
 
+/**
+ * RuleParser implementation which deals with counter rules
+ * (e.g. 'c=2' - match if 2 occurrences of this type have been recorded).
+ * @author perry
+ *
+ */
 public class CounterRuleParser implements RuleParser {
 
 //	@Override

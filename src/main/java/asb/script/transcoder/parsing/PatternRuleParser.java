@@ -3,6 +3,12 @@ package asb.script.transcoder.parsing;
 import asb.mappings.Mappings;
 import asb.schema.Rule;
 
+/**
+ * RuleParser implementation which deals with pattern rules
+ * (e.g. 'V_._.' - match if preceding grapheme is a vowel).
+ * @author perry
+ *
+ */
 public class PatternRuleParser implements RuleParser {
 
 //	@Override

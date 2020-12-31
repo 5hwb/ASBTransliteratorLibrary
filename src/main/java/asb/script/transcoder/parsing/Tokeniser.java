@@ -4,6 +4,11 @@ import java.util.Map;
 
 import asb.schema.PhonemeRule;
 
+/**
+ * Handles the parsing of graphemes in an input string.
+ * @author perry
+ *
+ */
 public class Tokeniser {
 	
 	private int start = 0;
@@ -43,13 +48,23 @@ public class Tokeniser {
 		
 		prevToken = new CharToken(this.defaultPhoneme, 0, null, null);
 	}
-	
+
+	/**
+	 * Get the previous token.
+	 * @return A CharToken
+	 */
 	public CharToken prevToken() {
 		return this.prevToken;
 	}
 	
+	/**
+	 * Read the next grapheme in the string input as a token.
+	 * @return The CharToken corresponding to the next grapheme.
+	 *         Returns null if the input string or grapheme-to-PhonemeRule mapping is null
+	 *         or the end of the input string has been reached.
+	 */
 	public CharToken readNextToken() {
-		
+		// TODO change this to throw an exception
 		if ((this.input == null || this.mapping == null)) {
 			return null;
 		}

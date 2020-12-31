@@ -11,7 +11,6 @@ import asb.schema.Rule;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import asb.ds.FixedStack;
 import asb.io.FileIO;
 import asb.mappings.Mappings;
 import asb.schema.PhonemeCounter;
@@ -24,9 +23,8 @@ import asb.script.transcoder.parsing.RuleParserFactory;
 import asb.script.transcoder.parsing.Tokeniser;
 
 /**
- * An ExternalFileReplacer replaces each occurrence of a Script 1 grapheme with the
- * corresponding grapheme for Script 2 using context from the surrounding graphemes.
- *
+ * Replace each occurrence of a Script 1 grapheme with the corresponding grapheme for Script 2
+ * (and vice versa) using context from the surrounding graphemes.
  * @author perry
  *
  */

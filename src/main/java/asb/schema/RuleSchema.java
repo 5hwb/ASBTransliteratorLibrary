@@ -1,7 +1,7 @@
 package asb.schema;
 
 /**
- * A representation of the JSON rulefile schema, used for parsing the rulefiles.
+ * Representation of the JSON rulefile schema used for parsing the rulefiles.
  * @author perry
  *
  */

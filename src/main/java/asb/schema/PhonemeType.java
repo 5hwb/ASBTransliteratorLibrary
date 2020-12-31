@@ -1,9 +1,7 @@
 package asb.schema;
 
 /**
- * Phoneme types make classification of phonemes easier.
- * They also allow for addition of 'extra types', which are more specific subclasses
- * of the main type. 
+ * Contains phoneme types and their 'extra types' (more specific subclasses of the main type).
  * @author perry
  *
  */

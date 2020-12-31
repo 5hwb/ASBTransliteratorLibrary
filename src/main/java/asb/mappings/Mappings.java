@@ -13,13 +13,13 @@ import asb.schema.PhonemeType;
  */
 public class Mappings {
 
-	// Singleton instance of Mappings
+	/** Singleton instance of Mappings */
 	private static Mappings instance;
 	
-	/** Consonant counters */
+	/** Map consonant type names to their corresponding PhonemeCounters */
 	protected Map<String, PhonemeCounter> consoTypeToCounterMap;
 
-	/** Reference hashmap for phoneme types */
+	/** Map graphemes to their corresponding PhonemeTypes */
 	protected Map<String, PhonemeType> phonemeTypeReferenceMap;
 
 	private Mappings() {
@@ -42,10 +42,18 @@ public class Mappings {
 	// GETTERS
 	//////////////////////////////////////////////////
 
+	/**
+	 * Get the consonant type to counter map.
+	 * @return A HashMap
+	 */
 	public static Map<String, PhonemeCounter> getConsoTypeToCounterMap() {
 		return getInstance().consoTypeToCounterMap;
 	}
 	
+	/**
+	 * Get the grapheme to PhonemeType map.
+	 * @return A HashMap
+	 */
 	public static Map<String, PhonemeType> getPhonemeTypeReferenceMap() {
 		return getInstance().phonemeTypeReferenceMap;
 	}

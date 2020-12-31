@@ -3,6 +3,11 @@ package asb.script.transcoder.parsing;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Factory that handles RuleParser instances.
+ * @author perry
+ *
+ */
 public class RuleParserFactory {
 	private static RuleParserFactory instance;
 
@@ -11,7 +16,7 @@ public class RuleParserFactory {
 	public RuleParserFactory() {
 		ruleParsers = new HashSet<RuleParser>();
 
-		// add all RuleParser types
+		// Add all RuleParser types
 		ruleParsers.add(new PatternRuleParser());
 		ruleParsers.add(new CounterRuleParser());
 		ruleParsers.add(new PhonemeVariantRuleParser());

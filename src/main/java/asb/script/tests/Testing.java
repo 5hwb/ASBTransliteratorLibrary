@@ -14,6 +14,11 @@ import asb.io.FileIO;
 import asb.schema.PhonemeRule;
 import asb.script.transcoder.ExternalFileReplacer;
 
+/**
+ * Random testing of features and functionality
+ * @author perry
+ *
+ */
 public class Testing {
 	
 	static ExternalFileReplacer efr;

@@ -1,5 +1,10 @@
 package asb.hangul;
 
+/**
+ * Handle transliteration between Korean Hangul syllable blocks and their constituent Hangul jamo letters.
+ * @author perry
+ *
+ */
 public class HangulUtils {
 
 	// List of 19 initials

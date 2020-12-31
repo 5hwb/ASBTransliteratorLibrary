@@ -1,7 +1,7 @@
 package asb.schema;
 
 /**
- * The Rule helps to map the graphemes of 1 script to the graphemes of another script.
+ * Map the graphemes of 1 script to the graphemes of another script.
  * Rules are composed of 1 or more SubRules, which defines the properties of the
  * previous, current and next graphemes that must match the situation.
  * The SubRules themselves are composed of SubSubRules, 1 for each grapheme to be checked.

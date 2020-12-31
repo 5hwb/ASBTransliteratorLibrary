@@ -2,6 +2,11 @@ package asb.script.transcoder.parsing;
 
 import asb.schema.PhonemeRule;
 
+/**
+ * Represents a grapheme in the input string.
+ * @author perry
+ *
+ */
 public class CharToken {
 
 	protected PhonemeRule phonemeRule;

@@ -3,8 +3,7 @@ package asb.schema;
 import java.util.Arrays;
 
 /**
- * Phoneme rules map L1 graphemes to L2 graphemes using a set of rules to decide
- * which distinct grapheme will be selected.
+ * Map L1 graphemes to L2 graphemes using a set of rules to decide which distinct grapheme will be selected.
  * @author perry
  *
  */

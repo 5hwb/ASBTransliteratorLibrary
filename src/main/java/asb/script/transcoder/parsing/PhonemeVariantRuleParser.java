@@ -2,6 +2,12 @@ package asb.script.transcoder.parsing;
 
 import asb.schema.Rule;
 
+/**
+ * RuleParser implementation which deals with phoneme variant rules
+ * (e.g. 'pv=1' - match if the current grapheme index is 1).
+ * @author perry
+ *
+ */
 public class PhonemeVariantRuleParser implements RuleParser {
 
 //	@Override
