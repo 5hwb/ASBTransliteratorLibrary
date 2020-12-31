@@ -13,8 +13,8 @@ public class EFReplacerUnitTests {
 	
 	ExternalFileReplacer efr;
 
-	String testo = "Yor jast in tām Goĝ! Sē cíz, đe nù kar śòs of its ékstrávegens "
-			+ "wiŧ áźer kalers, dánsi bíts ánd hopiŋ Loĥ Nés stāl saspénśen. "
+	String testo = "Yor jast in tām goĝ! Sē cíz, đe nù kar śòs of its ékstrávegens "
+			+ "wiŧ áźer kalers, dánsi bíts ánd hopiŋ loĥ nés stāl saspénśen. "
 			+ "Luk àt hèr, đis ēnt nò tō! Kya tei syo 1234567890.";
 	
 	String testoHan = "이올 찻드 인 댐 콬흐! 세 즷흐, 떠 뉴 갈 쑛 오쁘 읻스 엯드럎허컨스 "
@@ -25,8 +25,8 @@ public class EFReplacerUnitTests {
 			+ "វិឋ អ៉ឈ់រ កាល់រ្ស។ ទ៉ន្សិ ពីត្ស អ៉ន្ទ ហួបិង លួខ នេស ស្តៃល សាស្បេន្ឆ់ន៕ "
 			+ "លុក ឳត ហៀរ។ ថិស ឯះន្ត នូ តួះ! ក្យា ត់ឥ ស្យួ ១២៣៤៥៦៧៨៩០៕";
 
-	String testoQuik = "    !  ,        " 
-			+ "  ,        . "
+	String testoQuik = "    !  ,        " 
+			+ "  ,        . "
 			+ "  ,    !    .";
 	
 	String testoConsoEbeo2 = "Léts hopz hopza pzi pz. Sdroŋ malds át đe hafs pozt níd ù.";
