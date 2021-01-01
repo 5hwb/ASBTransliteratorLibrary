@@ -44,6 +44,7 @@ public class CounterRuleParser implements RuleParser {
 		String currType = (toScript) ? cToken.phonemeRule().l2type() : cToken.phonemeRule().l1type();
 		PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
 		pCounter.reset(); // reset counter value to 0		
+		/*DEBUG*/System.out.println("\t\tCounter was reset to 0");
 	}
 
 }

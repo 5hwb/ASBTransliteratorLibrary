@@ -207,5 +207,5 @@ The code, as it is now, is very complex and hard to maintain. `translateFromToSc
 Ideas:
 
 * In `translateFromToScript()`, move the 'grapheme insertion to output' to their own functions
-* Make rule selection in `selectRule()` based on new classes: RuleParser, with subclasses PatternRuleParser, CounterRuleParser and PhonemeVariantRuleParser
-    * Or even better: Move the selectRule() code to the Rule class
+* Move the selectRule() code to the Rule class
+* Make unit tests for RuleParser implementations

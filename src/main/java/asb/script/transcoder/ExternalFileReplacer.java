@@ -155,6 +155,7 @@ public class ExternalFileReplacer {
 			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + cToken.phonemeRule().l2()[0]);
 
 			// Increment the counter for the current phoneme's type
+			/*DEBUG*/System.out.println("INCREMENT PHONEME TYPE COUNTER...");
 			String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
 					: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
 			PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
@@ -163,8 +164,9 @@ public class ExternalFileReplacer {
 				Rule[] cRules = pCounter.incrRuleParsed();
 				int matchingRuleIndex = selectRule(cToken, cRules, toScript, null);
 				if (matchingRuleIndex >= 0) {
-					/*DEBUG*/System.out.printf("\tRule for counter increment is a match. index=%d, matchingRule=%s\n", matchingRuleIndex, cRules[matchingRuleIndex]);
+					//System.out.println(cRules[matchingRuleIndex]);
 					pCounter.increment();
+					/*DEBUG*/System.out.printf("\tRule for counter increment is a match (counter=%d). index=%d\n", pCounter.value(), matchingRuleIndex);
 				} else {
 					/*DEBUG*/System.out.println("\tRule for counter increment is NOT a match");
 				}
@@ -173,6 +175,7 @@ public class ExternalFileReplacer {
 			}
 
 			// Select the grapheme to append - find the right grapheme variant for the current pattern
+			/*DEBUG*/System.out.println("SELECT GRAPHEME TO APPEND...");
 			Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
 			int letterIndex = selectRule(cToken, pRules, toScript, pCounter);
 			if (letterIndex < 0) {
@@ -185,6 +188,7 @@ public class ExternalFileReplacer {
 				boolean counterIsMax = !(key.equals(currType) && !Mappings.getConsoTypeToCounterMap().get(key).valueIsMax());
 				if (counterIsMax) {
 					Mappings.getConsoTypeToCounterMap().get(key).reset(); // reset counter value to 0
+					/*DEBUG*/System.out.printf("Counter for '%s' has been resetted\n", key);
 				}
 			}
 
@@ -217,12 +221,12 @@ public class ExternalFileReplacer {
 			boolean isAndRuleMatch = pRules[i].isAndRuleMatch();
 			// True if all subrules in this rule are found to be a match
 			boolean subRulesDoMatch = true;
-			/*DEBUG*/System.out.printf("\t\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
-			/*DEBUG*/System.out.printf("\t\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
+			/*DEBUG*/System.out.printf("\tISANDRULEMATCH: [%b]\n", isAndRuleMatch);
+			/*DEBUG*/System.out.printf("\tSUBRULESDOMATCH: [%b]\n", subRulesDoMatch);
 
 			// Parse each subrule: should be either AND (all must match) or OR (at least 1 must match).
 			for (int j = 0; j < pRules[i].numOfSubRules(); j++) {
-				/*DEBUG*/System.out.printf("\t\tGoing thru subrule num %d\n", j);
+				/*DEBUG*/System.out.printf("\tGoing thru subrule num %d\n", j);
 
 				// Check all rule types
 				for (RuleParser ruleParser : ruleParserFactory.getRuleParsers()) {
@@ -231,14 +235,14 @@ public class ExternalFileReplacer {
 						boolean isMatch = ruleParser.isSubruleMatch(cToken, pRules[i], j, toScript);
 						
 						subRulesDoMatch &= isMatch;
-						/*DEBUG*/System.out.printf("\t\t%s's ISMATCH: [%b]\n", ruleParser.name(), isMatch);
+						/*DEBUG*/System.out.printf("\t%s's ISMATCH: [%b]\n", ruleParser.name(), isMatch);
 
 						// If a subrule matches the current pattern, select the index of its corresponding grapheme
 						// for insertion to output
 						if (!isAndRuleMatch && isMatch) {
 							ruleParser.postMatch(cToken, pRules[i], j, toScript);
 							letterIndex = i;
-							/*DEBUG*/System.out.printf("\t\tChosen %s rule num: %d\n", ruleParser.name(), i);
+							/*DEBUG*/System.out.printf("\tChosen %s rule num: %d\n", ruleParser.name(), i);
 							return letterIndex;
 						}
 					}					
@@ -249,10 +253,10 @@ public class ExternalFileReplacer {
 			// for insertion to output
 			if (isAndRuleMatch && subRulesDoMatch) {
 				letterIndex = i;
-				/*DEBUG*/System.out.printf("\t\tAll subrules match! Rule num: %d\n", i);
+				/*DEBUG*/System.out.printf("\tAll subrules match! Rule num: %d\n", i);
 				return letterIndex;
 			} else {
-				/*DEBUG*/System.out.printf("\t\tAll subrules do not match.\n");
+				/*DEBUG*/System.out.printf("\tAll subrules do not match. Selecting default letter.\n");
 			}
 		}
 		return letterIndex;

@@ -77,8 +77,8 @@ public class PatternRuleParser implements RuleParser {
 				: (Mappings.getPhonemeTypeReferenceMap().get(a).name().equals(b) 
 						|| Mappings.getPhonemeTypeReferenceMap().get(b).name().equals(a));
 		boolean matchesSubType = (a.equals(b));
-		/*DEBUG*/System.out.printf("\t\t\ttypeEquals(%s, %s): matchesMainType=%b, matchesSubType=%b\n",
-		/*DEBUG*/		a, b, matchesMainType, matchesSubType);
+		//System.out.printf("\t\t\ttypeEquals(%s, %s): matchesMainType=%b, matchesSubType=%b\n",
+		//		a, b, matchesMainType, matchesSubType);
 		return matchesMainType || matchesSubType;
 	}
 }
