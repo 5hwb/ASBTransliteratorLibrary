@@ -2,7 +2,7 @@
 
 ## About
 
-This is a configurable Java library that transliterates between different writing systems such as Latin, Korean, Greek and Russian. For instance:
+This is a configurable Java library that transliterates between different alphabetic writing systems such as Latin, Korean, Greek and Cyrillic. For instance:
 
 * Korean Hangul '안녕하세요 세상' = 'Annyeonghaseyo sesang'
 * Greek 'Γειά σου Κόσμε' = 'Geiá sou Kósme'
@@ -92,9 +92,9 @@ There are 3 types of rules:
 What this does:
 
 * Map any L1 letters to 'ម' if it matches the first L2 rule: previous consonant was of type 'narrowConso', previous consonant is not a consonant type, or the counter for consonant types has reached 2; or '្ម' otherwise.
-	* This ensures that the subscript variant of ម is chosen in the right context
+    * This ensures that the subscript variant of ម is chosen in the right context
 * Map any L2 letters to 'M' if the previously selected grapheme was a sentence boundary (represented with #); or 'm' otherwise.
-	 * This ensures that sentences always start with a capital letter
+    * This ensures that sentences always start with a capital letter
 
 ### Phoneme variant selection rule example
 
