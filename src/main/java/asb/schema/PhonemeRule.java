@@ -36,6 +36,16 @@ public class PhonemeRule {
 		}
 	}
 
+	/**
+	 * Generate a PhonemeRule representing the edge of a sentence.
+	 * @return The PhonemeRule
+	 */
+	public static PhonemeRule sentenceEdge() {
+		return new PhonemeRule(
+				new String[] { "" }, "sentenceEdge", new String[] {""},
+				new String[] { "" }, "sentenceEdge", new String[] {""});
+	}
+
 	@Override
 	public String toString() {
 		return "PhonemeRule [l1=" + Arrays.toString(l1) + ", l1type=" + l1type + ", l1rule=" + Arrays.toString(l1rule)
