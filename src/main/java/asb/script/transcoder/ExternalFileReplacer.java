@@ -3,6 +3,7 @@ package asb.script.transcoder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,9 +38,6 @@ public class ExternalFileReplacer {
 	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Script 1 grapheme -> Script 2 PhonemeRule
 	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script 2 grapheme -> Script 1 PhonemeRule
 	protected Map<String, Integer> graphemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
-
-	/** Stores the output string */
-	protected StringBuilder output;
 
 	/** The maximum grapheme size, which determines the number of chars to scan ahead */
 	protected int maxGraphemeSize;
@@ -85,6 +83,107 @@ public class ExternalFileReplacer {
 	public String translateFromScript(String input) {
 		return translateFromToScript(input, false);
 	}
+	
+	/**
+	 * Reset all phoneme counters.
+	 */
+	protected void resetCounters() {
+		Set<String> counterKeySet = Mappings.getConsoTypeToCounterMap().keySet();
+		for (String key : counterKeySet) {
+			Mappings.getConsoTypeToCounterMap().get(key).reset();
+			/*DEBUG*/System.out.printf("Counter for '%s' has been resetted\n", key);
+		}
+	}
+	
+	/**
+	 * Reset all phoneme counters, given the current phoneme type.
+	 * @param cToken Current token
+	 * @param toScript Translate the input to script, or back?
+	 */
+	protected void resetCountersIf(CharToken cToken, boolean toScript) {
+		String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
+				: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
+		
+		// Reset counter values if they have reached the maximum value
+		Set<String> counterKeySet = Mappings.getConsoTypeToCounterMap().keySet();
+		for (String key : counterKeySet) {
+			boolean counterIsMax = !(key.equals(currType) && !Mappings.getConsoTypeToCounterMap().get(key).valueIsMax());
+			if (counterIsMax) {
+				Mappings.getConsoTypeToCounterMap().get(key).reset(); // reset counter value to 0
+				/*DEBUG*/System.out.printf("Counter for '%s' has been resetted\n", key);
+			}
+		}
+	}
+	
+	/**
+	 * Convert an input string into an array of CharTokens.
+	 * @param input Self-descriptive
+	 * @param toScript Translate the input to script, or back?
+	 * @return List of CharTokens
+	 */
+	protected List<CharToken> convertToTokens(String input, boolean toScript) {
+		List<CharToken> tokenOutput = new ArrayList<>();
+		Map<String, PhonemeRule> mapping = (toScript) 
+				? this.l1GraphemeToPhonemeMap 
+				: this.l2GraphemeToPhonemeMap;
+		Tokeniser tokeniser = new Tokeniser(input, mapping, graphemeVarIndexMap);
+		CharToken token;
+
+		while ((token = tokeniser.readNextToken()) != null) {
+			CharToken prev = tokeniser.prevToken();
+			tokenOutput.add(prev);
+		}
+		
+		return tokenOutput;
+	}
+	
+	/**
+	 * Increment the type counter for this token.
+	 * @param cToken Current token
+	 * @param toScript Translate the input to script, or back?
+	 */
+	protected void incrementCounter(CharToken cToken, boolean toScript) {
+		String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
+				: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
+		PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
+		
+		if (pCounter != null) {
+			/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
+			Rule[] cRules = pCounter.incrRuleParsed();
+			int matchingRuleIndex = selectRule(cToken, cRules, toScript, null);
+			if (matchingRuleIndex >= 0) {
+				//System.out.println(cRules[matchingRuleIndex]);
+				pCounter.increment();
+				/*DEBUG*/System.out.printf("\tRule for counter increment is a match (counter=%d). index=%d\n", pCounter.value(), matchingRuleIndex);
+			} else {
+				/*DEBUG*/System.out.println("\tRule for counter increment is NOT a match");
+			}
+		} else {
+			/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
+		}
+	}
+	
+	/**
+	 * Select the grapheme to append - find the right grapheme variant for the current pattern.
+	 * @param cToken Current token
+	 * @param toScript Translate the input to script, or back?
+	 * @return The index of the chosen grapheme variant in the list of graphemes
+	 */
+	protected int selectGraphemeIndex(CharToken cToken, boolean toScript) {
+		/*DEBUG*/System.out.println("SELECT GRAPHEME TO APPEND...");
+		String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
+				: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
+		PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
+		Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
+		int letterIndex = selectRule(cToken, pRules, toScript, pCounter);
+
+		if (letterIndex < 0) {
+			// Set default grapheme variant (the last one) if none were found
+			letterIndex = (toScript) ? cToken.phonemeRule().l2().length - 1 : cToken.phonemeRule().l1().length - 1;
+		}
+		
+		return letterIndex;
+	}
 
 	/**
 	 * The base method for the translateFromScript and translateToScript methods.
@@ -97,36 +196,18 @@ public class ExternalFileReplacer {
 		/**
 		 * NOTE: A 'grapheme' is a string of up to n characters representing a single phoneme.
 		 */
-		// List of tokens
-		ArrayList<CharToken> tokenOutput = new ArrayList<>();
-		output = new StringBuilder();
+		StringBuilder output = new StringBuilder();
 
 		// The current grapheme to analyse
 		String currGrapheme = "";
 		
-		Set<String> counterKeySet = Mappings.getConsoTypeToCounterMap().keySet();
-
-		/*DEBUG*/System.out.println("Initialised!");
-
 		// Reset the counters
-		for (String key : counterKeySet) {
-			/*DEBUG*/System.out.printf("Resetting %s...\n", key);			
-			Mappings.getConsoTypeToCounterMap().get(key).reset();
-		}
+		resetCounters();
 
 		////////////////////////////////////////////////////////////
 		// CONVERT THE INPUT STRING INTO A LIST OF TOKENS
 		////////////////////////////////////////////////////////////
-		Map<String, PhonemeRule> mapping = (toScript) 
-				? this.l1GraphemeToPhonemeMap 
-				: this.l2GraphemeToPhonemeMap;
-		Tokeniser tokeniser = new Tokeniser(input, mapping, graphemeVarIndexMap);
-		CharToken token;
-
-		while ((token = tokeniser.readNextToken()) != null) {
-			CharToken prev = tokeniser.prevToken();
-			tokenOutput.add(prev);
-		}
+		List<CharToken> tokenOutput = convertToTokens(input, toScript);
 
 		////////////////////////////////////////////////////////////
 		// GO THROUGH TOKENS AND INSERT REPLACEMENT IN OUTPUT
@@ -137,11 +218,8 @@ public class ExternalFileReplacer {
 			
 			// Set dummy sentence edge token for the last token
 			if (cToken.next() == null) {
-				PhonemeRule sentenceEdgePhoneme = new PhonemeRule(
-						new String[] { "" }, "sentenceEdge", new String[] {""},
-						new String[] { "" }, "sentenceEdge", new String[] {""});
+				PhonemeRule sentenceEdgePhoneme = PhonemeRule.sentenceEdge();
 				CharToken sentenceEdgeToken = new CharToken(sentenceEdgePhoneme, 0, cToken, null);
-				
 				cToken.setNext(sentenceEdgeToken);
 			}
 			/*DEBUG*/System.out.println("INSERT REPLACEMENT IN OUTPUT...");
@@ -153,44 +231,16 @@ public class ExternalFileReplacer {
 				continue;
 			}
 			/*DEBUG*/System.out.println("GRAPHEME: repl found - " + cToken.phonemeRule().l2()[0]);
-
+			
 			// Increment the counter for the current phoneme's type
 			/*DEBUG*/System.out.println("INCREMENT PHONEME TYPE COUNTER...");
-			String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
-					: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
-			PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
-			if (pCounter != null) {
-				/*DEBUG*/System.out.printf("Counter for '%s' value: %d\n", currType, pCounter.value());
-				Rule[] cRules = pCounter.incrRuleParsed();
-				int matchingRuleIndex = selectRule(cToken, cRules, toScript, null);
-				if (matchingRuleIndex >= 0) {
-					//System.out.println(cRules[matchingRuleIndex]);
-					pCounter.increment();
-					/*DEBUG*/System.out.printf("\tRule for counter increment is a match (counter=%d). index=%d\n", pCounter.value(), matchingRuleIndex);
-				} else {
-					/*DEBUG*/System.out.println("\tRule for counter increment is NOT a match");
-				}
-			} else {
-				/*DEBUG*/System.out.printf("Counter for '%s' does not exist\n", currType);
-			}
+			incrementCounter(cToken, toScript);
 
 			// Select the grapheme to append - find the right grapheme variant for the current pattern
-			/*DEBUG*/System.out.println("SELECT GRAPHEME TO APPEND...");
-			Rule[] pRules = (toScript) ? cToken.phonemeRule().l2ruleParsed() : cToken.phonemeRule().l1ruleParsed();
-			int letterIndex = selectRule(cToken, pRules, toScript, pCounter);
-			if (letterIndex < 0) {
-				// Set default grapheme variant (the last one) if none were found
-				letterIndex = (toScript) ? cToken.phonemeRule().l2().length - 1 : cToken.phonemeRule().l1().length - 1;
-			}
+			int letterIndex = selectGraphemeIndex(cToken, toScript);
 
 			// Reset counter values if they have reached the maximum value
-			for (String key : counterKeySet) {
-				boolean counterIsMax = !(key.equals(currType) && !Mappings.getConsoTypeToCounterMap().get(key).valueIsMax());
-				if (counterIsMax) {
-					Mappings.getConsoTypeToCounterMap().get(key).reset(); // reset counter value to 0
-					/*DEBUG*/System.out.printf("Counter for '%s' has been resetted\n", key);
-				}
-			}
+			resetCountersIf(cToken, toScript);
 
 			// Append the replacement grapheme to output
 			/*DEBUG*/System.out.printf("OUTPUT: [%s]\n", output.toString());
