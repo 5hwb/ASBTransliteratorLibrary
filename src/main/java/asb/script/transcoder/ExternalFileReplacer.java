@@ -87,7 +87,7 @@ public class ExternalFileReplacer {
 	/**
 	 * Reset all phoneme counters.
 	 */
-	protected void resetCounters() {
+	private void resetCounters() {
 		Set<String> counterKeySet = Mappings.getConsoTypeToCounterMap().keySet();
 		for (String key : counterKeySet) {
 			Mappings.getConsoTypeToCounterMap().get(key).reset();
@@ -100,7 +100,7 @@ public class ExternalFileReplacer {
 	 * @param cToken Current token
 	 * @param toScript Translate the input to script, or back?
 	 */
-	protected void resetCounters(CharToken cToken, boolean toScript) {
+	private void resetCounters(CharToken cToken, boolean toScript) {
 		String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
 				: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
 		
@@ -121,7 +121,7 @@ public class ExternalFileReplacer {
 	 * @param toScript Translate the input to script, or back?
 	 * @return List of CharTokens
 	 */
-	protected List<CharToken> convertToTokens(String input, boolean toScript) {
+	private List<CharToken> convertToTokens(String input, boolean toScript) {
 		List<CharToken> tokenOutput = new ArrayList<>();
 		Map<String, PhonemeRule> mapping = (toScript) 
 				? this.l1GraphemeToPhonemeMap 
@@ -203,7 +203,7 @@ public class ExternalFileReplacer {
 	 * @param cToken Current token
 	 * @param toScript Translate the input to script, or back?
 	 */
-	protected void incrementCounter(CharToken cToken, boolean toScript) {
+	private void incrementCounter(CharToken cToken, boolean toScript) {
 		String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
 				: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
 		PhonemeCounter pCounter = Mappings.getConsoTypeToCounterMap().get(currType);
@@ -230,7 +230,7 @@ public class ExternalFileReplacer {
 	 * @param toScript Translate the input to script, or back?
 	 * @return The index of the chosen grapheme variant in the list of graphemes
 	 */
-	protected int selectGraphemeIndex(CharToken cToken, boolean toScript) {
+	private int selectGraphemeIndex(CharToken cToken, boolean toScript) {
 		/*DEBUG*/System.out.println("SELECT GRAPHEME TO APPEND...");
 		String currType = (toScript) ? Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l2type()).name()
 				: Mappings.getPhonemeTypeReferenceMap().get(cToken.phonemeRule().l1type()).name();
