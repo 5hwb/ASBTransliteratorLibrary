@@ -46,7 +46,7 @@
 		{"l1": ["W", "w"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["W", "w"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 
 		{"l1": ["Ŋk", "ŋk"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Nk", "nk"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ar", "ar"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ar", "ár", "ar"],	"l2type": "vowel",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Ar", "ar"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ar", "ar"],	"l2type": "vowel",	"l2rule": ["#_._. | pv=0"]},
 
 
 		{"l1": ["Ya", "ya"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Yá", "yá"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},

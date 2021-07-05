@@ -27,8 +27,8 @@
 		{"l1": ["N", "n"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["N", "n"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["T", "t"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["T", "t"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["D", "d"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["D", "d"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ŧ", "ŧ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Th", "th"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Đ", "đ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Dh", "dh"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Ŧ", "ŧ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ţ", "ţ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Đ", "đ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Đ", "đ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Ŋ", "ŋ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ŋ", "ŋ"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["K", "k"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["K", "k"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["G", "g"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["G", "g"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
@@ -36,8 +36,8 @@
 		{"l1": ["Ĝ", "ĝ"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Gh", "gh"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["S", "s"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["S", "s"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Z", "z"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Z", "z"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ś", "ś"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Sh", "sh"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ź", "ź"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Zh", "zh"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Ś", "ś"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ş", "ş"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Ź", "ź"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ż", "ż"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["C", "c"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["C", "c"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["J", "j"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["J", "j"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["R", "r"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["R", "r"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
@@ -46,7 +46,7 @@
 		{"l1": ["W", "w"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["W", "w"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 
 		{"l1": ["Ŋk", "ŋk"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Nk", "nk"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Ar", "ar"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ar", "ár", "ar"],	"l2type": "vowel",	"l2rule": ["#_._. | pv=0"]},
+		{"l1": ["Ar", "ar"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"],		"l2": ["Ar", "ar"],	"l2type": "vowel",	"l2rule": ["#_._. | pv=0"]},
 
 
 		{"l1": ["Ya", "ya"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Yá", "yá"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
@@ -75,12 +75,8 @@
 		{"l1": ["Au", "au"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"], "l2": ["A'u", "a'u"],	"l2type": "vowel",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Iu", "iu"],	"l1type": "vowel",	"l1rule": ["#_._. | pv=0"], "l2": ["I'u", "i'u"],	"l2type": "vowel",	"l2rule": ["#_._. | pv=0"]},
 		
-		{"l1": ["Th", "th"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["T'h", "t'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Dh", "dh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["D'h", "d'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Kh", "kh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["K'h", "k'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 		{"l1": ["Gh", "gh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["G'h", "g'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Sh", "sh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["S'h", "s'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
-		{"l1": ["Zh", "zh"],	"l1type": "consonant",	"l1rule": ["#_._. | pv=0"],		"l2": ["Z'h", "z'h"],	"l2type": "consonant",	"l2rule": ["#_._. | pv=0"]},
 
 		{"l1": ["1"],	"l1type": "numeral",	"l1rule": [""],		"l2": ["1"],	"l2type": "numeral",	"l2rule": [""]},
 		{"l1": ["2"],	"l1type": "numeral",	"l1rule": [""],		"l2": ["2"],	"l2type": "numeral",	"l2rule": [""]},
