@@ -32,14 +32,13 @@ import asb.script.transcoder.parsing.Tokeniser;
 public class ExternalFileReplacer {
 
 	/**
-	 * These HashMaps map String keys representing the original char with
-	 * PhonemeRule class values representing what they will be replaced with
+	 * Map the original graphemes with their corresponding PhonemeRule instances
 	 */
 	protected Map<String, PhonemeRule> l1GraphemeToPhonemeMap; // Script 1 grapheme -> Script 2 PhonemeRule
 	protected Map<String, PhonemeRule> l2GraphemeToPhonemeMap; // Script 2 grapheme -> Script 1 PhonemeRule
 	protected Map<String, Integer> graphemeVarIndexMap; // Grapheme -> its index in the list of phoneme variants
 
-	/** The maximum grapheme size, which determines the number of chars to scan ahead */
+	/** Maximum grapheme size, determines the number of chars to scan ahead */
 	protected int maxGraphemeSize;
 
 	/** Directory of the rule file */
